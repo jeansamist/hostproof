@@ -261,7 +261,6 @@ test.group('ReservationService', () => {
 
     await expectHttpError(
       assert,
-      async () => service.updateReservation(8, { moveOutDate: new Date('2026-08-05') }),
       async () => service.updateReservation(8, { moveOutDate: DateTime.fromISO('2026-08-05') }),
       400,
       'Move out date must be after move in date.'
