@@ -106,6 +106,42 @@ export class EmployeeSchema extends BaseModel {
   declare userId: number | null
 }
 
+export class ReservationSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'housingId',
+    'id',
+    'moveInDate',
+    'moveOutDate',
+    'numberOfAdult',
+    'numberOfBaby',
+    'numberOfChild',
+    'specialInfos',
+    'updatedAt',
+  ] as const
+  $columns = ReservationSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare housingId: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime()
+  declare moveInDate: DateTime | null
+  @column.dateTime()
+  declare moveOutDate: DateTime | null
+  @column()
+  declare numberOfAdult: number
+  @column()
+  declare numberOfBaby: number
+  @column()
+  declare numberOfChild: number
+  @column()
+  declare specialInfos: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class UserSchema extends BaseModel {
   static $columns = [
     'avatar',
