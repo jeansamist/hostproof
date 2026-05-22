@@ -5,4 +5,5 @@
 
 export const controllers = {
   Auth: () => import('#controllers/auth_controller'),
+  Housings: () => import('#controllers/housings_controller'),
 }
