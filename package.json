@@ -1,0 +1,24 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --import @poppinss/ts-exec scripts/dev-all.ts",
+    "dev:app": "node --import @poppinss/ts-exec scripts/dev.ts",
+    "dev:web": "pnpm --filter web dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "dev:api": "pnpm --filter api dev",
+    "build": "node --import @poppinss/ts-exec scripts/build.ts",
+    "build:web": "pnpm --filter web build",
+    "build:admin": "pnpm --filter admin build",
+    "build:api": "pnpm --filter api build",
+    "start": "pnpm --parallel --filter './apps/*' start",
+    "lint": "pnpm --recursive lint",
+    "format": "pnpm --recursive format",
+    "typecheck": "pnpm --recursive typecheck"
+  },
+  "devDependencies": {
+    "@poppinss/ts-exec": "^1.4.4",
+    "@types/node": "^22.0.0"
+  }
+}
