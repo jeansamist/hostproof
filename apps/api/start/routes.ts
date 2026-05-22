@@ -59,6 +59,15 @@ router
             router.delete('/reservations/:id', [controllers.Reservations, 'destroy'])
           })
           .use([middleware.auth()])
+        router
+          .group(() => {
+            router.get('/cleaning-reviews', [controllers.CleaningReviews, 'index'])
+            router.post('/cleaning-reviews', [controllers.CleaningReviews, 'store'])
+            router.get('/cleaning-reviews/:id', [controllers.CleaningReviews, 'show'])
+            router.put('/cleaning-reviews/:id', [controllers.CleaningReviews, 'update'])
+            router.delete('/cleaning-reviews/:id', [controllers.CleaningReviews, 'destroy'])
+          })
+          .use([middleware.auth()])
       })
       .prefix('/auth')
   })

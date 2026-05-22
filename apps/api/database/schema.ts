@@ -8,18 +8,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = [
-    'abilities',
-    'createdAt',
-    'expiresAt',
-    'hash',
-    'id',
-    'lastUsedAt',
-    'name',
-    'tokenableId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -43,48 +32,35 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
-export class HousingSchema extends BaseModel {
-  static $columns = [
-    'address',
-    'capacity',
-    'createdAt',
-    'id',
-    'name',
-    'type',
-    'updatedAt',
-    'userId',
-  ] as const
-  $columns = HousingSchema.$columns
+export class CleaningReviewSchema extends BaseModel {
+  static $columns = ['additionnalInfos', 'aiOutput', 'assignedEmployeeId', 'createdAt', 'id', 'localVideoPath', 'mimeType', 'reservationId', 'status', 'updatedAt', 'uri'] as const
+  $columns = CleaningReviewSchema.$columns
   @column()
-  declare address: string
+  declare additionnalInfos: string | null
   @column()
-  declare capacity: number
+  declare aiOutput: any | null
+  @column()
+  declare assignedEmployeeId: number | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare name: string
+  declare localVideoPath: string | null
   @column()
-  declare type: string
+  declare mimeType: string | null
+  @column()
+  declare reservationId: number | null
+  @column()
+  declare status: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
   @column()
-  declare userId: number | null
+  declare uri: string | null
 }
 
 export class EmployeeSchema extends BaseModel {
-  static $columns = [
-    'avatar',
-    'createdAt',
-    'email',
-    'fullName',
-    'gender',
-    'id',
-    'tel',
-    'updatedAt',
-    'userId',
-  ] as const
+  static $columns = ['avatar', 'createdAt', 'email', 'fullName', 'gender', 'id', 'tel', 'updatedAt', 'userId'] as const
   $columns = EmployeeSchema.$columns
   @column()
   declare avatar: string | null
@@ -106,19 +82,29 @@ export class EmployeeSchema extends BaseModel {
   declare userId: number | null
 }
 
+export class HousingSchema extends BaseModel {
+  static $columns = ['address', 'capacity', 'createdAt', 'id', 'name', 'type', 'updatedAt', 'userId'] as const
+  $columns = HousingSchema.$columns
+  @column()
+  declare address: string
+  @column()
+  declare capacity: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare type: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
 export class ReservationSchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'housingId',
-    'id',
-    'moveInDate',
-    'moveOutDate',
-    'numberOfAdult',
-    'numberOfBaby',
-    'numberOfChild',
-    'specialInfos',
-    'updatedAt',
-  ] as const
+  static $columns = ['createdAt', 'housingId', 'id', 'moveInDate', 'moveOutDate', 'numberOfAdult', 'numberOfBaby', 'numberOfChild', 'specialInfos', 'updatedAt'] as const
   $columns = ReservationSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -127,9 +113,9 @@ export class ReservationSchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
   @column.dateTime()
-  declare moveInDate: DateTime | null
+  declare moveInDate: DateTime
   @column.dateTime()
-  declare moveOutDate: DateTime | null
+  declare moveOutDate: DateTime
   @column()
   declare numberOfAdult: number
   @column()
@@ -143,22 +129,7 @@ export class ReservationSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = [
-    'avatar',
-    'createdAt',
-    'email',
-    'emailVerificationCode',
-    'emailVerificationCodeExpiresAt',
-    'emailVerified',
-    'emailVerifiedAt',
-    'firstName',
-    'id',
-    'lastName',
-    'password',
-    'resetPasswordToken',
-    'resetPasswordTokenExpiresAt',
-    'updatedAt',
-  ] as const
+  static $columns = ['avatar', 'createdAt', 'email', 'emailVerificationCode', 'emailVerificationCodeExpiresAt', 'emailVerified', 'emailVerifiedAt', 'firstName', 'id', 'lastName', 'password', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column()
   declare avatar: string | null
