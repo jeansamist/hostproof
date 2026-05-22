@@ -8,7 +8,18 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
+  static $columns = [
+    'abilities',
+    'createdAt',
+    'expiresAt',
+    'hash',
+    'id',
+    'lastUsedAt',
+    'name',
+    'tokenableId',
+    'type',
+    'updatedAt',
+  ] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -33,7 +44,16 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class HousingSchema extends BaseModel {
-  static $columns = ['address', 'capacity', 'createdAt', 'id', 'name', 'type', 'updatedAt', 'userId'] as const
+  static $columns = [
+    'address',
+    'capacity',
+    'createdAt',
+    'id',
+    'name',
+    'type',
+    'updatedAt',
+    'userId',
+  ] as const
   $columns = HousingSchema.$columns
   @column()
   declare address: string
@@ -53,8 +73,56 @@ export class HousingSchema extends BaseModel {
   declare userId: number | null
 }
 
+export class EmployeeSchema extends BaseModel {
+  static $columns = [
+    'avatar',
+    'createdAt',
+    'email',
+    'fullName',
+    'gender',
+    'id',
+    'tel',
+    'updatedAt',
+    'userId',
+  ] as const
+  $columns = EmployeeSchema.$columns
+  @column()
+  declare avatar: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare email: string | null
+  @column()
+  declare fullName: string
+  @column()
+  declare gender: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare tel: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
 export class UserSchema extends BaseModel {
-  static $columns = ['avatar', 'createdAt', 'email', 'emailVerificationCode', 'emailVerificationCodeExpiresAt', 'emailVerified', 'emailVerifiedAt', 'firstName', 'id', 'lastName', 'password', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'updatedAt'] as const
+  static $columns = [
+    'avatar',
+    'createdAt',
+    'email',
+    'emailVerificationCode',
+    'emailVerificationCodeExpiresAt',
+    'emailVerified',
+    'emailVerifiedAt',
+    'firstName',
+    'id',
+    'lastName',
+    'password',
+    'resetPasswordToken',
+    'resetPasswordTokenExpiresAt',
+    'updatedAt',
+  ] as const
   $columns = UserSchema.$columns
   @column()
   declare avatar: string | null

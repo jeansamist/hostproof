@@ -32,6 +32,24 @@ router
             router.put('/update-profile', [controllers.Auth, 'updateProfile'])
           })
           .use([middleware.auth()])
+        router
+          .group(() => {
+            router.get('/employees', [controllers.Employees, 'index'])
+            router.post('/employees', [controllers.Employees, 'store'])
+            router.get('/employees/:id', [controllers.Employees, 'show'])
+            router.put('/employees/:id', [controllers.Employees, 'update'])
+            router.delete('/employees/:id', [controllers.Employees, 'destroy'])
+          })
+          .use([middleware.auth()])
+        router
+          .group(() => {
+            router.get('/housings', [controllers.Housings, 'index'])
+            router.post('/housings', [controllers.Housings, 'store'])
+            router.get('/housings/:id', [controllers.Housings, 'show'])
+            router.put('/housings/:id', [controllers.Housings, 'update'])
+            router.delete('/housings/:id', [controllers.Housings, 'destroy'])
+          })
+          .use([middleware.auth()])
       })
       .prefix('/auth')
   })

@@ -5,5 +5,6 @@
 
 export const controllers = {
   Auth: () => import('#controllers/auth_controller'),
+  Employees: () => import('#controllers/employees_controller'),
   Housings: () => import('#controllers/housings_controller'),
 }
