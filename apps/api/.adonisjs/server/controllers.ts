@@ -10,4 +10,5 @@ export const controllers = {
   Housings: () => import('#controllers/housings_controller'),
   Reservations: () => import('#controllers/reservations_controller'),
   Uploads: () => import('#controllers/uploads_controller'),
+  Dashboard: () => import('#controllers/dashboard_controller'),
 }

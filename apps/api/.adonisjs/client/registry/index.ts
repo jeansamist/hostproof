@@ -234,6 +234,12 @@ const routes = {
     tokens: [{"old":"/api/auth/cleaning-reviews/:id","type":0,"val":"api","end":""},{"old":"/api/auth/cleaning-reviews/:id","type":0,"val":"auth","end":""},{"old":"/api/auth/cleaning-reviews/:id","type":0,"val":"cleaning-reviews","end":""},{"old":"/api/auth/cleaning-reviews/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cleaning_reviews.destroy']['types'],
   },
+  'dashboard.stats': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/auth/dashboard/stats',
+    tokens: [{"old":"/api/auth/dashboard/stats","type":0,"val":"api","end":""},{"old":"/api/auth/dashboard/stats","type":0,"val":"auth","end":""},{"old":"/api/auth/dashboard/stats","type":0,"val":"dashboard","end":""},{"old":"/api/auth/dashboard/stats","type":0,"val":"stats","end":""}],
+    types: placeholder as Registry['dashboard.stats']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

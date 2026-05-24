@@ -463,4 +463,16 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['destroy']>>>
     }
   }
+  'dashboard.stats': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/dashboard/stats'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['stats']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/dashboard_controller').default['stats']>>>
+    }
+  }
 }

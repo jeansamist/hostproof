@@ -134,6 +134,17 @@ export default {
     "Jump into the dashboard and keep the momentum going.",
   "onboarding.completed.action.enter": "Enter workspace",
 
+  "dashboard.title": "Dashboard",
+  "dashboard.description": "Overview of your workspace activity",
+  "dashboard.metric.totalHousings": "Total Housings",
+  "dashboard.metric.totalHousings.description": "Properties in your workspace",
+  "dashboard.metric.totalEmployees": "Total Employees",
+  "dashboard.metric.totalEmployees.description": "Cleaning team members",
+  "dashboard.metric.upcomingReservations": "Upcoming Reservations",
+  "dashboard.metric.upcomingReservations.description": "Check-ins from today onwards",
+  "dashboard.metric.succeededReviews": "Succeeded Reviews",
+  "dashboard.metric.succeededReviews.description": "Cleaning reviews marked Done",
+
   unknownError: "Something went wrong",
 } as const
 export type Locale = typeof import("./en").default

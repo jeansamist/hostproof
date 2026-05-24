@@ -52,4 +52,7 @@ export interface ApiDefinition {
     update: typeof routes['cleaning_reviews.update']
     destroy: typeof routes['cleaning_reviews.destroy']
   }
+  dashboard: {
+    stats: typeof routes['dashboard.stats']
+  }
 }
