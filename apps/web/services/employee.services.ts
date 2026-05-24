@@ -63,3 +63,8 @@ export const updateManyEmployees = async (
     .safe()
   return (error ? error.response : data) as ApiResponse
 }
+
+export const deleteEmployee = async (id: number): Promise<ApiResponse> => {
+  const [data, error] = await tuyau.api.employees.destroy({ params: { id } }).safe()
+  return (error ? error.response : data) as ApiResponse
+}

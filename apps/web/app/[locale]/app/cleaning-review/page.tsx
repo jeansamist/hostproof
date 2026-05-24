@@ -1,5 +1,6 @@
 import { getI18n } from "@/lib/i18n/server"
 import { CleaningReviewsTable } from "@/components/customs/cleaning-reviews-table"
+import { RefreshButton } from "@/components/customs/refresh-button"
 import { getCleaningReviews } from "@/services/cleaning-review.services"
 import { Button } from "@packages/ui/button"
 import {
@@ -47,12 +48,15 @@ export default async function CleaningReviewPage({ params, searchParams }: PageP
             {meta ? `${meta.total} review${meta.total !== 1 ? "s" : ""}` : ""}
           </p>
         </div>
-        <Button asChild>
-          <Link href={`/${locale}/app/cleaning-review/create`}>
-            <Plus className="size-4" />
-            {t("cleaningReview.action.new")}
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <RefreshButton />
+          <Button asChild>
+            <Link href={`/${locale}/app/cleaning-review/create`}>
+              <Plus className="size-4" />
+              {t("cleaningReview.action.new")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <CleaningReviewsTable reviews={reviews} locale={locale} appUrl={appUrl} />

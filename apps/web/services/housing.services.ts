@@ -66,3 +66,8 @@ export const updateManyHousings = async (
     .safe()
   return (error ? error.response : data) as ApiResponse
 }
+
+export const deleteHousing = async (id: number): Promise<ApiResponse> => {
+  const [data, error] = await tuyau.api.housings.destroy({ params: { id } }).safe()
+  return (error ? error.response : data) as ApiResponse
+}

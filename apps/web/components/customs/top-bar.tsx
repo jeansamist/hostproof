@@ -12,17 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "@packages/ui/dropdown-menu"
 import { cn } from "@packages/functions"
-import { CalendarClock, LayoutDashboard, LogOut, Menu, SparklesIcon } from "lucide-react"
+import { CalendarClock, LayoutDashboard, LogOut, Settings, SparklesIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { FunctionComponent, useState } from "react"
+import { FunctionComponent } from "react"
 
 export const TopBar: FunctionComponent = () => {
   const { user } = useAuth()
   const pathname = usePathname()
   const t = useI18n()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   const locale = pathname.split("/")[1] ?? "en"
 
   const navItems = [
@@ -109,6 +107,13 @@ export const TopBar: FunctionComponent = () => {
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground leading-none">{user?.email}</p>
               </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={`/${locale}/app/settings`} className="flex cursor-pointer items-center gap-2">
+                  <Settings className="size-4" />
+                  {t("nav.settings")}
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link
