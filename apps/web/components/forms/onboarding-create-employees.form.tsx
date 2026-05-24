@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import { createManyEmployeeSchema, type CreateManyEmployeeSchema } from "@/schemas/employee.schemas"
 import { uploadFile } from "@/services/upload.services"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -48,6 +49,7 @@ export type OnboardingCreateEmployeesFormProps = {
 export const OnboardingCreateEmployeesForm: FunctionComponent<
   OnboardingCreateEmployeesFormProps
 > = ({ handleNext, handleSkip }) => {
+  const t = useI18n()
   const form = useForm<OnboardingCreateEmployeesFormValues>({
     resolver: zodResolver(onboardingCreateManyEmployeeSchema),
     mode: "onChange",
@@ -170,7 +172,7 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
             <Card>
               <CardContent className="space-y-4">
                 <Field className="flex-1">
-                  <FieldLabel>Avatar</FieldLabel>
+                  <FieldLabel>{t("onboarding.employees.avatar.label")}</FieldLabel>
                   <label
                     htmlFor={`employee-avatar-${field.id}`}
                     className={cn(
@@ -204,10 +206,11 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
                     </div>
                     <div className="min-w-0 flex-1 text-left">
                       <p className="truncate text-sm font-medium">
-                        {employees?.[index]?.avatarFile?.name ?? "Choose an avatar"}
+                        {employees?.[index]?.avatarFile?.name ??
+                          t("onboarding.employees.avatar.empty")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        PNG, JPG or WEBP. Optional.
+                        {t("onboarding.employees.avatar.hint")}
                       </p>
                     </div>
                     {avatarPreviews[index] ? (
@@ -221,7 +224,7 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
                           clearAvatar(index)
                         }}
                       >
-                        Remove
+                        {t("onboarding.employees.avatar.remove")}
                       </Button>
                     ) : null}
                   </label>
@@ -234,7 +237,9 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
                     }
                     className="w-full flex-1"
                   >
-                    <FieldLabel className="block w-full">Full name</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.employees.field.fullName")}
+                    </FieldLabel>
                     <Input {...form.register(`employees.${index}.fullName`)} />
                     <FieldError
                       errors={[
@@ -246,19 +251,29 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
                     data-invalid={!!form.formState.errors.employees?.[index]?.gender}
                     className="w-full max-w-44"
                   >
-                    <FieldLabel className="block w-full">Gender</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.employees.field.gender")}
+                    </FieldLabel>
                     <Controller
                       control={form.control}
                       name={`employees.${index}.gender`}
                       render={({ field }) => (
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a gender" />
+                            <SelectValue
+                              placeholder={t("onboarding.employees.gender.placeholder")}
+                            />
                           </SelectTrigger>
                           <SelectContent position="item-aligned">
-                            <SelectItem value="male">Male</SelectItem>
-                            <SelectItem value="female">Female</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem value="male">
+                              {t("onboarding.employees.gender.male")}
+                            </SelectItem>
+                            <SelectItem value="female">
+                              {t("onboarding.employees.gender.female")}
+                            </SelectItem>
+                            <SelectItem value="other">
+                              {t("onboarding.employees.gender.other")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       )}
@@ -271,7 +286,9 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
 
                 <FieldGroup className="flex-row gap-3">
                   <Field className="w-full flex-1">
-                    <FieldLabel className="block w-full">Email</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.employees.field.email")}
+                    </FieldLabel>
                     <Input
                       type="email"
                       {...form.register(`employees.${index}.email`, {
@@ -283,7 +300,9 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
                     />
                   </Field>
                   <Field className="w-full flex-1">
-                    <FieldLabel className="block w-full">Phone</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.employees.field.phone")}
+                    </FieldLabel>
                     <Input
                       {...form.register(`employees.${index}.tel`, {
                         setValueAs: (value) => value || null,
@@ -302,7 +321,7 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
                     onClick={() => remove(index)}
                   >
                     <Trash />
-                    Delete
+                    {t("onboarding.employees.action.delete")}
                   </Button>
                 </div>
               </CardContent>
@@ -328,12 +347,12 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
         size="lg"
       >
         <Plus />
-        Add an employee
+        {t("onboarding.employees.action.add")}
       </Button>
 
       <div className="flex gap-3 pt-2">
         <Button type="button" size="lg" variant="outline" onClick={handleSkip}>
-          Skip for now
+          {t("onboarding.employees.action.skip")}
         </Button>
         <Button
           type="submit"
@@ -342,7 +361,7 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
           form="onboarding-create-employees-form"
           className="flex-1"
         >
-          Next
+          {t("onboarding.employees.action.next")}
           {form.formState.isSubmitting && (
             <LoaderCircle className="animate-spin" />
           )}

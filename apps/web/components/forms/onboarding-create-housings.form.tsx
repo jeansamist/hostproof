@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import {
   createManyHousingSchema,
   CreateManyHousingSchema,
@@ -30,6 +31,7 @@ export type OnboardingCreateHousingsFormProps = {
 export const OnboardingCreateHousingsForm: FunctionComponent<
   OnboardingCreateHousingsFormProps
 > = ({ handleNext }) => {
+  const t = useI18n()
   const form = useForm<CreateManyHousingSchema>({
     resolver: zodResolver(createManyHousingSchema),
     mode: "onChange",
@@ -89,7 +91,9 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                     }
                     className="w-full flex-1"
                   >
-                    <FieldLabel className="block w-full">Name</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.housings.field.name")}
+                    </FieldLabel>
                     <Input {...form.register(`housings.${index}.name`)} />
                     <FieldError
                       errors={[form.formState.errors.housings?.[index]?.name]}
@@ -101,7 +105,9 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                     }
                     className="w-full max-w-20"
                   >
-                    <FieldLabel className="block w-full">Capacity</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.housings.field.capacity")}
+                    </FieldLabel>
                     <Input
                       {...form.register(`housings.${index}.capacity`, {
                         valueAsNumber: true,
@@ -123,7 +129,9 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                     }
                     className="w-full max-w-40"
                   >
-                    <FieldLabel className="block w-full">Type</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.housings.field.type")}
+                    </FieldLabel>
                     <Controller
                       control={form.control}
                       name={`housings.${index}.type`}
@@ -133,12 +141,20 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a type" />
+                            <SelectValue
+                              placeholder={t("onboarding.housings.type.placeholder")}
+                            />
                           </SelectTrigger>
                           <SelectContent position="item-aligned">
-                            <SelectItem value="apartment">Apartment</SelectItem>
-                            <SelectItem value="house">House</SelectItem>
-                            <SelectItem value="villa">Villa</SelectItem>
+                            <SelectItem value="apartment">
+                              {t("onboarding.housings.type.apartment")}
+                            </SelectItem>
+                            <SelectItem value="house">
+                              {t("onboarding.housings.type.house")}
+                            </SelectItem>
+                            <SelectItem value="villa">
+                              {t("onboarding.housings.type.villa")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       )}
@@ -153,7 +169,9 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                     }
                     className="w-full flex-1"
                   >
-                    <FieldLabel className="block w-full">Address</FieldLabel>
+                    <FieldLabel className="block w-full">
+                      {t("onboarding.housings.field.address")}
+                    </FieldLabel>
                     <Input {...form.register(`housings.${index}.address`)} />
                     <FieldError
                       errors={[
@@ -169,7 +187,7 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                     onClick={() => remove(index)}
                   >
                     <Trash />
-                    Delete
+                    {t("onboarding.housings.action.delete")}
                   </Button>
                 </div>
               </CardContent>
@@ -191,7 +209,7 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
         className="w-full"
         size={"lg"}
       >
-        <Plus /> Add a Housing
+        <Plus /> {t("onboarding.housings.action.add")}
       </Button>
 
       <div className="flex justify-end pt-2">
@@ -202,7 +220,7 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
           form="onboarding-create-housings-form"
           className="w-full"
         >
-          Next
+          {t("onboarding.housings.action.next")}
           {form.formState.isSubmitting && (
             <LoaderCircle className="animate-spin" />
           )}

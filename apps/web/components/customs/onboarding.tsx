@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import type { CreateManyEmployeeSchema } from "@/schemas/employee.schemas"
 import type { CreateManyHousingSchema } from "@/schemas/housing.schemas"
 import { createManyEmployees } from "@/services/employee.services"
@@ -94,15 +95,34 @@ const onboardingSteps: Step[] = [
 ]
 
 export const Onboarding: FunctionComponent<OnboardingProps> = () => {
+  const t = useI18n()
   const router = useRouter()
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<boolean[]>(() =>
     onboardingSteps.map(() => false)
   )
 
+  const localizedSteps: Step[] = [
+    {
+      name: t("onboarding.step.housings.name"),
+      description: t("onboarding.step.housings.description"),
+      icon: House,
+    },
+    {
+      name: t("onboarding.step.employees.name"),
+      description: t("onboarding.step.employees.description"),
+      icon: Users,
+    },
+    {
+      name: t("onboarding.step.completed.name"),
+      description: t("onboarding.step.completed.description"),
+      icon: Check,
+    },
+  ]
+
   const currentStep = useMemo(() => {
-    return onboardingSteps[activeStepIndex] || onboardingSteps[0]
-  }, [activeStepIndex])
+    return localizedSteps[activeStepIndex] || localizedSteps[0]
+  }, [activeStepIndex, localizedSteps])
 
   const completeStep = (stepIndex: number) => {
     setCompletedSteps((prev) => {
@@ -163,15 +183,12 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
     <div className="relative z-10 mx-auto flex h-screen w-full items-center gap-2 p-2">
       <div className="h-full w-full max-w-lg space-y-6 rounded-xl border bg-sidebar">
         <div className="space-y-4 p-6 pb-0">
-          <h1 className="text-2xl font-bold">Welcome to the Onboarding!</h1>
-          <p className="text-muted-foreground">
-            This is a placeholder for the onboarding process. You can customize
-            this component to fit your needs.
-          </p>
+          <h1 className="text-2xl font-bold">{t("onboarding.sidebar.title")}</h1>
+          <p className="text-muted-foreground">{t("onboarding.sidebar.description")}</p>
         </div>
 
         <div className="space-y-2">
-          {onboardingSteps.map((step, index) => (
+          {localizedSteps.map((step, index) => (
             <div
               key={step.name}
               onClick={() => switchStep(index)}
@@ -218,18 +235,16 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
                         <Sparkles className="size-5" />
                       </div>
                       <div className="rounded-full border bg-background/80 px-3 py-1 text-sm font-medium text-foreground/80">
-                        Setup complete
+                        {t("onboarding.completed.badge")}
                       </div>
                     </div>
 
                     <div className="space-y-3">
                       <h2 className="max-w-xl text-3xl font-semibold tracking-tight">
-                        Your workspace is ready for the first cleaning review.
+                        {t("onboarding.completed.title")}
                       </h2>
                       <p className="max-w-lg text-sm leading-6 text-muted-foreground">
-                        Your housings and team setup are in place. From here,
-                        you can start managing reservations and run reviews with
-                        a cleaner workflow.
+                        {t("onboarding.completed.description")}
                       </p>
                     </div>
 
@@ -238,27 +253,33 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
                         <div className="mb-2 flex size-9 items-center justify-center rounded-xl bg-accent">
                           <House className="size-4" />
                         </div>
-                        <p className="text-sm font-medium">Housings added</p>
+                        <p className="text-sm font-medium">
+                          {t("onboarding.completed.card.housings.title")}
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                          Your properties are ready to receive bookings.
+                          {t("onboarding.completed.card.housings.description")}
                         </p>
                       </div>
                       <div className="rounded-2xl border bg-background/80 p-4">
                         <div className="mb-2 flex size-9 items-center justify-center rounded-xl bg-accent">
                           <Users className="size-4" />
                         </div>
-                        <p className="text-sm font-medium">Team prepared</p>
+                        <p className="text-sm font-medium">
+                          {t("onboarding.completed.card.employees.title")}
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                          Employee profiles are available for assignment.
+                          {t("onboarding.completed.card.employees.description")}
                         </p>
                       </div>
                       <div className="rounded-2xl border bg-background/80 p-4">
                         <div className="mb-2 flex size-9 items-center justify-center rounded-xl bg-accent">
                           <Check className="size-4" />
                         </div>
-                        <p className="text-sm font-medium">You are ready</p>
+                        <p className="text-sm font-medium">
+                          {t("onboarding.completed.card.ready.title")}
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                          Jump into the dashboard and keep the momentum going.
+                          {t("onboarding.completed.card.ready.description")}
                         </p>
                       </div>
                     </div>
@@ -269,7 +290,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
                         size="lg"
                         onClick={finishOnboarding}
                       >
-                        Enter workspace
+                        {t("onboarding.completed.action.enter")}
                         <ChevronRight className="size-4" />
                       </Button>
                     </div>

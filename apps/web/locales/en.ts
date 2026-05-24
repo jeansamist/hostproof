@@ -77,6 +77,63 @@ export default {
   "auth.resetPassword.submit": "Reset password",
   "auth.resetPassword.signIn.link": "Back to sign in",
 
+  "onboarding.sidebar.title": "Welcome to onboarding",
+  "onboarding.sidebar.description":
+    "Set up your housings and cleaning team to start managing reviews faster.",
+  "onboarding.step.housings.name": "Create your housings",
+  "onboarding.step.housings.description":
+    "Add all your current housings to the app",
+  "onboarding.step.employees.name": "Add your employee",
+  "onboarding.step.employees.description":
+    "If you have employees for cleaning, add them here",
+  "onboarding.step.completed.name": "Completed",
+  "onboarding.step.completed.description": "Start reviewing your housing",
+
+  "onboarding.housings.field.name": "Name",
+  "onboarding.housings.field.capacity": "Capacity",
+  "onboarding.housings.field.type": "Type",
+  "onboarding.housings.field.address": "Address",
+  "onboarding.housings.type.placeholder": "Select a type",
+  "onboarding.housings.type.apartment": "Apartment",
+  "onboarding.housings.type.house": "House",
+  "onboarding.housings.type.villa": "Villa",
+  "onboarding.housings.action.delete": "Delete",
+  "onboarding.housings.action.add": "Add a housing",
+  "onboarding.housings.action.next": "Next",
+
+  "onboarding.employees.avatar.label": "Avatar",
+  "onboarding.employees.avatar.empty": "Choose an avatar",
+  "onboarding.employees.avatar.hint": "PNG, JPG or WEBP. Optional.",
+  "onboarding.employees.avatar.remove": "Remove",
+  "onboarding.employees.field.fullName": "Full name",
+  "onboarding.employees.field.gender": "Gender",
+  "onboarding.employees.field.email": "Email",
+  "onboarding.employees.field.phone": "Phone",
+  "onboarding.employees.gender.placeholder": "Select a gender",
+  "onboarding.employees.gender.male": "Male",
+  "onboarding.employees.gender.female": "Female",
+  "onboarding.employees.gender.other": "Other",
+  "onboarding.employees.action.delete": "Delete",
+  "onboarding.employees.action.add": "Add an employee",
+  "onboarding.employees.action.skip": "Skip for now",
+  "onboarding.employees.action.next": "Next",
+
+  "onboarding.completed.badge": "Setup complete",
+  "onboarding.completed.title":
+    "Your workspace is ready for the first cleaning review.",
+  "onboarding.completed.description":
+    "Your housings and team setup are in place. From here, you can start managing reservations and run reviews with a cleaner workflow.",
+  "onboarding.completed.card.housings.title": "Housings added",
+  "onboarding.completed.card.housings.description":
+    "Your properties are ready to receive bookings.",
+  "onboarding.completed.card.employees.title": "Team prepared",
+  "onboarding.completed.card.employees.description":
+    "Employee profiles are available for assignment.",
+  "onboarding.completed.card.ready.title": "You are ready",
+  "onboarding.completed.card.ready.description":
+    "Jump into the dashboard and keep the momentum going.",
+  "onboarding.completed.action.enter": "Enter workspace",
+
   unknownError: "Something went wrong",
 } as const
 export type Locale = typeof import("./en").default
