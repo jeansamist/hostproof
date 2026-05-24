@@ -13,6 +13,9 @@ export interface ApiDefinition {
     profile: typeof routes['auth.profile']
     updateProfile: typeof routes['auth.update_profile']
   }
+  uploads: {
+    store: typeof routes['uploads.store']
+  }
   employees: {
     index: typeof routes['employees.index']
     store: typeof routes['employees.store']

@@ -115,6 +115,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['updateProfile']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'uploads.store': {
+    methods: ["POST"]
+    pattern: '/api/auth/uploads'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/upload').uploadValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/upload').uploadValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/uploads_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/uploads_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'employees.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/auth/employees'

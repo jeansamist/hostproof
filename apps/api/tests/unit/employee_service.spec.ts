@@ -7,6 +7,7 @@ type EmployeeRepositoryStub = Partial<{
   paginateByUserId: (userId: number, page: number, perPage: number) => Promise<unknown>
   findByFullNameForUser: (userId: number, fullName: string) => Promise<EmployeeSchema | null>
   create: (data: Record<string, unknown>) => Promise<unknown>
+  createMany: (data: Record<string, unknown>[]) => Promise<unknown>
   findById: (id: number) => Promise<EmployeeSchema>
   update: (employee: EmployeeSchema, data: Record<string, unknown>) => Promise<unknown>
   delete: (employee: EmployeeSchema) => Promise<void>
@@ -39,6 +40,7 @@ function createEmployeeService({
     paginateByUserId: async (_ownerId: number, _page: number, _perPage: number) => [],
     findByFullNameForUser: async () => null,
     create: async (data: Record<string, unknown>) => data,
+    createMany: async (data: Record<string, unknown>[]) => data,
     findById: async (id: number) => makeEmployee({ id, userId }),
     update: async (_employee: EmployeeSchema, data: Record<string, unknown>) => data,
     delete: async () => {},
@@ -206,6 +208,29 @@ test.group('EmployeeService', () => {
         userId: 9,
       },
     ])
+  })
+
+  test('createManyEmployees rejects duplicate full names through the single-create logic', async ({
+    assert,
+  }) => {
+    const { service } = createEmployeeService({
+      userId: 2,
+      repository: {
+        findByFullNameForUser: async (_userId, fullName) =>
+          fullName === 'Duplicate Doe' ? makeEmployee({ userId: 2, fullName }) : null,
+      },
+    })
+
+    await expectHttpError(
+      assert,
+      async () =>
+        service.createManyEmployees([
+          { fullName: 'First Doe', gender: 'female' },
+          { fullName: 'Duplicate Doe', gender: 'male' },
+        ]),
+      400,
+      'Employee with the same fullname already exists for this user.'
+    )
   })
 
   test('updateEmployee rejects access to employee owned by another user', async ({ assert }) => {

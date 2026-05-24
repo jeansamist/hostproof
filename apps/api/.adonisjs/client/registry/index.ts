@@ -60,6 +60,12 @@ const routes = {
     tokens: [{"old":"/api/auth/update-profile","type":0,"val":"api","end":""},{"old":"/api/auth/update-profile","type":0,"val":"auth","end":""},{"old":"/api/auth/update-profile","type":0,"val":"update-profile","end":""}],
     types: placeholder as Registry['auth.update_profile']['types'],
   },
+  'uploads.store': {
+    methods: ["POST"],
+    pattern: '/api/auth/uploads',
+    tokens: [{"old":"/api/auth/uploads","type":0,"val":"api","end":""},{"old":"/api/auth/uploads","type":0,"val":"auth","end":""},{"old":"/api/auth/uploads","type":0,"val":"uploads","end":""}],
+    types: placeholder as Registry['uploads.store']['types'],
+  },
   'employees.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/auth/employees',

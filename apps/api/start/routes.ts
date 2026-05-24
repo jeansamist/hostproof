@@ -30,6 +30,7 @@ router
             router.post('/delete-account', [controllers.Auth, 'deleteAccount'])
             router.get('/profile', [controllers.Auth, 'profile'])
             router.put('/update-profile', [controllers.Auth, 'updateProfile'])
+            router.post('/uploads', [controllers.Uploads, 'store'])
           })
           .use([middleware.auth()])
         router

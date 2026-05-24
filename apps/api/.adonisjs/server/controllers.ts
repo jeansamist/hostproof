@@ -9,4 +9,5 @@ export const controllers = {
   Employees: () => import('#controllers/employees_controller'),
   Housings: () => import('#controllers/housings_controller'),
   Reservations: () => import('#controllers/reservations_controller'),
+  Uploads: () => import('#controllers/uploads_controller'),
 }

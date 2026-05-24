@@ -13,6 +13,7 @@ export type ScannedRoutes = {
     'auth.delete_account': { paramsTuple?: []; params?: {} }
     'auth.profile': { paramsTuple?: []; params?: {} }
     'auth.update_profile': { paramsTuple?: []; params?: {} }
+    'uploads.store': { paramsTuple?: []; params?: {} }
     'employees.index': { paramsTuple?: []; params?: {} }
     'employees.store': { paramsTuple?: []; params?: {} }
     'employees.create_many': { paramsTuple?: []; params?: {} }
@@ -72,6 +73,7 @@ export type ScannedRoutes = {
     'auth.reset_password': { paramsTuple?: []; params?: {} }
     'auth.logout': { paramsTuple?: []; params?: {} }
     'auth.delete_account': { paramsTuple?: []; params?: {} }
+    'uploads.store': { paramsTuple?: []; params?: {} }
     'employees.store': { paramsTuple?: []; params?: {} }
     'employees.create_many': { paramsTuple?: []; params?: {} }
     'housings.store': { paramsTuple?: []; params?: {} }

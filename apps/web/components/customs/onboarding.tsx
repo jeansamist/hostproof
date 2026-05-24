@@ -1,6 +1,8 @@
 "use client"
 
 import type { CreateManyHousingSchema } from "@/schemas/housing.schemas"
+import type { CreateManyEmployeeSchema } from "@/schemas/employee.schemas"
+import { createManyEmployees } from "@/services/employee.services"
 import { createManyHousings } from "@/services/housing.services"
 import { cn } from "@packages/functions"
 import { Button } from "@packages/ui/button"
@@ -9,6 +11,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { FunctionComponent, useMemo, useState } from "react"
 import { OnboardingCreateHousingsForm } from "../forms/onboarding-create-housings.form"
+import { OnboardingCreateEmployeesForm } from "../forms/onboarding-create-employees.form"
 export type OnboardingProps = {
   [key: string]: unknown
 }
@@ -104,6 +107,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
 
   const canNavigateToStep = (stepIndex: number) => {
     if (stepIndex < 0 || stepIndex >= onboardingSteps.length) return false
+    if (stepIndex < activeStepIndex) return false
     for (let i = 0; i < stepIndex; i++) {
       if (!completedSteps[i]) return false
     }
@@ -131,6 +135,15 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
   }
 
   const handleEmployeeNext = () => {
+    completeStep(1)
+    goToNextStep()
+  }
+
+  const handleCreateEmployeesNext = async (data: CreateManyEmployeeSchema) => {
+    const result = await createManyEmployees(data)
+    if (!result?.success) {
+      throw new Error(result?.message ?? "Unable to create employees")
+    }
     completeStep(1)
     goToNextStep()
   }
@@ -184,16 +197,10 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
               {activeStepIndex === 0 ? (
                 <OnboardingCreateHousingsForm handleNext={handleCreateHousingsNext} />
               ) : activeStepIndex === 1 ? (
-                <div className="space-y-4">
-                  <p className="text-muted-foreground">
-                    You can add employees later from your settings.
-                  </p>
-                  <div className="flex justify-end">
-                    <Button type="button" size="lg" onClick={handleEmployeeNext}>
-                      Skip
-                    </Button>
-                  </div>
-                </div>
+                <OnboardingCreateEmployeesForm
+                  handleNext={handleCreateEmployeesNext}
+                  handleSkip={handleEmployeeNext}
+                />
               ) : (
                 <div className="space-y-4">
                   <p className="text-muted-foreground">

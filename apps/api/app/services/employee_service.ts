@@ -69,9 +69,10 @@ export class EmployeeService {
   }
 
   async createManyEmployees(data: CreateEmployeePayload[]) {
-    const employees = this.repository.createMany(
-      data.map((_) => ({ ...this.normalizeCreatePayload(_), userId: this.userId }))
-    )
+    const employees = []
+    for (const item of data) {
+      employees.push(await this.createEmployee(item))
+    }
     return employees
   }
 
