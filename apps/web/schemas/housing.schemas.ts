@@ -19,5 +19,13 @@ export type UpdateHousingSchema = z.infer<typeof updateHousingSchema>
 export const createManyHousingSchema = z.object({
   housings: z.array(createHousingSchema),
 })
-
 export type CreateManyHousingSchema = z.infer<typeof createManyHousingSchema>
+
+export const updateManyHousingSchema = z.object({
+  housings: z.array(
+    updateHousingSchema.extend({
+      id: z.number().positive(),
+    })
+  ),
+})
+export type UpdateManyHousingSchema = z.infer<typeof updateManyHousingSchema>

@@ -1,12 +1,19 @@
-import { type HousingService } from '#services/housing_service'
+import { HousingService } from '#services/housing_service'
 import HousingTransformer from '#transformers/housing_transformer'
 import { ApiResponse } from '#utils/api_response'
-import { createHousingValidator, updateHousingValidator } from '#validators/housing'
+import {
+  createHousingValidator,
+  createManyHousingValidator,
+  updateHousingValidator,
+  updateManyHousingValidator,
+} from '#validators/housing'
 import { paginateValidator } from '#validators/pagination'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
+@inject()
 export default class HousingsController {
-  constructor(private readonly housingService: HousingService) {}
+  constructor(protected readonly housingService: HousingService) {}
 
   /**
    * Display a list of resource
@@ -30,6 +37,13 @@ export default class HousingsController {
     return response.ok(ApiResponse.success(serialized.data, 'Housing created successfully'))
   }
 
+  async createMany({ request, serialize, response }: HttpContext) {
+    const payload = await request.validateUsing(createManyHousingValidator)
+    const housings = await this.housingService.createManyHousings(payload.housings)
+    const serialized = await serialize(HousingTransformer.transform(housings))
+    return response.ok(ApiResponse.success(serialized.data, 'Housings created successfully'))
+  }
+
   /**
    * Show individual record
    */
@@ -47,6 +61,13 @@ export default class HousingsController {
     const housing = await this.housingService.updateHousing(params.id, payload)
     const serialized = await serialize(HousingTransformer.transform(housing))
     return response.ok(ApiResponse.success(serialized.data, 'Housing updated successfully'))
+  }
+
+  async updateMany({ request, serialize, response }: HttpContext) {
+    const payload = await request.validateUsing(updateManyHousingValidator)
+    const housings = await this.housingService.updateManyHousings(payload.housings)
+    const serialized = await serialize(HousingTransformer.transform(housings))
+    return response.ok(ApiResponse.success(serialized.data, 'Housings updated successfully'))
   }
 
   /**

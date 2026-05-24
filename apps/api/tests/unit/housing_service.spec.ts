@@ -170,6 +170,52 @@ test.group('HousingService', () => {
     )
   })
 
+  test('createManyHousings creates each housing for the authenticated user', async ({ assert }) => {
+    const createCalls: Record<string, unknown>[] = []
+    const { service } = createHousingService({
+      userId: 9,
+      repository: {
+        create: async (data) => {
+          createCalls.push(data)
+          return makeHousing(data as Partial<HousingSchema>)
+        },
+      },
+    })
+
+    const result = await service.createManyHousings([
+      {
+        name: 'North Wing',
+        address: '1 North Street',
+        type: 'house',
+        capacity: 4,
+      },
+      {
+        name: 'South Wing',
+        address: '2 South Street',
+        type: 'villa',
+        capacity: 6,
+      },
+    ])
+
+    assert.lengthOf(result, 2)
+    assert.deepEqual(createCalls, [
+      {
+        name: 'North Wing',
+        address: '1 North Street',
+        type: 'house',
+        capacity: 4,
+        userId: 9,
+      },
+      {
+        name: 'South Wing',
+        address: '2 South Street',
+        type: 'villa',
+        capacity: 6,
+        userId: 9,
+      },
+    ])
+  })
+
   test('updateHousing rejects access to housing owned by another user', async ({ assert }) => {
     const { service } = createHousingService({
       userId: 1,
@@ -227,6 +273,38 @@ test.group('HousingService', () => {
 
     assert.strictEqual(result, updatedHousing)
     assert.deepEqual(updateArgs, [housing, { name: 'City Stay', capacity: 10 }])
+  })
+
+  test('updateManyHousings delegates each update item', async ({ assert }) => {
+    const firstHousing = makeHousing({ id: 3, userId: 6, name: 'Alpha' })
+    const secondHousing = makeHousing({ id: 4, userId: 6, name: 'Beta' })
+    const updatedHousings = [
+      makeHousing({ ...firstHousing, capacity: 5 }),
+      makeHousing({ ...secondHousing, address: 'Updated address' }),
+    ]
+    const updateCalls: Array<[HousingSchema, Record<string, unknown>]> = []
+    const { service } = createHousingService({
+      userId: 6,
+      repository: {
+        findById: async (id) => (id === 3 ? firstHousing : secondHousing),
+        findByNameForUser: async () => null,
+        update: async (housing, data) => {
+          updateCalls.push([housing, data])
+          return housing.id === 3 ? updatedHousings[0] : updatedHousings[1]
+        },
+      },
+    })
+
+    const result = await service.updateManyHousings([
+      { id: 3, capacity: 5 },
+      { id: 4, address: 'Updated address' },
+    ])
+
+    assert.deepEqual(result, updatedHousings)
+    assert.deepEqual(updateCalls, [
+      [firstHousing, { capacity: 5 }],
+      [secondHousing, { address: 'Updated address' }],
+    ])
   })
 
   test('deleteHousing loads the housing, checks ownership, and deletes it', async ({ assert }) => {

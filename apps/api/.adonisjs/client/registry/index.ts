@@ -72,6 +72,18 @@ const routes = {
     tokens: [{"old":"/api/auth/employees","type":0,"val":"api","end":""},{"old":"/api/auth/employees","type":0,"val":"auth","end":""},{"old":"/api/auth/employees","type":0,"val":"employees","end":""}],
     types: placeholder as Registry['employees.store']['types'],
   },
+  'employees.create_many': {
+    methods: ["POST"],
+    pattern: '/api/auth/employees/many',
+    tokens: [{"old":"/api/auth/employees/many","type":0,"val":"api","end":""},{"old":"/api/auth/employees/many","type":0,"val":"auth","end":""},{"old":"/api/auth/employees/many","type":0,"val":"employees","end":""},{"old":"/api/auth/employees/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['employees.create_many']['types'],
+  },
+  'employees.update_many': {
+    methods: ["PUT"],
+    pattern: '/api/auth/employees/many',
+    tokens: [{"old":"/api/auth/employees/many","type":0,"val":"api","end":""},{"old":"/api/auth/employees/many","type":0,"val":"auth","end":""},{"old":"/api/auth/employees/many","type":0,"val":"employees","end":""},{"old":"/api/auth/employees/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['employees.update_many']['types'],
+  },
   'employees.show': {
     methods: ["GET","HEAD"],
     pattern: '/api/auth/employees/:id',
@@ -101,6 +113,18 @@ const routes = {
     pattern: '/api/auth/housings',
     tokens: [{"old":"/api/auth/housings","type":0,"val":"api","end":""},{"old":"/api/auth/housings","type":0,"val":"auth","end":""},{"old":"/api/auth/housings","type":0,"val":"housings","end":""}],
     types: placeholder as Registry['housings.store']['types'],
+  },
+  'housings.create_many': {
+    methods: ["POST"],
+    pattern: '/api/auth/housings/many',
+    tokens: [{"old":"/api/auth/housings/many","type":0,"val":"api","end":""},{"old":"/api/auth/housings/many","type":0,"val":"auth","end":""},{"old":"/api/auth/housings/many","type":0,"val":"housings","end":""},{"old":"/api/auth/housings/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['housings.create_many']['types'],
+  },
+  'housings.update_many': {
+    methods: ["PUT"],
+    pattern: '/api/auth/housings/many',
+    tokens: [{"old":"/api/auth/housings/many","type":0,"val":"api","end":""},{"old":"/api/auth/housings/many","type":0,"val":"auth","end":""},{"old":"/api/auth/housings/many","type":0,"val":"housings","end":""},{"old":"/api/auth/housings/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['housings.update_many']['types'],
   },
   'housings.show': {
     methods: ["GET","HEAD"],
@@ -132,6 +156,18 @@ const routes = {
     tokens: [{"old":"/api/auth/reservations","type":0,"val":"api","end":""},{"old":"/api/auth/reservations","type":0,"val":"auth","end":""},{"old":"/api/auth/reservations","type":0,"val":"reservations","end":""}],
     types: placeholder as Registry['reservations.store']['types'],
   },
+  'reservations.create_many': {
+    methods: ["POST"],
+    pattern: '/api/auth/reservations/many',
+    tokens: [{"old":"/api/auth/reservations/many","type":0,"val":"api","end":""},{"old":"/api/auth/reservations/many","type":0,"val":"auth","end":""},{"old":"/api/auth/reservations/many","type":0,"val":"reservations","end":""},{"old":"/api/auth/reservations/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['reservations.create_many']['types'],
+  },
+  'reservations.update_many': {
+    methods: ["PUT"],
+    pattern: '/api/auth/reservations/many',
+    tokens: [{"old":"/api/auth/reservations/many","type":0,"val":"api","end":""},{"old":"/api/auth/reservations/many","type":0,"val":"auth","end":""},{"old":"/api/auth/reservations/many","type":0,"val":"reservations","end":""},{"old":"/api/auth/reservations/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['reservations.update_many']['types'],
+  },
   'reservations.show': {
     methods: ["GET","HEAD"],
     pattern: '/api/auth/reservations/:id',
@@ -161,6 +197,18 @@ const routes = {
     pattern: '/api/auth/cleaning-reviews',
     tokens: [{"old":"/api/auth/cleaning-reviews","type":0,"val":"api","end":""},{"old":"/api/auth/cleaning-reviews","type":0,"val":"auth","end":""},{"old":"/api/auth/cleaning-reviews","type":0,"val":"cleaning-reviews","end":""}],
     types: placeholder as Registry['cleaning_reviews.store']['types'],
+  },
+  'cleaning_reviews.create_many': {
+    methods: ["POST"],
+    pattern: '/api/auth/cleaning-reviews/many',
+    tokens: [{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"api","end":""},{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"auth","end":""},{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"cleaning-reviews","end":""},{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['cleaning_reviews.create_many']['types'],
+  },
+  'cleaning_reviews.update_many': {
+    methods: ["PUT"],
+    pattern: '/api/auth/cleaning-reviews/many',
+    tokens: [{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"api","end":""},{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"auth","end":""},{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"cleaning-reviews","end":""},{"old":"/api/auth/cleaning-reviews/many","type":0,"val":"many","end":""}],
+    types: placeholder as Registry['cleaning_reviews.update_many']['types'],
   },
   'cleaning_reviews.show': {
     methods: ["GET","HEAD"],

@@ -1,10 +1,10 @@
-import { inject } from '@adonisjs/core'
-import { DateTime } from 'luxon'
+import { HousingSchema } from '#database/schema'
 import HousingRepository from '#repositories/housing_repository'
 import ReservationRepository from '#repositories/reservation_repository'
-import { HousingSchema } from '#database/schema'
-import { HttpContext } from '@adonisjs/core/http'
 import { httpError } from '#utils/http_error'
+import { inject } from '@adonisjs/core'
+import { HttpContext } from '@adonisjs/core/http'
+import { DateTime } from 'luxon'
 
 type CreateReservationPayload = {
   moveInDate: DateTime
@@ -17,6 +17,7 @@ type CreateReservationPayload = {
 }
 
 type UpdateReservationPayload = Partial<CreateReservationPayload>
+type UpdateManyReservationPayload = Array<{ id: number } & UpdateReservationPayload>
 
 type ReservationWithHousing = {
   housing: Pick<HousingSchema, 'userId'>
@@ -79,6 +80,14 @@ export class ReservationService {
     return this.repository.create(normalized)
   }
 
+  async createManyReservations(data: CreateReservationPayload[]) {
+    const reservations = []
+    for (const item of data) {
+      reservations.push(await this.createReservation(item))
+    }
+    return reservations
+  }
+
   async updateReservation(id: number, data: UpdateReservationPayload) {
     const reservation = await this.repository.findById(id)
     this.checkOwnership(reservation)
@@ -96,6 +105,16 @@ export class ReservationService {
     }
 
     return this.repository.update(reservation, normalized)
+  }
+
+  async updateManyReservations(data: UpdateManyReservationPayload) {
+    const reservations = []
+    for (const item of data) {
+      const { id, ...payload } = item
+      await this.getReservationById(id)
+      reservations.push(await this.updateReservation(id, payload))
+    }
+    return reservations
   }
 
   async deleteReservation(id: number) {

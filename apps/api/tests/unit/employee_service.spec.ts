@@ -168,6 +168,46 @@ test.group('EmployeeService', () => {
     )
   })
 
+  test('createManyEmployees creates each employee for the authenticated user', async ({
+    assert,
+  }) => {
+    const createCalls: Record<string, unknown>[] = []
+    const { service } = createEmployeeService({
+      userId: 9,
+      repository: {
+        create: async (data) => {
+          createCalls.push(data)
+          return makeEmployee(data as Partial<EmployeeSchema>)
+        },
+      },
+    })
+
+    const result = await service.createManyEmployees([
+      { fullName: 'Alpha Doe', gender: 'female' },
+      { fullName: 'Beta Doe', gender: 'male', tel: '+237123' },
+    ])
+
+    assert.lengthOf(result, 2)
+    assert.deepEqual(createCalls, [
+      {
+        fullName: 'Alpha Doe',
+        gender: 'female',
+        tel: null,
+        email: null,
+        avatar: null,
+        userId: 9,
+      },
+      {
+        fullName: 'Beta Doe',
+        gender: 'male',
+        tel: '+237123',
+        email: null,
+        avatar: null,
+        userId: 9,
+      },
+    ])
+  })
+
   test('updateEmployee rejects access to employee owned by another user', async ({ assert }) => {
     const { service } = createEmployeeService({
       userId: 1,
@@ -237,6 +277,37 @@ test.group('EmployeeService', () => {
     assert.deepEqual(updateArgs, [
       employee,
       { fullName: 'City Staff', tel: null, avatar: 'avatar.png' },
+    ])
+  })
+
+  test('updateManyEmployees delegates each update item', async ({ assert }) => {
+    const firstEmployee = makeEmployee({ id: 3, userId: 6, fullName: 'Alpha' })
+    const secondEmployee = makeEmployee({ id: 4, userId: 6, fullName: 'Beta' })
+    const updateCalls: Array<[EmployeeSchema, Record<string, unknown>]> = []
+    const { service } = createEmployeeService({
+      userId: 6,
+      repository: {
+        findById: async (id) => (id === 3 ? firstEmployee : secondEmployee),
+        findByFullNameForUser: async () => null,
+        update: async (employee, data) => {
+          updateCalls.push([employee, data])
+          return makeEmployee({
+            ...(employee as object),
+            ...(data as object),
+          } as Partial<EmployeeSchema>)
+        },
+      },
+    })
+
+    const result = await service.updateManyEmployees([
+      { id: 3, tel: null },
+      { id: 4, avatar: 'avatar.png' },
+    ])
+
+    assert.lengthOf(result, 2)
+    assert.deepEqual(updateCalls, [
+      [firstEmployee, { tel: null }],
+      [secondEmployee, { avatar: 'avatar.png' }],
     ])
   })
 

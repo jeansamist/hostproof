@@ -12,6 +12,7 @@ type CreateHousingPayload = {
 }
 
 type UpdateHousingPayload = Partial<CreateHousingPayload>
+type UpdateManyHousingPayload = Array<{ id: number } & UpdateHousingPayload>
 
 @inject()
 export class HousingService {
@@ -42,6 +43,11 @@ export class HousingService {
     return this.repository.create({ ...data, userId: this.userId })
   }
 
+  async createManyHousings(data: CreateHousingPayload[]) {
+    const housings = this.repository.createMany(data.map((_) => ({ ..._, userId: this.userId })))
+    return housings
+  }
+
   async updateHousing(id: number, data: UpdateHousingPayload) {
     const housing = await this.repository.findById(id)
     this.checkOwnership(housing)
@@ -52,6 +58,16 @@ export class HousingService {
       }
     }
     return this.repository.update(housing, data)
+  }
+
+  async updateManyHousings(data: UpdateManyHousingPayload) {
+    const housings = []
+    for (const item of data) {
+      const { id, ...payload } = item
+      await this.getHousingById(id)
+      housings.push(await this.updateHousing(id, payload))
+    }
+    return housings
   }
 
   async deleteHousing(id: number) {

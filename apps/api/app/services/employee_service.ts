@@ -1,8 +1,8 @@
-import { inject } from '@adonisjs/core'
-import EmployeeRepository from '#repositories/employee_repository'
 import { EmployeeSchema } from '#database/schema'
-import { HttpContext } from '@adonisjs/core/http'
+import EmployeeRepository from '#repositories/employee_repository'
 import { httpError } from '#utils/http_error'
+import { inject } from '@adonisjs/core'
+import { HttpContext } from '@adonisjs/core/http'
 
 type EmployeeGender = 'male' | 'female' | 'other'
 
@@ -15,6 +15,7 @@ type CreateEmployeePayload = {
 }
 
 type UpdateEmployeePayload = Partial<CreateEmployeePayload>
+type UpdateManyEmployeePayload = Array<{ id: number } & UpdateEmployeePayload>
 
 @inject()
 export class EmployeeService {
@@ -67,6 +68,13 @@ export class EmployeeService {
     })
   }
 
+  async createManyEmployees(data: CreateEmployeePayload[]) {
+    const employees = this.repository.createMany(
+      data.map((_) => ({ ...this.normalizeCreatePayload(_), userId: this.userId }))
+    )
+    return employees
+  }
+
   async updateEmployee(id: number, data: UpdateEmployeePayload) {
     const employee = await this.repository.findById(id)
     this.checkOwnership(employee)
@@ -82,6 +90,16 @@ export class EmployeeService {
     }
 
     return this.repository.update(employee, this.normalizeUpdatePayload(data))
+  }
+
+  async updateManyEmployees(data: UpdateManyEmployeePayload) {
+    const employees = []
+    for (const item of data) {
+      const { id, ...payload } = item
+      await this.getEmployeeById(id)
+      employees.push(await this.updateEmployee(id, payload))
+    }
+    return employees
   }
 
   async deleteEmployee(id: number) {

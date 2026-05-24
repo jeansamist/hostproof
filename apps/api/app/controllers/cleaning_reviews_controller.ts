@@ -3,11 +3,14 @@ import CleaningReviewTransformer from '#transformers/cleaning_review_transformer
 import { ApiResponse } from '#utils/api_response'
 import {
   createCleaningReviewValidator,
+  createManyCleaningReviewValidator,
   updateCleaningReviewValidator,
+  updateManyCleaningReviewValidator,
 } from '#validators/cleaning_review'
 import { paginateValidator } from '#validators/pagination'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-
+@inject()
 export default class CleaningReviewsController {
   constructor(private readonly cleaningReviewService: CleaningReviewService) {}
 
@@ -34,6 +37,17 @@ export default class CleaningReviewsController {
     return response.ok(ApiResponse.success(serialized.data, 'Cleaning review created successfully'))
   }
 
+  async createMany({ request, serialize, response }: HttpContext) {
+    const payload = await request.validateUsing(createManyCleaningReviewValidator)
+    const cleaningReviews = await this.cleaningReviewService.createManyCleaningReviews(
+      payload.cleaningReviews
+    )
+    const serialized = await serialize(CleaningReviewTransformer.transform(cleaningReviews))
+    return response.ok(
+      ApiResponse.success(serialized.data, 'Cleaning reviews created successfully')
+    )
+  }
+
   async show({ request, serialize, response }: HttpContext) {
     const cleaningReview = await this.cleaningReviewService.getCleaningReviewById(
       request.param('id')
@@ -49,6 +63,17 @@ export default class CleaningReviewsController {
     const cleaningReview = await this.cleaningReviewService.updateCleaningReview(params.id, payload)
     const serialized = await serialize(CleaningReviewTransformer.transform(cleaningReview))
     return response.ok(ApiResponse.success(serialized.data, 'Cleaning review updated successfully'))
+  }
+
+  async updateMany({ request, serialize, response }: HttpContext) {
+    const payload = await request.validateUsing(updateManyCleaningReviewValidator)
+    const cleaningReviews = await this.cleaningReviewService.updateManyCleaningReviews(
+      payload.cleaningReviews
+    )
+    const serialized = await serialize(CleaningReviewTransformer.transform(cleaningReviews))
+    return response.ok(
+      ApiResponse.success(serialized.data, 'Cleaning reviews updated successfully')
+    )
   }
 
   async destroy({ params, response }: HttpContext) {

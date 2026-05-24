@@ -16,6 +16,8 @@ export interface ApiDefinition {
   employees: {
     index: typeof routes['employees.index']
     store: typeof routes['employees.store']
+    createMany: typeof routes['employees.create_many']
+    updateMany: typeof routes['employees.update_many']
     show: typeof routes['employees.show']
     update: typeof routes['employees.update']
     destroy: typeof routes['employees.destroy']
@@ -23,6 +25,8 @@ export interface ApiDefinition {
   housings: {
     index: typeof routes['housings.index']
     store: typeof routes['housings.store']
+    createMany: typeof routes['housings.create_many']
+    updateMany: typeof routes['housings.update_many']
     show: typeof routes['housings.show']
     update: typeof routes['housings.update']
     destroy: typeof routes['housings.destroy']
@@ -30,6 +34,8 @@ export interface ApiDefinition {
   reservations: {
     index: typeof routes['reservations.index']
     store: typeof routes['reservations.store']
+    createMany: typeof routes['reservations.create_many']
+    updateMany: typeof routes['reservations.update_many']
     show: typeof routes['reservations.show']
     update: typeof routes['reservations.update']
     destroy: typeof routes['reservations.destroy']
@@ -37,6 +43,8 @@ export interface ApiDefinition {
   cleaningReviews: {
     index: typeof routes['cleaning_reviews.index']
     store: typeof routes['cleaning_reviews.store']
+    createMany: typeof routes['cleaning_reviews.create_many']
+    updateMany: typeof routes['cleaning_reviews.update_many']
     show: typeof routes['cleaning_reviews.show']
     update: typeof routes['cleaning_reviews.update']
     destroy: typeof routes['cleaning_reviews.destroy']

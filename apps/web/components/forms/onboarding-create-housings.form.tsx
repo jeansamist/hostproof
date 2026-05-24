@@ -84,7 +84,9 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
               <CardContent className="space-y-3">
                 <FieldGroup className="flex-row gap-3">
                   <Field
-                    data-invalid={!!form.formState.errors.housings?.[index]?.name}
+                    data-invalid={
+                      !!form.formState.errors.housings?.[index]?.name
+                    }
                     className="w-full flex-1"
                   >
                     <FieldLabel className="block w-full">Name</FieldLabel>
@@ -116,7 +118,9 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                 </FieldGroup>
                 <FieldGroup className="flex-row gap-3">
                   <Field
-                    data-invalid={!!form.formState.errors.housings?.[index]?.type}
+                    data-invalid={
+                      !!form.formState.errors.housings?.[index]?.type
+                    }
                     className="w-full max-w-40"
                   >
                     <FieldLabel className="block w-full">Type</FieldLabel>
@@ -124,7 +128,10 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                       control={form.control}
                       name={`housings.${index}.type`}
                       render={({ field }) => (
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select a type" />
                           </SelectTrigger>
@@ -149,7 +156,9 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
                     <FieldLabel className="block w-full">Address</FieldLabel>
                     <Input {...form.register(`housings.${index}.address`)} />
                     <FieldError
-                      errors={[form.formState.errors.housings?.[index]?.address]}
+                      errors={[
+                        form.formState.errors.housings?.[index]?.address,
+                      ]}
                     />
                   </Field>
                 </FieldGroup>
@@ -191,6 +200,7 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
           size="lg"
           disabled={!form.formState.isValid || form.formState.isSubmitting}
           form="onboarding-create-housings-form"
+          className="w-full"
         >
           Next
           {form.formState.isSubmitting && (

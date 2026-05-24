@@ -62,9 +62,17 @@ export default class CleaningReviewRepository {
   }
 
   async createMany(data: ModelProps<CleaningReviewSchema>[]): Promise<CleaningReview[]> {
+    const cleaningReviews = await this.model.createMany(data)
+    return cleaningReviews
+  }
+
+  async updateMany(
+    data: Array<{ id: number; data: Partial<ModelProps<CleaningReviewSchema>> }>
+  ): Promise<CleaningReview[]> {
     const cleaningReviews: CleaningReview[] = []
     for (const item of data) {
-      cleaningReviews.push(await this.create(item))
+      const cleaningReview = await this.findById(item.id)
+      cleaningReviews.push(await this.update(cleaningReview, item.data))
     }
     return cleaningReviews
   }

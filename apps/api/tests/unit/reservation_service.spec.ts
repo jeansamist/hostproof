@@ -225,6 +225,44 @@ test.group('ReservationService', () => {
     )
   })
 
+  test('createManyReservations creates each reservation for an owned housing', async ({
+    assert,
+  }) => {
+    const createCalls: Record<string, unknown>[] = []
+    const { service } = createReservationService({
+      userId: 5,
+      reservationRepository: {
+        create: async (data) => {
+          createCalls.push(data)
+          return makeReservation(data as Partial<ReservationWithHousing>)
+        },
+      },
+    })
+
+    const result = await service.createManyReservations([
+      {
+        moveInDate: DateTime.fromISO('2026-09-01'),
+        moveOutDate: DateTime.fromISO('2026-09-05'),
+        housingId: 5,
+        numberOfAdult: 2,
+        numberOfChild: 0,
+        numberOfBaby: 0,
+      },
+      {
+        moveInDate: DateTime.fromISO('2026-10-01'),
+        moveOutDate: DateTime.fromISO('2026-10-07'),
+        housingId: 5,
+        numberOfAdult: 1,
+        numberOfChild: 1,
+        numberOfBaby: 1,
+      },
+    ])
+
+    assert.lengthOf(result, 2)
+    assert.equal(createCalls[0].specialInfos as null, null)
+    assert.equal(createCalls[1].specialInfos as null, null)
+  })
+
   test('updateReservation rejects access to reservations owned by another user', async ({
     assert,
   }) => {
@@ -308,6 +346,46 @@ test.group('ReservationService', () => {
     assert.equal(updateArgs?.[1].specialInfos, 'Late arrival')
     assert.isTrue(DateTime.isDateTime(updateArgs?.[1].moveOutDate))
     assert.equal((updateArgs?.[1].moveOutDate as DateTime).toISODate(), '2026-08-18')
+  })
+
+  test('updateManyReservations delegates each update item', async ({ assert }) => {
+    const firstReservation = makeReservation({
+      id: 3,
+      housing: makeHousing({ userId: 6 }),
+      moveInDate: DateTime.fromISO('2026-09-01'),
+      moveOutDate: DateTime.fromISO('2026-09-10'),
+    })
+    const secondReservation = makeReservation({
+      id: 4,
+      housing: makeHousing({ userId: 6 }),
+      moveInDate: DateTime.fromISO('2026-10-01'),
+      moveOutDate: DateTime.fromISO('2026-10-10'),
+    })
+    const updateCalls: Array<[ReservationWithHousing, Record<string, unknown>]> = []
+    const { service } = createReservationService({
+      userId: 6,
+      reservationRepository: {
+        findById: async (id) => (id === 3 ? firstReservation : secondReservation),
+        update: async (reservation, data) => {
+          updateCalls.push([reservation, data])
+          return makeReservation({
+            ...(reservation as object),
+            ...(data as object),
+          } as Partial<ReservationWithHousing>)
+        },
+      },
+    })
+
+    const result = await service.updateManyReservations([
+      { id: 3, specialInfos: 'Late check-in' },
+      { id: 4, numberOfAdult: 5 },
+    ])
+
+    assert.lengthOf(result, 2)
+    assert.deepEqual(updateCalls, [
+      [firstReservation, { specialInfos: 'Late check-in' }],
+      [secondReservation, { numberOfAdult: 5 }],
+    ])
   })
 
   test('deleteReservation loads the reservation, checks ownership, and deletes it', async ({

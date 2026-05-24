@@ -22,6 +22,7 @@ type CreateCleaningReviewPayload = {
 }
 
 type UpdateCleaningReviewPayload = Partial<CreateCleaningReviewPayload>
+type UpdateManyCleaningReviewPayload = Array<{ id: number } & UpdateCleaningReviewPayload>
 
 type CleaningReviewWithRelations = {
   assignedEmployee: Pick<EmployeeSchema, 'userId'>
@@ -105,6 +106,14 @@ export class CleaningReviewService {
     return this.repository.create(this.normalizeCreatePayload(data))
   }
 
+  async createManyCleaningReviews(data: CreateCleaningReviewPayload[]) {
+    const cleaningReviews = []
+    for (const item of data) {
+      cleaningReviews.push(await this.createCleaningReview(item))
+    }
+    return cleaningReviews
+  }
+
   async updateCleaningReview(id: number, data: UpdateCleaningReviewPayload) {
     const cleaningReview = await this.repository.findById(id)
     this.checkOwnership(cleaningReview)
@@ -118,6 +127,15 @@ export class CleaningReviewService {
     }
 
     return this.repository.update(cleaningReview, this.normalizeUpdatePayload(data))
+  }
+
+  async updateManyCleaningReviews(data: UpdateManyCleaningReviewPayload) {
+    const cleaningReviews = []
+    for (const item of data) {
+      const { id, ...payload } = item
+      cleaningReviews.push(await this.updateCleaningReview(id, payload))
+    }
+    return cleaningReviews
   }
 
   async deleteCleaningReview(id: number) {

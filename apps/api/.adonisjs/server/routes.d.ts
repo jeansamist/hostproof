@@ -15,21 +15,29 @@ export type ScannedRoutes = {
     'auth.update_profile': { paramsTuple?: []; params?: {} }
     'employees.index': { paramsTuple?: []; params?: {} }
     'employees.store': { paramsTuple?: []; params?: {} }
+    'employees.create_many': { paramsTuple?: []; params?: {} }
+    'employees.update_many': { paramsTuple?: []; params?: {} }
     'employees.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'employees.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'employees.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'housings.index': { paramsTuple?: []; params?: {} }
     'housings.store': { paramsTuple?: []; params?: {} }
+    'housings.create_many': { paramsTuple?: []; params?: {} }
+    'housings.update_many': { paramsTuple?: []; params?: {} }
     'housings.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'housings.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'housings.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'reservations.index': { paramsTuple?: []; params?: {} }
     'reservations.store': { paramsTuple?: []; params?: {} }
+    'reservations.create_many': { paramsTuple?: []; params?: {} }
+    'reservations.update_many': { paramsTuple?: []; params?: {} }
     'reservations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'reservations.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'reservations.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.index': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.store': { paramsTuple?: []; params?: {} }
+    'cleaning_reviews.create_many': { paramsTuple?: []; params?: {} }
+    'cleaning_reviews.update_many': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -65,15 +73,23 @@ export type ScannedRoutes = {
     'auth.logout': { paramsTuple?: []; params?: {} }
     'auth.delete_account': { paramsTuple?: []; params?: {} }
     'employees.store': { paramsTuple?: []; params?: {} }
+    'employees.create_many': { paramsTuple?: []; params?: {} }
     'housings.store': { paramsTuple?: []; params?: {} }
+    'housings.create_many': { paramsTuple?: []; params?: {} }
     'reservations.store': { paramsTuple?: []; params?: {} }
+    'reservations.create_many': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.store': { paramsTuple?: []; params?: {} }
+    'cleaning_reviews.create_many': { paramsTuple?: []; params?: {} }
   }
   PUT: {
     'auth.update_profile': { paramsTuple?: []; params?: {} }
+    'employees.update_many': { paramsTuple?: []; params?: {} }
     'employees.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'housings.update_many': { paramsTuple?: []; params?: {} }
     'housings.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'reservations.update_many': { paramsTuple?: []; params?: {} }
     'reservations.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cleaning_reviews.update_many': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {

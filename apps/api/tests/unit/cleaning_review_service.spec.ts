@@ -308,6 +308,59 @@ test.group('CleaningReviewService', () => {
     )
   })
 
+  test('createManyCleaningReviews creates each review for owned employee and reservation', async ({
+    assert,
+  }) => {
+    const createCalls: Record<string, unknown>[] = []
+    const { service } = createCleaningReviewService({
+      userId: 5,
+      cleaningReviewRepository: {
+        create: async (data) => {
+          createCalls.push(data)
+          return makeCleaningReview(data as Partial<CleaningReviewWithRelations>)
+        },
+      },
+    })
+
+    const result = await service.createManyCleaningReviews([
+      {
+        assignedEmployeeId: 5,
+        reservationId: 8,
+        status: 'Created',
+      },
+      {
+        assignedEmployeeId: 5,
+        reservationId: 8,
+        status: 'AI Analizing',
+        localVideoPath: 'video.mp4',
+      },
+    ])
+
+    assert.lengthOf(result, 2)
+    assert.deepEqual(createCalls, [
+      {
+        assignedEmployeeId: 5,
+        reservationId: 8,
+        status: 'Created',
+        additionnalInfos: null,
+        aiOutput: null,
+        localVideoPath: null,
+        uri: null,
+        mimeType: null,
+      },
+      {
+        assignedEmployeeId: 5,
+        reservationId: 8,
+        status: 'AI Analizing',
+        additionnalInfos: null,
+        aiOutput: null,
+        localVideoPath: 'video.mp4',
+        uri: null,
+        mimeType: null,
+      },
+    ])
+  })
+
   test('updateCleaningReview rejects access to reviews owned by another user', async ({
     assert,
   }) => {
@@ -382,6 +435,44 @@ test.group('CleaningReviewService', () => {
       aiOutput: { score: 100 },
       localVideoPath: 'video.mp4',
     })
+  })
+
+  test('updateManyCleaningReviews delegates each update item', async ({ assert }) => {
+    const firstReview = makeCleaningReview({
+      id: 3,
+      assignedEmployee: makeEmployee({ userId: 6 }),
+      reservation: makeReservation({ housing: makeHousing({ userId: 6 }) }),
+    })
+    const secondReview = makeCleaningReview({
+      id: 4,
+      assignedEmployee: makeEmployee({ userId: 6 }),
+      reservation: makeReservation({ housing: makeHousing({ userId: 6 }) }),
+    })
+    const updateCalls: Array<[CleaningReviewWithRelations, Record<string, unknown>]> = []
+    const { service } = createCleaningReviewService({
+      userId: 6,
+      cleaningReviewRepository: {
+        findById: async (id) => (id === 3 ? firstReview : secondReview),
+        update: async (review, data) => {
+          updateCalls.push([review, data])
+          return makeCleaningReview({
+            ...(review as object),
+            ...(data as object),
+          } as Partial<CleaningReviewWithRelations>)
+        },
+      },
+    })
+
+    const result = await service.updateManyCleaningReviews([
+      { id: 3, status: 'Done' },
+      { id: 4, uri: 'https://example.com/video.mp4' },
+    ])
+
+    assert.lengthOf(result, 2)
+    assert.deepEqual(updateCalls, [
+      [firstReview, { status: 'Done' }],
+      [secondReview, { uri: 'https://example.com/video.mp4' }],
+    ])
   })
 
   test('deleteCleaningReview loads the cleaning review, checks ownership, and deletes it', async ({

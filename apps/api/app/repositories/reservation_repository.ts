@@ -53,9 +53,17 @@ export default class ReservationRepository {
   }
 
   async createMany(data: ModelProps<ReservationSchema>[]): Promise<Reservation[]> {
+    const reservations = await this.model.createMany(data)
+    return reservations
+  }
+
+  async updateMany(
+    data: Array<{ id: number; data: Partial<ModelProps<ReservationSchema>> }>
+  ): Promise<Reservation[]> {
     const reservations: Reservation[] = []
     for (const item of data) {
-      reservations.push(await this.create(item))
+      const reservation = await this.findById(item.id)
+      reservations.push(await this.update(reservation, item.data))
     }
     return reservations
   }

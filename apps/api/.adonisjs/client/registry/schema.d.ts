@@ -139,6 +139,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'employees.create_many': {
+    methods: ["POST"]
+    pattern: '/api/auth/employees/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/employee').createManyEmployeeValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/employee').createManyEmployeeValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['createMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['createMany']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'employees.update_many': {
+    methods: ["PUT"]
+    pattern: '/api/auth/employees/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/employee').updateManyEmployeeValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/employee').updateManyEmployeeValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['updateMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['updateMany']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'employees.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/auth/employees/:id'
@@ -197,6 +221,30 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/housing').createHousingValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'housings.create_many': {
+    methods: ["POST"]
+    pattern: '/api/auth/housings/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/housing').createManyHousingValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/housing').createManyHousingValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['createMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['createMany']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'housings.update_many': {
+    methods: ["PUT"]
+    pattern: '/api/auth/housings/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/housing').updateManyHousingValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/housing').updateManyHousingValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['updateMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['updateMany']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'housings.show': {
@@ -259,6 +307,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'reservations.create_many': {
+    methods: ["POST"]
+    pattern: '/api/auth/reservations/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/reservation').createManyReservationValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/reservation').createManyReservationValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['createMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['createMany']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'reservations.update_many': {
+    methods: ["PUT"]
+    pattern: '/api/auth/reservations/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/reservation').updateManyReservationValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/reservation').updateManyReservationValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['updateMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['updateMany']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'reservations.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/auth/reservations/:id'
@@ -317,6 +389,30 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/cleaning_review').createCleaningReviewValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cleaning_reviews.create_many': {
+    methods: ["POST"]
+    pattern: '/api/auth/cleaning-reviews/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/cleaning_review').createManyCleaningReviewValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/cleaning_review').createManyCleaningReviewValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['createMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['createMany']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cleaning_reviews.update_many': {
+    methods: ["PUT"]
+    pattern: '/api/auth/cleaning-reviews/many'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/cleaning_review').updateManyCleaningReviewValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/cleaning_review').updateManyCleaningReviewValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['updateMany']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['updateMany']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'cleaning_reviews.show': {

@@ -49,9 +49,17 @@ export default class HousingRepository {
   }
 
   async createMany(data: ModelProps<HousingSchema>[]): Promise<Housing[]> {
+    const housings = await this.model.createMany(data)
+    return housings
+  }
+
+  async updateMany(
+    data: Array<{ id: number; data: Partial<ModelProps<HousingSchema>> }>
+  ): Promise<Housing[]> {
     const housings: Housing[] = []
     for (const item of data) {
-      housings.push(await this.create(item))
+      const housing = await this.findById(item.id)
+      housings.push(await this.update(housing, item.data))
     }
     return housings
   }

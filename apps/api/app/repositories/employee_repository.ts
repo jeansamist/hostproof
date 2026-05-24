@@ -54,9 +54,17 @@ export default class EmployeeRepository {
   }
 
   async createMany(data: ModelProps<EmployeeSchema>[]): Promise<Employee[]> {
+    const employees = await this.model.createMany(data)
+    return employees
+  }
+
+  async updateMany(
+    data: Array<{ id: number; data: Partial<ModelProps<EmployeeSchema>> }>
+  ): Promise<Employee[]> {
     const employees: Employee[] = []
     for (const item of data) {
-      employees.push(await this.create(item))
+      const employee = await this.findById(item.id)
+      employees.push(await this.update(employee, item.data))
     }
     return employees
   }
