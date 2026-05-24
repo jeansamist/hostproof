@@ -115,4 +115,244 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['updateProfile']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'employees.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/employees'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/pagination').paginateValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'employees.store': {
+    methods: ["POST"]
+    pattern: '/api/auth/employees'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/employee').createEmployeeValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/employee').createEmployeeValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'employees.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/employees/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['show']>>>
+    }
+  }
+  'employees.update': {
+    methods: ["PUT"]
+    pattern: '/api/auth/employees/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/employee').updateEmployeeValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/employee').updateEmployeeValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'employees.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/auth/employees/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/employees_controller').default['destroy']>>>
+    }
+  }
+  'housings.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/housings'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/pagination').paginateValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'housings.store': {
+    methods: ["POST"]
+    pattern: '/api/auth/housings'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/housing').createHousingValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/housing').createHousingValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'housings.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/housings/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['show']>>>
+    }
+  }
+  'housings.update': {
+    methods: ["PUT"]
+    pattern: '/api/auth/housings/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/housing').updateHousingValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/housing').updateHousingValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'housings.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/auth/housings/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/housings_controller').default['destroy']>>>
+    }
+  }
+  'reservations.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/reservations'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/pagination').paginateValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'reservations.store': {
+    methods: ["POST"]
+    pattern: '/api/auth/reservations'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/reservation').createReservationValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/reservation').createReservationValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'reservations.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/reservations/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['show']>>>
+    }
+  }
+  'reservations.update': {
+    methods: ["PUT"]
+    pattern: '/api/auth/reservations/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/reservation').updateReservationValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/reservation').updateReservationValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'reservations.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/auth/reservations/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/reservations_controller').default['destroy']>>>
+    }
+  }
+  'cleaning_reviews.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/cleaning-reviews'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/pagination').paginateValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cleaning_reviews.store': {
+    methods: ["POST"]
+    pattern: '/api/auth/cleaning-reviews'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/cleaning_review').createCleaningReviewValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/cleaning_review').createCleaningReviewValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cleaning_reviews.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/cleaning-reviews/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['show']>>>
+    }
+  }
+  'cleaning_reviews.update': {
+    methods: ["PUT"]
+    pattern: '/api/auth/cleaning-reviews/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/cleaning_review').updateCleaningReviewValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/cleaning_review').updateCleaningReviewValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'cleaning_reviews.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/auth/cleaning-reviews/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['destroy']>>>
+    }
+  }
 }

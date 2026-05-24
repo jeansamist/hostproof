@@ -13,4 +13,32 @@ export interface ApiDefinition {
     profile: typeof routes['auth.profile']
     updateProfile: typeof routes['auth.update_profile']
   }
+  employees: {
+    index: typeof routes['employees.index']
+    store: typeof routes['employees.store']
+    show: typeof routes['employees.show']
+    update: typeof routes['employees.update']
+    destroy: typeof routes['employees.destroy']
+  }
+  housings: {
+    index: typeof routes['housings.index']
+    store: typeof routes['housings.store']
+    show: typeof routes['housings.show']
+    update: typeof routes['housings.update']
+    destroy: typeof routes['housings.destroy']
+  }
+  reservations: {
+    index: typeof routes['reservations.index']
+    store: typeof routes['reservations.store']
+    show: typeof routes['reservations.show']
+    update: typeof routes['reservations.update']
+    destroy: typeof routes['reservations.destroy']
+  }
+  cleaningReviews: {
+    index: typeof routes['cleaning_reviews.index']
+    store: typeof routes['cleaning_reviews.store']
+    show: typeof routes['cleaning_reviews.show']
+    update: typeof routes['cleaning_reviews.update']
+    destroy: typeof routes['cleaning_reviews.destroy']
+  }
 }
