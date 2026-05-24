@@ -2,11 +2,30 @@ import CleaningReview from '#models/cleaning_review'
 import { ApiResponse } from '#utils/api_response'
 import app from '@adonisjs/core/services/app'
 import type { HttpContext } from '@adonisjs/core/http'
-import { mkdir } from 'node:fs/promises'
+import { mkdir, unlink } from 'node:fs/promises'
 import { randomUUID } from 'node:crypto'
+import { spawn } from 'node:child_process'
 import { appUrl } from '#config/app'
 
 const VIDEO_EXTNAMES = ['mp4', 'webm', 'mov', 'avi', 'mkv']
+
+function convertToMp4(inputPath: string, outputPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const ffmpeg = spawn('ffmpeg', [
+      '-i', inputPath,
+      '-c:v', 'libx264',
+      '-c:a', 'aac',
+      '-movflags', '+faststart',
+      '-y',
+      outputPath,
+    ])
+    ffmpeg.on('close', (code) => {
+      if (code === 0) resolve()
+      else reject(new Error(`ffmpeg exited with code ${code}`))
+    })
+    ffmpeg.on('error', reject)
+  })
+}
 
 export default class PublicReviewsController {
   async show({ params, response }: HttpContext) {
@@ -52,15 +71,31 @@ export default class PublicReviewsController {
     const targetDirectory = app.makePath('public', 'uploads', 'videos', 'cleaning-reviews')
     await mkdir(targetDirectory, { recursive: true })
 
-    const fileName = `${randomUUID()}.${file.extname}`
-    await file.move(targetDirectory, { name: fileName })
+    const id = randomUUID()
+    const tempName = `${id}_tmp.${file.extname}`
+    const mp4Name = `${id}.mp4`
 
-    const relativePath = `/uploads/videos/cleaning-reviews/${fileName}`
+    await file.move(targetDirectory, { name: tempName })
+
+    const tempPath = `${targetDirectory}/${tempName}`
+    const mp4Path = `${targetDirectory}/${mp4Name}`
+
+    try {
+      await convertToMp4(tempPath, mp4Path)
+    } catch {
+      return response.internalServerError(
+        ApiResponse.failure(null, 'Failed to process the video. Please try again.')
+      )
+    } finally {
+      unlink(tempPath).catch(() => {})
+    }
+
+    const relativePath = `/uploads/videos/cleaning-reviews/${mp4Name}`
     const normalizedAppUrl = appUrl.endsWith('/') ? appUrl : `${appUrl}/`
     const fileUri = new URL(relativePath.slice(1), normalizedAppUrl).toString()
 
     review.localVideoPath = relativePath
-    review.mimeType = `${file.type}/${file.subtype ?? file.extname}`
+    review.mimeType = 'video/mp4'
     review.status = 'AI Analizing'
     await review.save()
 

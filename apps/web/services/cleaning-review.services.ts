@@ -86,6 +86,18 @@ export const getCleaningReviews = async (
   return { data: json.data ?? [], meta: json.meta }
 }
 
+export const getCleaningReviewById = async (
+  id: number
+): Promise<CleaningReview | null> => {
+  const res = await fetch(`${apiBase()}/api/auth/cleaning-reviews/${id}`, {
+    headers: await authHeaders(),
+    cache: "no-store",
+  })
+  if (!res.ok) return null
+  const json = await res.json()
+  return (json.data as CleaningReview) ?? null
+}
+
 export const getCleaningReviewsByReservation = async (
   reservationId: number
 ): Promise<CleaningReview[]> => {

@@ -6,10 +6,10 @@
 export const controllers = {
   Auth: () => import('#controllers/auth_controller'),
   CleaningReviews: () => import('#controllers/cleaning_reviews_controller'),
+  Dashboard: () => import('#controllers/dashboard_controller'),
   Employees: () => import('#controllers/employees_controller'),
   Housings: () => import('#controllers/housings_controller'),
+  PublicReviews: () => import('#controllers/public_reviews_controller'),
   Reservations: () => import('#controllers/reservations_controller'),
   Uploads: () => import('#controllers/uploads_controller'),
-  Dashboard: () => import('#controllers/dashboard_controller'),
-  PublicReviews: () => import('#controllers/public_reviews_controller'),
 }

@@ -66,6 +66,13 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     }
   }, [videoUrl])
 
+  useEffect(() => {
+    if (mode === "recording" && liveRef.current && streamRef.current) {
+      liveRef.current.srcObject = streamRef.current
+      liveRef.current.play().catch(() => {})
+    }
+  }, [mode])
+
   const startRecording = useCallback(async () => {
     setErrorMsg(undefined)
     try {
@@ -74,10 +81,6 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
         audio: hasMic,
       })
       streamRef.current = stream
-      if (liveRef.current) {
-        liveRef.current.srcObject = stream
-        liveRef.current.play()
-      }
 
       const recorder = new MediaRecorder(stream, {
         mimeType: MediaRecorder.isTypeSupported("video/webm;codecs=vp9")

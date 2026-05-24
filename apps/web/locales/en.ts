@@ -212,6 +212,23 @@ export default {
   "cleaningReview.delete.cancel": "Cancel",
   "cleaningReview.delete.confirm": "Delete",
 
+  "cleaningReview.action.open": "Open",
+  "cleaningReview.action.copyLink": "Copy public link",
+  "cleaningReview.action.linkCopied": "Link copied!",
+  "cleaningReview.action.watchVideo": "Watch video",
+  "cleaningReview.action.edit": "Edit",
+  "cleaningReview.action.delete": "Delete",
+
+  "cleaningReview.detail.title": "Cleaning Review",
+  "cleaningReview.detail.back": "Back to reviews",
+  "cleaningReview.detail.housing": "Housing",
+  "cleaningReview.detail.employee": "Employee",
+  "cleaningReview.detail.notes": "Notes",
+  "cleaningReview.detail.publicLink": "Public review link",
+  "cleaningReview.detail.video": "Uploaded video",
+  "cleaningReview.detail.noVideo": "No video uploaded yet.",
+  "cleaningReview.detail.edit": "Edit review",
+
   "cleaningReview.stepper.step.reservation": "Reservation",
   "cleaningReview.stepper.step.employee": "Employee",
   "cleaningReview.stepper.step.details": "Details",
