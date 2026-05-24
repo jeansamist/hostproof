@@ -15,6 +15,7 @@ import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdir, unlink } from 'node:fs/promises'
 import CronManager from '../managers/crons_manager.ts'
+import { AiService } from './ai_service.ts'
 
 type CleaningReviewStatus = 'Created' | 'AI Analizing' | 'Analized' | 'Done' | 'Failed'
 
@@ -49,7 +50,8 @@ export class CleaningReviewService {
     private readonly reservationRepository: ReservationRepository,
     private readonly ctx: HttpContext,
     protected readonly cronManager: CronManager,
-    protected readonly logger: Logger
+    protected readonly logger: Logger,
+    protected readonly aiService: AiService
   ) {}
 
   private get userId() {
@@ -253,6 +255,19 @@ export class CleaningReviewService {
     return { relativePath, fileUri }
   }
 
+  async analyzeVideo(cleaningReviewId: number) {
+    const cleaningReview = await this.repository.findById(cleaningReviewId)
+    if (!cleaningReview.localVideoPath) {
+      throw new Error('No video to analyze')
+    }
+    this.logger.info('Analyzing video content using cached file reference...')
+    const response = await this.aiService.analyzeVideo(cleaningReview.localVideoPath)
+    return this.repository.update(cleaningReview, {
+      aiOutput: response,
+      status: 'Analized',
+    })
+  }
+
   async submitVideo(data: { uri: string; videoPath: string; file: MultipartFile | null }) {
     const cleaningReview = await this.repository.findByUri(data.uri)
     if (cleaningReview.status === 'Done' || cleaningReview.status === 'Analized') {
@@ -271,10 +286,29 @@ export class CleaningReviewService {
     }
 
     const { relativePath: videoPath } = uploadResult
-    return this.repository.update(cleaningReview, {
-      localVideoPath: videoPath,
-      mimeType: 'video/mp4',
-      status: 'AI Analizing',
-    })
+    return this.repository
+      .update(cleaningReview, {
+        localVideoPath: videoPath,
+        mimeType: 'video/mp4',
+        status: 'AI Analizing',
+      })
+      .then((updatedReview) => {
+        this.cronManager.addQueueJob(
+          'ai-analysis',
+          async () => {
+            try {
+              await this.analyzeVideo(updatedReview.id)
+            } catch (error) {
+              this.logger.error('Failed to analyze video for cleaning review', {
+                error,
+                cleaningReviewId: updatedReview.id,
+              })
+              await this.repository.update(updatedReview, { status: 'Failed' })
+            }
+          },
+          { retries: 2, retryDelayMs: 1000 }
+        )
+        return updatedReview
+      })
   }
 }
