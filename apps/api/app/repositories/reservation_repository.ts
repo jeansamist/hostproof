@@ -75,10 +75,16 @@ export default class ReservationRepository {
       .preload('housing')
   }
 
-  async paginateByUserId(userId: number, page: number, perPage: number) {
+  async paginateByUserId(userId: number, page: number, perPage: number, search?: string) {
     return this.model
       .query()
-      .whereHas('housing', (query) => query.where('user_id', userId))
+      .whereHas('housing', (query) => {
+        query.where('user_id', userId)
+        if (search) {
+          query.where('name', 'LIKE', `%${search}%`)
+        }
+      })
+      .preload('housing')
       .paginate(page, perPage)
   }
 }

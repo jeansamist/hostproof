@@ -2,9 +2,12 @@ import { inject } from '@adonisjs/core'
 import CleaningReviewRepository from '#repositories/cleaning_review_repository'
 import EmployeeRepository from '#repositories/employee_repository'
 import ReservationRepository from '#repositories/reservation_repository'
+import CleaningReviewInvitationNotification from '#mails/cleaning_review_invitation_notification'
+import { randomUUID } from 'node:crypto'
 import { type EmployeeSchema, type HousingSchema } from '#database/schema'
 import { HttpContext } from '@adonisjs/core/http'
 import { httpError } from '#utils/http_error'
+import mail from '@adonisjs/mail/services/main'
 
 type CleaningReviewStatus = 'Created' | 'AI Analizing' | 'Analized' | 'Done' | 'Failed'
 
@@ -96,14 +99,21 @@ export class CleaningReviewService {
     }
   }
 
-  async getPaginatedUserCleaningReviews(page: number, perPage: number) {
-    return this.repository.paginateByUserId(this.userId, page, perPage)
+  async getPaginatedUserCleaningReviews(page: number, perPage: number, reservationId?: number) {
+    return this.repository.paginateByUserId(this.userId, page, perPage, reservationId)
   }
 
   async createCleaningReview(data: CreateCleaningReviewPayload) {
     await this.getOwnedEmployee(data.assignedEmployeeId)
     await this.getOwnedReservation(data.reservationId)
-    return this.repository.create(this.normalizeCreatePayload(data))
+    return this.repository.create({
+      ...this.normalizeCreatePayload(data),
+      uri: data.uri ?? randomUUID(),
+    })
+  }
+
+  async getCleaningReviewByUri(uri: string) {
+    return this.repository.findByUri(uri)
   }
 
   async createManyCleaningReviews(data: CreateCleaningReviewPayload[]) {
@@ -152,5 +162,29 @@ export class CleaningReviewService {
     const cleaningReview = await this.repository.findById(id)
     this.checkOwnership(cleaningReview)
     return cleaningReview
+  }
+
+  async sendInvitationEmail(id: number, publicLink: string) {
+    const cleaningReview = await this.repository.findById(id)
+    this.checkOwnership(cleaningReview)
+
+    if (!cleaningReview.assignedEmployee?.email) {
+      throw httpError(422, 'The assigned employee has no email address')
+    }
+
+    let housingName: string | undefined
+    try {
+      housingName = cleaningReview.reservation?.housing?.name ?? undefined
+    } catch {}
+
+    const notification = new CleaningReviewInvitationNotification(
+      cleaningReview.assignedEmployee.fullName,
+      cleaningReview.assignedEmployee.email,
+      publicLink,
+      housingName,
+      cleaningReview.additionnalInfos
+    )
+
+    await mail.send(notification)
   }
 }

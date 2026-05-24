@@ -7,6 +7,30 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
+  'public_reviews.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/public/reviews/:uri'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { uri: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['show']>>>
+    }
+  }
+  'public_reviews.submit': {
+    methods: ["POST"]
+    pattern: '/api/public/reviews/:uri/submit'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { uri: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['submit']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['submit']>>>
+    }
+  }
   'auth.sign_up': {
     methods: ["POST"]
     pattern: '/api/auth/sign-up'
@@ -461,6 +485,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['destroy']>>>
+    }
+  }
+  'cleaning_reviews.send_invitation': {
+    methods: ["POST"]
+    pattern: '/api/auth/cleaning-reviews/:id/send-invitation'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['sendInvitation']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['sendInvitation']>>>
     }
   }
   'dashboard.stats': {

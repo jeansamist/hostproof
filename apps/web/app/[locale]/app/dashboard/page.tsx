@@ -1,44 +1,43 @@
+import { getI18n } from "@/lib/i18n/server"
 import { getDashboardStats } from "@/services/dashboard.services"
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@packages/ui/card"
 import { CalendarClock, CheckCircle2, House, Users } from "lucide-react"
 
 export default async function DashboardPage() {
-  const stats = await getDashboardStats()
+  const [t, stats] = await Promise.all([getI18n(), getDashboardStats()])
 
   const metrics = [
     {
-      title: "Total Housings",
+      title: t("dashboard.metric.totalHousings"),
       value: stats?.totalHousings ?? 0,
       icon: House,
-      description: "Properties in your workspace",
+      description: t("dashboard.metric.totalHousings.description"),
     },
     {
-      title: "Total Employees",
+      title: t("dashboard.metric.totalEmployees"),
       value: stats?.totalEmployees ?? 0,
       icon: Users,
-      description: "Cleaning team members",
+      description: t("dashboard.metric.totalEmployees.description"),
     },
     {
-      title: "Upcoming Reservations",
+      title: t("dashboard.metric.upcomingReservations"),
       value: stats?.upcomingReservations ?? 0,
       icon: CalendarClock,
-      description: "Check-ins from today onwards",
+      description: t("dashboard.metric.upcomingReservations.description"),
     },
     {
-      title: "Succeeded Reviews",
+      title: t("dashboard.metric.succeededReviews"),
       value: stats?.succeededCleaningReviews ?? 0,
       icon: CheckCircle2,
-      description: "Cleaning reviews marked Done",
+      description: t("dashboard.metric.succeededReviews.description"),
     },
   ]
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Overview of your workspace activity
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("dashboard.title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("dashboard.description")}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

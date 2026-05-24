@@ -61,6 +61,10 @@ export default class CleaningReviewRepository {
       .firstOrFail()
   }
 
+  async findByUri(uri: string): Promise<CleaningReview> {
+    return this.model.query().where('uri', uri).firstOrFail()
+  }
+
   async createMany(data: ModelProps<CleaningReviewSchema>[]): Promise<CleaningReview[]> {
     const cleaningReviews = await this.model.createMany(data)
     return cleaningReviews
@@ -87,12 +91,17 @@ export default class CleaningReviewRepository {
       .preload('reservation')
   }
 
-  async paginateByUserId(userId: number, page: number, perPage: number) {
-    return this.model
+  async paginateByUserId(userId: number, page: number, perPage: number, reservationId?: number) {
+    const query = this.model
       .query()
-      .whereHas('reservation', (query) => {
-        query.whereHas('housing', (housingQuery) => housingQuery.where('user_id', userId))
+      .whereHas('reservation', (q) => {
+        q.whereHas('housing', (h) => h.where('user_id', userId))
       })
-      .paginate(page, perPage)
+      .preload('assignedEmployee')
+      .preload('reservation', (q) => q.preload('housing'))
+    if (reservationId) {
+      query.where('reservation_id', reservationId)
+    }
+    return query.paginate(page, perPage)
   }
 }

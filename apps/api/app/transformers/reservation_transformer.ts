@@ -3,7 +3,7 @@ import Reservation from '#models/reservation'
 
 export default class ReservationTransformer extends BaseTransformer<Reservation> {
   toObject() {
-    return this.pick(this.resource, [
+    const base = this.pick(this.resource, [
       'id',
       'moveInDate',
       'moveOutDate',
@@ -15,5 +15,15 @@ export default class ReservationTransformer extends BaseTransformer<Reservation>
       'createdAt',
       'updatedAt',
     ])
+
+    let housing: { id: number; name: string; type: string; address: string } | undefined
+    try {
+      const h = this.resource.housing as any
+      if (h) housing = { id: h.id, name: h.name, type: h.type, address: h.address }
+    } catch {
+      housing = undefined
+    }
+
+    return { ...base, housing }
   }
 }

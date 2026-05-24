@@ -6,6 +6,18 @@ import type { ApiDefinition } from './tree.d.ts'
 const placeholder: any = {}
 
 const routes = {
+  'public_reviews.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/public/reviews/:uri',
+    tokens: [{"old":"/api/public/reviews/:uri","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri","type":1,"val":"uri","end":""}],
+    types: placeholder as Registry['public_reviews.show']['types'],
+  },
+  'public_reviews.submit': {
+    methods: ["POST"],
+    pattern: '/api/public/reviews/:uri/submit',
+    tokens: [{"old":"/api/public/reviews/:uri/submit","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/submit","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"submit","end":""}],
+    types: placeholder as Registry['public_reviews.submit']['types'],
+  },
   'auth.sign_up': {
     methods: ["POST"],
     pattern: '/api/auth/sign-up',
@@ -233,6 +245,12 @@ const routes = {
     pattern: '/api/auth/cleaning-reviews/:id',
     tokens: [{"old":"/api/auth/cleaning-reviews/:id","type":0,"val":"api","end":""},{"old":"/api/auth/cleaning-reviews/:id","type":0,"val":"auth","end":""},{"old":"/api/auth/cleaning-reviews/:id","type":0,"val":"cleaning-reviews","end":""},{"old":"/api/auth/cleaning-reviews/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['cleaning_reviews.destroy']['types'],
+  },
+  'cleaning_reviews.send_invitation': {
+    methods: ["POST"],
+    pattern: '/api/auth/cleaning-reviews/:id/send-invitation',
+    tokens: [{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"api","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"auth","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"cleaning-reviews","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":1,"val":"id","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"send-invitation","end":""}],
+    types: placeholder as Registry['cleaning_reviews.send_invitation']['types'],
   },
   'dashboard.stats': {
     methods: ["GET","HEAD"],

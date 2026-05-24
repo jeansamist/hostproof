@@ -42,6 +42,7 @@ export type ScannedRoutes = {
     'cleaning_reviews.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'cleaning_reviews.send_invitation': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'auth.profile': { paramsTuple?: []; params?: {} }
@@ -82,6 +83,7 @@ export type ScannedRoutes = {
     'reservations.create_many': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.store': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.create_many': { paramsTuple?: []; params?: {} }
+    'cleaning_reviews.send_invitation': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PUT: {
     'auth.update_profile': { paramsTuple?: []; params?: {} }

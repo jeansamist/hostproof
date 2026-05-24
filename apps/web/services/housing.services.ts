@@ -15,6 +15,20 @@ export type ApiResponse<T = unknown> = {
   meta?: unknown
 }
 
+export type Housing = {
+  id: number
+  name: string
+  address: string
+  type: "apartment" | "house" | "villa"
+  capacity: number
+}
+
+export const getHousings = async (): Promise<Housing[]> => {
+  const [data, error] = await tuyau.api.housings.index({ query: { perPage: 200 } }).safe()
+  if (error || !data?.success) return []
+  return (data.data as Housing[]) ?? []
+}
+
 export const createHousing = async (
   payload: CreateHousingSchema
 ): Promise<ApiResponse> => {

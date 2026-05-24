@@ -1,6 +1,7 @@
 "use client"
 
 import { useAuth } from "@/contexts/auth.context"
+import { useI18n } from "@/lib/i18n/client"
 import { Avatar, AvatarFallback, AvatarImage } from "@packages/ui/avatar"
 import { Button } from "@packages/ui/button"
 import {
@@ -11,24 +12,23 @@ import {
   DropdownMenuTrigger,
 } from "@packages/ui/dropdown-menu"
 import { cn } from "@packages/functions"
-import { LayoutDashboard, LogOut } from "lucide-react"
+import { CalendarClock, LayoutDashboard, LogOut, SparklesIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { FunctionComponent } from "react"
 
-type NavItem = {
-  label: string
-  href: string
-  icon: typeof LayoutDashboard
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", href: "/en/app/dashboard", icon: LayoutDashboard },
-]
-
 export const TopBar: FunctionComponent = () => {
   const { user } = useAuth()
   const pathname = usePathname()
+  const t = useI18n()
+
+  const locale = pathname.split("/")[1] ?? "en"
+
+  const navItems = [
+    { label: t("nav.dashboard"), href: `/${locale}/app/dashboard`, icon: LayoutDashboard },
+    { label: t("nav.reservations"), href: `/${locale}/app/reservation`, icon: CalendarClock },
+    { label: t("nav.reviews"), href: `/${locale}/app/cleaning-review`, icon: SparklesIcon },
+  ]
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
@@ -38,7 +38,7 @@ export const TopBar: FunctionComponent = () => {
         )}
       >
         <Link
-          href="/en/app/dashboard"
+          href={`/${locale}/app/dashboard`}
           className="mr-2 flex shrink-0 items-center gap-2 font-semibold tracking-tight"
         >
           <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">
@@ -50,7 +50,7 @@ export const TopBar: FunctionComponent = () => {
         <div className="h-4 w-px bg-border" />
 
         <nav className="flex flex-1 items-center gap-0.5">
-          {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
+          {navItems.map(({ label, href, icon: Icon }) => {
             const active = pathname === href || pathname.startsWith(href)
             return (
               <Link
@@ -88,7 +88,7 @@ export const TopBar: FunctionComponent = () => {
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/en/auth/sign-in" className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive">
+              <Link href={`/${locale}/auth/sign-in`} className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive">
                 <LogOut className="size-4" />
                 Sign out
               </Link>

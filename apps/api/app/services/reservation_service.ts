@@ -69,8 +69,8 @@ export class ReservationService {
     }
   }
 
-  async getPaginatedUserReservations(page: number, perPage: number) {
-    return this.repository.paginateByUserId(this.userId, page, perPage)
+  async getPaginatedUserReservations(page: number, perPage: number, search?: string) {
+    return this.repository.paginateByUserId(this.userId, page, perPage, search)
   }
 
   async createReservation(data: CreateReservationPayload) {

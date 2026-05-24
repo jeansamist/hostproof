@@ -20,7 +20,8 @@ export default class ReservationsController {
    */
   async index({ request, serialize, response }: HttpContext) {
     const { page = 1, perPage = 15 } = await request.validateUsing(paginateValidator)
-    const paginator = await this.reservationService.getPaginatedUserReservations(page, perPage)
+    const search = request.input('search', undefined) as string | undefined
+    const paginator = await this.reservationService.getPaginatedUserReservations(page, perPage, search)
     const serialized = await serialize(ReservationTransformer.transform(paginator.all()))
     return response.ok(
       ApiResponse.success(

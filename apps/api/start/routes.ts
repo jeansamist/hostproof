@@ -19,6 +19,12 @@ router
   .group(() => {
     router
       .group(() => {
+        router.get('/reviews/:uri', [() => import('#controllers/public_reviews_controller'), 'show'])
+        router.post('/reviews/:uri/submit', [() => import('#controllers/public_reviews_controller'), 'submit'])
+      })
+      .prefix('/public')
+    router
+      .group(() => {
         router.post('/sign-up', [controllers.Auth, 'signUp'])
         router.post('/verify-email', [controllers.Auth, 'verifyEmail'])
         router.post('/sign-in', [controllers.Auth, 'signIn'])
@@ -75,6 +81,10 @@ router
             router.get('/cleaning-reviews/:id', [controllers.CleaningReviews, 'show'])
             router.put('/cleaning-reviews/:id', [controllers.CleaningReviews, 'update'])
             router.delete('/cleaning-reviews/:id', [controllers.CleaningReviews, 'destroy'])
+            router.post('/cleaning-reviews/:id/send-invitation', [
+              controllers.CleaningReviews,
+              'sendInvitation',
+            ])
           })
           .use([middleware.auth()])
         router

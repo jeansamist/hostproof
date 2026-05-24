@@ -2,6 +2,10 @@
 import type { routes } from './index.ts'
 
 export interface ApiDefinition {
+  publicReviews: {
+    show: typeof routes['public_reviews.show']
+    submit: typeof routes['public_reviews.submit']
+  }
   auth: {
     signUp: typeof routes['auth.sign_up']
     verifyEmail: typeof routes['auth.verify_email']
@@ -51,6 +55,7 @@ export interface ApiDefinition {
     show: typeof routes['cleaning_reviews.show']
     update: typeof routes['cleaning_reviews.update']
     destroy: typeof routes['cleaning_reviews.destroy']
+    sendInvitation: typeof routes['cleaning_reviews.send_invitation']
   }
   dashboard: {
     stats: typeof routes['dashboard.stats']

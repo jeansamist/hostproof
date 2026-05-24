@@ -1,4 +1,4 @@
-import { type CleaningReviewService } from '#services/cleaning_review_service'
+import { CleaningReviewService } from '#services/cleaning_review_service'
 import CleaningReviewTransformer from '#transformers/cleaning_review_transformer'
 import { ApiResponse } from '#utils/api_response'
 import {
@@ -16,9 +16,11 @@ export default class CleaningReviewsController {
 
   async index({ request, serialize, response }: HttpContext) {
     const { page = 1, perPage = 15 } = await request.validateUsing(paginateValidator)
+    const reservationId = request.input('reservationId', undefined) as number | undefined
     const paginator = await this.cleaningReviewService.getPaginatedUserCleaningReviews(
       page,
-      perPage
+      perPage,
+      reservationId ? Number(reservationId) : undefined
     )
     const serialized = await serialize(CleaningReviewTransformer.transform(paginator.all()))
     return response.ok(
@@ -79,5 +81,14 @@ export default class CleaningReviewsController {
   async destroy({ params, response }: HttpContext) {
     await this.cleaningReviewService.deleteCleaningReview(params.id)
     return response.ok(ApiResponse.success(null, 'Cleaning review deleted successfully'))
+  }
+
+  async sendInvitation({ params, request, response }: HttpContext) {
+    const { publicLink } = request.only(['publicLink'])
+    if (!publicLink || typeof publicLink !== 'string') {
+      return response.badRequest(ApiResponse.failure(null, 'publicLink is required'))
+    }
+    await this.cleaningReviewService.sendInvitationEmail(params.id, publicLink)
+    return response.ok(ApiResponse.success(null, 'Invitation email sent successfully'))
   }
 }

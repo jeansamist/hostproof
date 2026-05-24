@@ -1,6 +1,21 @@
 "use server"
 
 import { tuyau } from "@/lib/api"
+
+export type Employee = {
+  id: number
+  fullName: string
+  email: string | null
+  tel: string | null
+  gender: string | null
+  avatar: string | null
+}
+
+export const getEmployees = async (): Promise<Employee[]> => {
+  const [data, error] = await tuyau.api.employees.index({ query: { perPage: 200 } }).safe()
+  if (error || !data?.success) return []
+  return (data.data as Employee[]) ?? []
+}
 import type {
   CreateEmployeeSchema,
   CreateManyEmployeeSchema,
