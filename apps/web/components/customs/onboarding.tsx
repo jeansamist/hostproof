@@ -1,17 +1,24 @@
 "use client"
 
-import type { CreateManyHousingSchema } from "@/schemas/housing.schemas"
 import type { CreateManyEmployeeSchema } from "@/schemas/employee.schemas"
+import type { CreateManyHousingSchema } from "@/schemas/housing.schemas"
 import { createManyEmployees } from "@/services/employee.services"
 import { createManyHousings } from "@/services/housing.services"
 import { cn } from "@packages/functions"
 import { Button } from "@packages/ui/button"
-import { Check, House, LucideIcon, Users } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
+import {
+  Check,
+  ChevronRight,
+  House,
+  LucideIcon,
+  Sparkles,
+  Users,
+} from "lucide-react"
 import { useRouter } from "next/navigation"
 import { FunctionComponent, useMemo, useState } from "react"
-import { OnboardingCreateHousingsForm } from "../forms/onboarding-create-housings.form"
 import { OnboardingCreateEmployeesForm } from "../forms/onboarding-create-employees.form"
+import { OnboardingCreateHousingsForm } from "../forms/onboarding-create-housings.form"
 export type OnboardingProps = {
   [key: string]: unknown
 }
@@ -195,21 +202,77 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
               transition={{ duration: 0.18 }}
             >
               {activeStepIndex === 0 ? (
-                <OnboardingCreateHousingsForm handleNext={handleCreateHousingsNext} />
+                <OnboardingCreateHousingsForm
+                  handleNext={handleCreateHousingsNext}
+                />
               ) : activeStepIndex === 1 ? (
                 <OnboardingCreateEmployeesForm
                   handleNext={handleCreateEmployeesNext}
                   handleSkip={handleEmployeeNext}
                 />
               ) : (
-                <div className="space-y-4">
-                  <p className="text-muted-foreground">
-                    Your onboarding is complete. You can start using the app.
-                  </p>
-                  <div className="flex justify-end">
-                    <Button type="button" size="lg" onClick={finishOnboarding}>
-                      Go to home
-                    </Button>
+                <div className="overflow-hidden rounded-2xl border bg-card">
+                  <div className="space-y-6 p-8 md:p-10">
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
+                        <Sparkles className="size-5" />
+                      </div>
+                      <div className="rounded-full border bg-background/80 px-3 py-1 text-sm font-medium text-foreground/80">
+                        Setup complete
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h2 className="max-w-xl text-3xl font-semibold tracking-tight">
+                        Your workspace is ready for the first cleaning review.
+                      </h2>
+                      <p className="max-w-lg text-sm leading-6 text-muted-foreground">
+                        Your housings and team setup are in place. From here,
+                        you can start managing reservations and run reviews with
+                        a cleaner workflow.
+                      </p>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-3">
+                      <div className="rounded-2xl border bg-background/80 p-4">
+                        <div className="mb-2 flex size-9 items-center justify-center rounded-xl bg-accent">
+                          <House className="size-4" />
+                        </div>
+                        <p className="text-sm font-medium">Housings added</p>
+                        <p className="text-sm text-muted-foreground">
+                          Your properties are ready to receive bookings.
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border bg-background/80 p-4">
+                        <div className="mb-2 flex size-9 items-center justify-center rounded-xl bg-accent">
+                          <Users className="size-4" />
+                        </div>
+                        <p className="text-sm font-medium">Team prepared</p>
+                        <p className="text-sm text-muted-foreground">
+                          Employee profiles are available for assignment.
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border bg-background/80 p-4">
+                        <div className="mb-2 flex size-9 items-center justify-center rounded-xl bg-accent">
+                          <Check className="size-4" />
+                        </div>
+                        <p className="text-sm font-medium">You are ready</p>
+                        <p className="text-sm text-muted-foreground">
+                          Jump into the dashboard and keep the momentum going.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Button
+                        type="button"
+                        size="lg"
+                        onClick={finishOnboarding}
+                      >
+                        Enter workspace
+                        <ChevronRight className="size-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
