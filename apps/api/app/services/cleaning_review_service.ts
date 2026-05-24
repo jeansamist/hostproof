@@ -1,3 +1,4 @@
+import { appUrl } from '#config/app'
 import { type EmployeeSchema, type HousingSchema } from '#database/schema'
 import CleaningReviewInvitationNotification from '#mails/cleaning_review_invitation_notification'
 import CleaningReviewRepository from '#repositories/cleaning_review_repository'
@@ -5,10 +6,14 @@ import EmployeeRepository from '#repositories/employee_repository'
 import ReservationRepository from '#repositories/reservation_repository'
 import { httpError } from '#utils/http_error'
 import { inject } from '@adonisjs/core'
+import { MultipartFile } from '@adonisjs/core/bodyparser'
 import { HttpContext } from '@adonisjs/core/http'
 import { Logger } from '@adonisjs/core/logger'
+import app from '@adonisjs/core/services/app'
 import mail from '@adonisjs/mail/services/main'
+import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
+import { mkdir, unlink } from 'node:fs/promises'
 import CronManager from '../managers/crons_manager.ts'
 
 type CleaningReviewStatus = 'Created' | 'AI Analizing' | 'Analized' | 'Done' | 'Failed'
@@ -48,7 +53,11 @@ export class CleaningReviewService {
   ) {}
 
   private get userId() {
-    return this.ctx.auth.user!.id
+    try {
+      return this.ctx.auth.user!.id
+    } catch (error) {
+      return 0
+    }
   }
 
   private normalizeCreatePayload(data: CreateCleaningReviewPayload) {
@@ -196,5 +205,76 @@ export class CleaningReviewService {
       },
       { retries: 2, retryDelayMs: 1000 }
     )
+  }
+  async convertToMp4(inputPath: string, outputPath: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const ffmpeg = spawn('ffmpeg', [
+        '-i',
+        inputPath,
+        '-c:v',
+        'libx264',
+        '-c:a',
+        'aac',
+        '-movflags',
+        '+faststart',
+        '-y',
+        outputPath,
+      ])
+      ffmpeg.on('close', (code) => {
+        if (code === 0) resolve()
+        else reject(new Error(`ffmpeg exited with code ${code}`))
+      })
+      ffmpeg.on('error', reject)
+    })
+  }
+  async uploadVideo(file: MultipartFile) {
+    const targetDirectory = app.makePath('public', 'uploads', 'videos', 'cleaning-reviews')
+    await mkdir(targetDirectory, { recursive: true })
+
+    const id = randomUUID()
+    const tempName = `${id}_tmp.${file.extname}`
+    const mp4Name = `${id}.mp4`
+
+    await file.move(targetDirectory, { name: tempName })
+
+    const tempPath = `${targetDirectory}/${tempName}`
+    const mp4Path = `${targetDirectory}/${mp4Name}`
+
+    try {
+      await this.convertToMp4(tempPath, mp4Path)
+    } catch {
+      return null
+    } finally {
+      unlink(tempPath).catch(() => {})
+    }
+    const relativePath = `/uploads/videos/cleaning-reviews/${mp4Name}`
+    const normalizedAppUrl = appUrl.endsWith('/') ? appUrl : `${appUrl}/`
+    const fileUri = new URL(relativePath.slice(1), normalizedAppUrl).toString()
+    return { relativePath, fileUri }
+  }
+
+  async submitVideo(data: { uri: string; videoPath: string; file: MultipartFile | null }) {
+    const cleaningReview = await this.repository.findByUri(data.uri)
+    if (cleaningReview.status === 'Done' || cleaningReview.status === 'Analized') {
+      throw httpError(403, 'This review has already been completed')
+    }
+    if (!data.file) {
+      throw httpError(400, 'Please upload a video file')
+    }
+    if (data.file.hasErrors) {
+      throw httpError(400, 'Invalid video file')
+    }
+
+    const uploadResult = await this.uploadVideo(data.file)
+    if (!uploadResult) {
+      throw httpError(500, 'Failed to process the video. Please try again.')
+    }
+
+    const { relativePath: videoPath } = uploadResult
+    return this.repository.update(cleaningReview, {
+      localVideoPath: videoPath,
+      mimeType: 'video/mp4',
+      status: 'AI Analizing',
+    })
   }
 }
