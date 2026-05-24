@@ -1,4 +1,4 @@
 node_modules
 .claude
 apps/web/.env
-apps/api/public/uploads/images/avatars
+apps/api/public/uploads/

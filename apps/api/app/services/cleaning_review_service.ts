@@ -1,13 +1,15 @@
-import { inject } from '@adonisjs/core'
+import { type EmployeeSchema, type HousingSchema } from '#database/schema'
+import CleaningReviewInvitationNotification from '#mails/cleaning_review_invitation_notification'
 import CleaningReviewRepository from '#repositories/cleaning_review_repository'
 import EmployeeRepository from '#repositories/employee_repository'
 import ReservationRepository from '#repositories/reservation_repository'
-import CleaningReviewInvitationNotification from '#mails/cleaning_review_invitation_notification'
-import { randomUUID } from 'node:crypto'
-import { type EmployeeSchema, type HousingSchema } from '#database/schema'
-import { HttpContext } from '@adonisjs/core/http'
 import { httpError } from '#utils/http_error'
+import { inject } from '@adonisjs/core'
+import { HttpContext } from '@adonisjs/core/http'
+import { Logger } from '@adonisjs/core/logger'
 import mail from '@adonisjs/mail/services/main'
+import { randomUUID } from 'node:crypto'
+import CronManager from '../managers/crons_manager.ts'
 
 type CleaningReviewStatus = 'Created' | 'AI Analizing' | 'Analized' | 'Done' | 'Failed'
 
@@ -40,7 +42,9 @@ export class CleaningReviewService {
     private readonly repository: CleaningReviewRepository,
     private readonly employeeRepository: EmployeeRepository,
     private readonly reservationRepository: ReservationRepository,
-    private readonly ctx: HttpContext
+    private readonly ctx: HttpContext,
+    protected readonly cronManager: CronManager,
+    protected readonly logger: Logger
   ) {}
 
   private get userId() {
@@ -184,7 +188,13 @@ export class CleaningReviewService {
       housingName,
       cleaningReview.additionnalInfos
     )
-
-    await mail.send(notification)
+    this.cronManager.addQueueJob(
+      'emails',
+      async () => {
+        this.logger.info('Send cleaning review invitation email')
+        await mail.send(notification)
+      },
+      { retries: 2, retryDelayMs: 1000 }
+    )
   }
 }
