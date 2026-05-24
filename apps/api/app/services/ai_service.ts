@@ -1,3 +1,4 @@
+import env from '#start/env'
 import { GoogleGenAI } from '@google/genai'
 import { HumanMessage } from '@langchain/core/messages'
 import { ChatGoogle } from '@langchain/google'
@@ -6,11 +7,11 @@ import z from 'zod'
 
 export class AiService {
   ai = new GoogleGenAI({
-    apiKey: '',
+    apiKey: env.get('GOOGLE_API_KEY'),
   })
   model = new ChatGoogle({
     model: 'gemini-2.5-flash',
-    apiKey: '',
+    apiKey: env.get('GOOGLE_API_KEY'),
   })
   schema = z.object({
     summary: z.string().describe('A concise summary of what happens in the video'),
