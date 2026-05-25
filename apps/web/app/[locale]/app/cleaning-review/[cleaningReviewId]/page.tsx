@@ -1,10 +1,11 @@
 import { AdminVideoUploader } from "@/components/customs/admin-video-uploader"
+import { AiOutputDisplay } from "@/components/customs/ai-output-display"
 import { getI18n } from "@/lib/i18n/server"
 import { getCleaningReviewById } from "@/services/cleaning-review.services"
 import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
 import { Separator } from "@packages/ui/separator"
-import { ChevronLeft, Edit, User, House, FileText, Link2, Video } from "lucide-react"
+import { ChevronLeft, Edit, Plus, Sparkles, User, House, FileText, Link2, Video } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -144,6 +145,39 @@ export default async function CleaningReviewDetailPage({ params }: PageProps) {
           </p>
         )}
       </div>
+
+      {/* AI analysis output */}
+      {!!review.aiOutput && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-4 text-muted-foreground" />
+              <h2 className="text-sm font-semibold">AI Analysis</h2>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href={`/${locale}/app/cleaning-review/new`}>
+                <Plus className="size-4" />
+                New cleaning review
+              </Link>
+            </Button>
+          </div>
+          <Separator />
+          <AiOutputDisplay
+            aiOutput={review.aiOutput as Record<string, unknown>}
+            mode="admin"
+          />
+        </div>
+      )}
+
+      {/* Create new review CTA when no AI output yet */}
+      {!review.aiOutput && (review.status === "Analized" || review.status === "Done") && (
+        <Button asChild variant="outline" className="w-full gap-2">
+          <Link href={`/${locale}/app/cleaning-review/new`}>
+            <Plus className="size-4" />
+            Create a new cleaning review
+          </Link>
+        </Button>
+      )}
     </div>
   )
 }

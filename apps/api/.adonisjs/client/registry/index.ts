@@ -36,6 +36,18 @@ const routes = {
     tokens: [{"old":"/api/public/reviews/:uri/submit","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/submit","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"submit","end":""}],
     types: placeholder as Registry['public_reviews.submit']['types'],
   },
+  'public_reviews.request_new_review': {
+    methods: ["POST"],
+    pattern: '/api/public/reviews/:uri/request-new-review',
+    tokens: [{"old":"/api/public/reviews/:uri/request-new-review","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/request-new-review","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/request-new-review","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/request-new-review","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/request-new-review","type":0,"val":"request-new-review","end":""}],
+    types: placeholder as Registry['public_reviews.request_new_review']['types'],
+  },
+  'public_reviews.notify_missing_products': {
+    methods: ["POST"],
+    pattern: '/api/public/reviews/:uri/notify-missing-products',
+    tokens: [{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"notify-missing-products","end":""}],
+    types: placeholder as Registry['public_reviews.notify_missing_products']['types'],
+  },
   'auth.sign_up': {
     methods: ["POST"],
     pattern: '/api/auth/sign-up',

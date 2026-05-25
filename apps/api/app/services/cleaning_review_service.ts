@@ -1,6 +1,8 @@
 import { appUrl } from '#config/app'
 import { type EmployeeSchema, type HousingSchema } from '#database/schema'
 import CleaningReviewInvitationNotification from '#mails/cleaning_review_invitation_notification'
+import CleaningReviewMissingProductsNotification from '#mails/cleaning_review_missing_products_notification'
+import CleaningReviewRequestNewReviewNotification from '#mails/cleaning_review_request_new_review_notification'
 import CleaningReviewRepository from '#repositories/cleaning_review_repository'
 import EmployeeRepository from '#repositories/employee_repository'
 import ReservationRepository from '#repositories/reservation_repository'
@@ -16,6 +18,7 @@ import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdir, unlink } from 'node:fs/promises'
 import CronManager from '../managers/crons_manager.ts'
+import User from '../models/user.ts'
 import { AiService } from './ai_service.ts'
 type CleaningReviewStatus = 'Created' | 'AI Analizing' | 'Analized' | 'Done' | 'Failed'
 
@@ -177,6 +180,68 @@ export class CleaningReviewService {
     const cleaningReview = await this.repository.findById(id)
     this.checkOwnership(cleaningReview)
     return cleaningReview
+  }
+
+  async sendRequestNewReviewEmail(uri: string, toDoItems: string[], appReviewLink: string) {
+    const cleaningReview = await this.repository.findByUri(uri)
+    await cleaningReview.load('assignedEmployee')
+    await cleaningReview.load('reservation', (q) => q.preload('housing'))
+
+    const housing = (cleaningReview.reservation as any)?.housing
+    const ownerId = housing?.userId
+    if (!ownerId) throw httpError(422, 'Could not determine review owner')
+
+    const owner = await User.find(ownerId)
+    if (!owner) throw httpError(422, 'Review owner not found')
+
+    const employee = cleaningReview.assignedEmployee
+    const notification = new CleaningReviewRequestNewReviewNotification(
+      `${owner.firstName} ${owner.lastName}`,
+      owner.email,
+      employee?.fullName ?? 'The employee',
+      appReviewLink,
+      toDoItems,
+      housing?.name
+    )
+    this.cronManager.addQueueJob(
+      'emails',
+      async () => {
+        this.logger.info('Send request new review email to owner')
+        await mail.send(notification)
+      },
+      { retries: 2, retryDelayMs: 1000 }
+    )
+  }
+
+  async sendMissingProductsEmail(uri: string, missingProducts: string[], appReviewLink: string) {
+    const cleaningReview = await this.repository.findByUri(uri)
+    await cleaningReview.load('assignedEmployee')
+    await cleaningReview.load('reservation', (q) => q.preload('housing'))
+
+    const housing = (cleaningReview.reservation as any)?.housing
+    const ownerId = housing?.userId
+    if (!ownerId) throw httpError(422, 'Could not determine review owner')
+
+    const owner = await User.find(ownerId)
+    if (!owner) throw httpError(422, 'Review owner not found')
+
+    const employee = cleaningReview.assignedEmployee
+    const notification = new CleaningReviewMissingProductsNotification(
+      `${owner.firstName} ${owner.lastName}`,
+      owner.email,
+      employee?.fullName ?? 'The employee',
+      appReviewLink,
+      missingProducts,
+      housing?.name
+    )
+    this.cronManager.addQueueJob(
+      'emails',
+      async () => {
+        this.logger.info('Send missing products email to owner')
+        await mail.send(notification)
+      },
+      { retries: 2, retryDelayMs: 1000 }
+    )
   }
 
   async sendInvitationEmail(id: number, publicLink: string) {

@@ -6,9 +6,11 @@ type PageProps = {
 }
 
 export default async function PublicReviewPage({ params }: PageProps) {
-  const { uri } = await params
+  const { locale, uri } = await params
   const review = await getCleaningReviewByUri(uri)
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+  const appReviewLink = review ? `${appUrl}/${locale}/app/cleaning-review/${review.id}` : ""
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,6 +38,7 @@ export default async function PublicReviewPage({ params }: PageProps) {
             uri={uri}
             review={review}
             apiUrl={apiUrl}
+            appReviewLink={appReviewLink}
           />
         )}
       </div>

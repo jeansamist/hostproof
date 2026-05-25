@@ -8,6 +8,8 @@ export interface ApiDefinition {
   publicReviews: {
     show: typeof routes['public_reviews.show']
     submit: typeof routes['public_reviews.submit']
+    requestNewReview: typeof routes['public_reviews.request_new_review']
+    notifyMissingProducts: typeof routes['public_reviews.notify_missing_products']
   }
   auth: {
     signUp: typeof routes['auth.sign_up']

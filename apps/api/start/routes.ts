@@ -51,6 +51,14 @@ router
           () => import('#controllers/public_reviews_controller'),
           'submit',
         ])
+        router.post('/reviews/:uri/request-new-review', [
+          () => import('#controllers/public_reviews_controller'),
+          'requestNewReview',
+        ])
+        router.post('/reviews/:uri/notify-missing-products', [
+          () => import('#controllers/public_reviews_controller'),
+          'notifyMissingProducts',
+        ])
       })
       .prefix('/public')
     router

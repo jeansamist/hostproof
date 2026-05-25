@@ -28,6 +28,29 @@ export default class PublicReviewsController {
     )
   }
 
+  async requestNewReview({ params, request, response }: HttpContext) {
+    const { toDoItems = [], appReviewLink = '' } = request.only(['toDoItems', 'appReviewLink'])
+    await this.cleaningReviewService.sendRequestNewReviewEmail(
+      params.uri,
+      Array.isArray(toDoItems) ? toDoItems : [],
+      appReviewLink
+    )
+    return response.ok(ApiResponse.success(null, 'New review request sent successfully'))
+  }
+
+  async notifyMissingProducts({ params, request, response }: HttpContext) {
+    const { missingProducts = [], appReviewLink = '' } = request.only([
+      'missingProducts',
+      'appReviewLink',
+    ])
+    await this.cleaningReviewService.sendMissingProductsEmail(
+      params.uri,
+      Array.isArray(missingProducts) ? missingProducts : [],
+      appReviewLink
+    )
+    return response.ok(ApiResponse.success(null, 'Missing products notification sent successfully'))
+  }
+
   async submit({ params, request, response, serialize }: HttpContext) {
     const file = request.file('video', {
       size: '500mb',

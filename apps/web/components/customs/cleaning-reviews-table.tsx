@@ -38,6 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from "@packages/ui/table"
+import { Progress } from "@packages/ui/progress"
 import { cn } from "@packages/functions"
 import { useI18n } from "@/lib/i18n/client"
 import {
@@ -164,6 +165,7 @@ export const CleaningReviewsTable: FunctionComponent<CleaningReviewsTableProps> 
               <TableHead>{t("cleaningReview.table.housing")}</TableHead>
               <TableHead>{t("cleaningReview.table.employee")}</TableHead>
               <TableHead>{t("cleaningReview.table.status")}</TableHead>
+              <TableHead className="w-36">AI Score</TableHead>
               <TableHead>Created</TableHead>
               <TableHead className="text-right w-12">{t("cleaningReview.table.actions")}</TableHead>
             </TableRow>
@@ -172,7 +174,7 @@ export const CleaningReviewsTable: FunctionComponent<CleaningReviewsTableProps> 
             {reviews.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={6}
                   className="py-16 text-center text-muted-foreground"
                 >
                   {t("cleaningReview.table.empty")}
@@ -209,6 +211,29 @@ export const CleaningReviewsTable: FunctionComponent<CleaningReviewsTableProps> 
                         )}
                         {cfg.label}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {(() => {
+                        const score = (r.aiOutput as { score?: number } | null)?.score
+                        if (score === undefined || score === null) {
+                          return <span className="text-xs text-muted-foreground">—</span>
+                        }
+                        const pct = Math.round((score / 10) * 100)
+                        const color =
+                          score >= 8
+                            ? "text-green-600"
+                            : score >= 5
+                              ? "text-amber-600"
+                              : "text-red-600"
+                        return (
+                          <div className="flex items-center gap-2 min-w-28">
+                            <Progress value={pct} className="h-1.5 flex-1" />
+                            <span className={cn("text-xs font-medium tabular-nums w-6 text-right", color)}>
+                              {score}
+                            </span>
+                          </div>
+                        )
+                      })()}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm">
                       {formatDate(r.createdAt)}

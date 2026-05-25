@@ -2,6 +2,7 @@
 "use client"
 
 import type { PublicReviewInfo } from "@/services/cleaning-review.services"
+import { AiOutputDisplay } from "@/components/customs/ai-output-display"
 import { Transmit } from "@adonisjs/transmit-client"
 import { cn } from "@packages/functions"
 import { Badge } from "@packages/ui/badge"
@@ -30,6 +31,7 @@ type UploaderProps = {
   uri: string
   review: PublicReviewInfo
   apiUrl: string
+  appReviewLink?: string
 }
 
 type Mode = "idle" | "recording" | "preview" | "uploading" | "done" | "error"
@@ -46,6 +48,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   uri,
   review,
   apiUrl,
+  appReviewLink = "",
 }) => {
   const [mode, setMode] = useState<Mode>(
     review.hasVideo ||
@@ -294,13 +297,13 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
           </CardContent>
         </Card>
         {aiOutput && (
-          <Card>
-            <CardContent>
-              <pre className="overflow-auto rounded-lg bg-muted p-4 text-xs">
-                {JSON.stringify(aiOutput, null, 2)}
-              </pre>
-            </CardContent>
-          </Card>
+          <AiOutputDisplay
+            aiOutput={aiOutput}
+            mode="employee"
+            uri={uri}
+            apiUrl={apiUrl}
+            appReviewLink={appReviewLink}
+          />
         )}
       </>
     )

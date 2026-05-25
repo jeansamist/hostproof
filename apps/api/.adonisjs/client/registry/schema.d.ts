@@ -67,6 +67,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['submit']>>>
     }
   }
+  'public_reviews.request_new_review': {
+    methods: ["POST"]
+    pattern: '/api/public/reviews/:uri/request-new-review'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { uri: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['requestNewReview']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['requestNewReview']>>>
+    }
+  }
+  'public_reviews.notify_missing_products': {
+    methods: ["POST"]
+    pattern: '/api/public/reviews/:uri/notify-missing-products'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { uri: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['notifyMissingProducts']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['notifyMissingProducts']>>>
+    }
+  }
   'auth.sign_up': {
     methods: ["POST"]
     pattern: '/api/auth/sign-up'
