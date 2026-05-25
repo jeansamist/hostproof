@@ -230,6 +230,7 @@ export class CleaningReviewService {
     })
   }
   async uploadVideo(file: MultipartFile) {
+    this.logger.info(`[CleaningReviewService]: Uploading video file...`)
     const targetDirectory = app.makePath('public', 'uploads', 'videos', 'cleaning-reviews')
     await mkdir(targetDirectory, { recursive: true })
 
@@ -260,8 +261,10 @@ export class CleaningReviewService {
     if (!cleaningReview.localVideoPath) {
       throw new Error('No video to analyze')
     }
-    this.logger.info('Analyzing video content using cached file reference...')
-    const response = await this.aiService.analyzeVideo(cleaningReview.localVideoPath)
+    this.logger.info(
+      `[CleaningReviewService]: Analyzing video content using cached file reference...`
+    )
+    const response = await this.aiService.uploadAndAnalyzeVideo(cleaningReview.localVideoPath)
     return this.repository.update(cleaningReview, {
       aiOutput: response,
       status: 'Analized',
@@ -299,10 +302,12 @@ export class CleaningReviewService {
             try {
               await this.analyzeVideo(updatedReview.id)
             } catch (error) {
-              this.logger.error('Failed to analyze video for cleaning review', {
+              this.logger.error('Failed to analyze video for cleaning review')
+              console.log({
                 error,
                 cleaningReviewId: updatedReview.id,
               })
+
               await this.repository.update(updatedReview, { status: 'Failed' })
             }
           },
