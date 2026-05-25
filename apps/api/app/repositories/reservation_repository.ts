@@ -85,6 +85,7 @@ export default class ReservationRepository {
         }
       })
       .preload('housing')
+      .orderBy('move_in_date', 'desc')
       .paginate(page, perPage)
   }
 }

@@ -10,8 +10,7 @@ import type {
 import { cookies } from "next/headers"
 import type { ApiResponse } from "./housing.services"
 
-const apiBase = () =>
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
+const apiBase = () => process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
 
 const authHeaders = async () => {
   const token = (await cookies()).get("token")?.value
@@ -72,7 +71,9 @@ export const getReservations = async (
   return { data: json.data ?? [], meta: json.meta }
 }
 
-export const getReservationById = async (id: number): Promise<Reservation | null> => {
+export const getReservationById = async (
+  id: number
+): Promise<Reservation | null> => {
   const res = await fetch(`${apiBase()}/api/auth/reservations/${id}`, {
     headers: await authHeaders(),
     cache: "no-store",

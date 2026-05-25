@@ -1,17 +1,24 @@
 "use client"
 
-import { AdminVideoUploader } from "@/components/customs/admin-video-uploader"
-import { createReservationSchema, CreateReservationSchema } from "@/schemas/reservation.schemas"
-import { createCleaningReview, sendCleaningReviewInvitation } from "@/services/cleaning-review.services"
+import { useI18n } from "@/lib/i18n/client"
+import {
+  createReservationSchema,
+  CreateReservationSchema,
+} from "@/schemas/reservation.schemas"
+import {
+  createCleaningReview,
+  sendCleaningReviewInvitation,
+} from "@/services/cleaning-review.services"
 import type { Employee } from "@/services/employee.services"
 import type { Housing } from "@/services/housing.services"
-import { createReservation, type Reservation } from "@/services/reservation.services"
-import { useI18n } from "@/lib/i18n/client"
+import {
+  createReservation,
+  type Reservation,
+} from "@/services/reservation.services"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { cn } from "@packages/functions"
 import { Alert, AlertDescription } from "@packages/ui/alert"
 import { Avatar, AvatarFallback } from "@packages/ui/avatar"
-import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@packages/ui/field"
 import { Input } from "@packages/ui/input"
@@ -66,16 +73,31 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
   const [error, setError] = useState<string>()
 
   const STEPS: { id: StepId; label: string; icon: typeof House }[] = [
-    { id: "reservation", label: t("cleaningReview.stepper.step.reservation"), icon: CalendarClock },
-    { id: "employee", label: t("cleaningReview.stepper.step.employee"), icon: Users },
-    { id: "details", label: t("cleaningReview.stepper.step.details"), icon: House },
+    {
+      id: "reservation",
+      label: t("cleaningReview.stepper.step.reservation"),
+      icon: CalendarClock,
+    },
+    {
+      id: "employee",
+      label: t("cleaningReview.stepper.step.employee"),
+      icon: Users,
+    },
+    {
+      id: "details",
+      label: t("cleaningReview.stepper.step.details"),
+      icon: House,
+    },
     { id: "share", label: t("cleaningReview.stepper.step.share"), icon: Link2 },
   ]
 
   // Step data
-  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null)
+  const [selectedReservation, setSelectedReservation] =
+    useState<Reservation | null>(null)
   const [creatingReservation, setCreatingReservation] = useState(false)
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null
+  )
   const [additionalInfos, setAdditionalInfos] = useState("")
   const [generatedUri, setGeneratedUri] = useState<string | null>(null)
   const [generatedId, setGeneratedId] = useState<number | null>(null)
@@ -99,9 +121,12 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
     },
   })
 
-  const handleCreateInlineReservation = async (data: CreateReservationSchema) => {
+  const handleCreateInlineReservation = async (
+    data: CreateReservationSchema
+  ) => {
     const result = await createReservation(data)
-    if (!result?.success) throw new Error(result?.message ?? "Failed to create reservation")
+    if (!result?.success)
+      throw new Error(result?.message ?? "Failed to create reservation")
     setSelectedReservation(result.data as Reservation)
     setCreatingReservation(false)
     reservationForm.reset()
@@ -132,7 +157,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
     setActiveStep(3)
   }
 
-  const publicLink = generatedUri ? `${appUrl}/${locale}/review/${generatedUri}` : ""
+  const publicLink = generatedUri
+    ? `${appUrl}/${locale}/review/${generatedUri}`
+    : ""
 
   const handleCopy = async () => {
     if (!publicLink) return
@@ -170,8 +197,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                     "flex size-9 items-center justify-center rounded-full border-2 transition-colors",
                     isCompleted &&
                       "border-primary bg-primary text-primary-foreground",
-                    isActive &&
-                      "border-primary bg-background text-primary",
+                    isActive && "border-primary bg-background text-primary",
                     !isCompleted &&
                       !isActive &&
                       "border-border bg-background text-muted-foreground"
@@ -219,7 +245,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
             {activeStep === 0 && (
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold">{t("cleaningReview.stepper.reservation.title")}</h2>
+                  <h2 className="text-lg font-semibold">
+                    {t("cleaningReview.stepper.reservation.title")}
+                  </h2>
                   <p className="text-sm text-muted-foreground">
                     {t("cleaningReview.stepper.reservation.description")}
                   </p>
@@ -227,9 +255,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
 
                 {!creatingReservation ? (
                   <>
-                    <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                    <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
                       {reservations.length === 0 && (
-                        <p className="text-sm text-muted-foreground py-4 text-center">
+                        <p className="py-4 text-center text-sm text-muted-foreground">
                           {t("cleaningReview.stepper.reservation.empty")}
                         </p>
                       )}
@@ -253,7 +281,8 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                                   {r.housing?.name ?? `Housing #${r.housingId}`}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                  {new Date(r.moveInDate).toLocaleDateString()} →{" "}
+                                  {new Date(r.moveInDate).toLocaleDateString()}{" "}
+                                  →{" "}
                                   {new Date(r.moveOutDate).toLocaleDateString()}
                                 </p>
                               </div>
@@ -277,21 +306,31 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                     </Button>
                   </>
                 ) : (
-                  <div className="rounded-xl border bg-muted/30 p-4 space-y-4">
-                    <p className="text-sm font-medium">{t("cleaningReview.stepper.reservation.newTitle")}</p>
+                  <div className="space-y-4 rounded-xl border bg-muted/30 p-4">
+                    <p className="text-sm font-medium">
+                      {t("cleaningReview.stepper.reservation.newTitle")}
+                    </p>
                     <FieldGroup className="gap-4">
                       <Controller
                         control={reservationForm.control}
                         name="housingId"
                         render={({ field, fieldState }) => (
                           <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel>{t("cleaningReview.stepper.reservation.housing.label")}</FieldLabel>
+                            <FieldLabel>
+                              {t(
+                                "cleaningReview.stepper.reservation.housing.label"
+                              )}
+                            </FieldLabel>
                             <Select
                               value={field.value ? String(field.value) : ""}
                               onValueChange={(v) => field.onChange(Number(v))}
                             >
                               <SelectTrigger>
-                                <SelectValue placeholder={t("cleaningReview.stepper.reservation.housing.placeholder")} />
+                                <SelectValue
+                                  placeholder={t(
+                                    "cleaningReview.stepper.reservation.housing.placeholder"
+                                  )}
+                                />
                               </SelectTrigger>
                               <SelectContent>
                                 {housings.map((h) => (
@@ -302,7 +341,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                               </SelectContent>
                             </Select>
                             {fieldState.error && (
-                              <FieldError>{fieldState.error.message}</FieldError>
+                              <FieldError>
+                                {fieldState.error.message}
+                              </FieldError>
                             )}
                           </Field>
                         )}
@@ -313,7 +354,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                           name="moveInDate"
                           render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
-                              <FieldLabel>{t("cleaningReview.stepper.reservation.moveIn")}</FieldLabel>
+                              <FieldLabel>
+                                {t("cleaningReview.stepper.reservation.moveIn")}
+                              </FieldLabel>
                               <Input type="date" {...field} />
                             </Field>
                           )}
@@ -323,7 +366,11 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                           name="moveOutDate"
                           render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
-                              <FieldLabel>{t("cleaningReview.stepper.reservation.moveOut")}</FieldLabel>
+                              <FieldLabel>
+                                {t(
+                                  "cleaningReview.stepper.reservation.moveOut"
+                                )}
+                              </FieldLabel>
                               <Input type="date" {...field} />
                             </Field>
                           )}
@@ -332,9 +379,18 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                       <div className="grid grid-cols-3 gap-3">
                         {(
                           [
-                            ["numberOfAdult", t("cleaningReview.stepper.reservation.adults")],
-                            ["numberOfChild", t("cleaningReview.stepper.reservation.children")],
-                            ["numberOfBaby", t("cleaningReview.stepper.reservation.babies")],
+                            [
+                              "numberOfAdult",
+                              t("cleaningReview.stepper.reservation.adults"),
+                            ],
+                            [
+                              "numberOfChild",
+                              t("cleaningReview.stepper.reservation.children"),
+                            ],
+                            [
+                              "numberOfBaby",
+                              t("cleaningReview.stepper.reservation.babies"),
+                            ],
                           ] as const
                         ).map(([name, label]) => (
                           <Controller
@@ -391,10 +447,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                 )}
 
                 <div className="flex justify-end pt-2">
-                  <Button
-                    disabled={!selectedReservation}
-                    onClick={goNext}
-                  >
+                  <Button disabled={!selectedReservation} onClick={goNext}>
                     {t("cleaningReview.stepper.next")}
                     <ChevronRight className="size-4" />
                   </Button>
@@ -406,14 +459,16 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
             {activeStep === 1 && (
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold">{t("cleaningReview.stepper.employee.title")}</h2>
+                  <h2 className="text-lg font-semibold">
+                    {t("cleaningReview.stepper.employee.title")}
+                  </h2>
                   <p className="text-sm text-muted-foreground">
                     {t("cleaningReview.stepper.employee.description")}
                   </p>
                 </div>
-                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
                   {employees.length === 0 && (
-                    <p className="text-sm text-muted-foreground py-4 text-center">
+                    <p className="py-4 text-center text-sm text-muted-foreground">
                       {t("cleaningReview.stepper.employee.empty")}
                     </p>
                   )}
@@ -444,7 +499,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="text-sm font-medium">{e.fullName}</p>
+                              <p className="text-sm font-medium">
+                                {e.fullName}
+                              </p>
                               {e.email && (
                                 <p className="text-xs text-muted-foreground">
                                   {e.email}
@@ -476,23 +533,31 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
             {activeStep === 2 && (
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold">{t("cleaningReview.stepper.details.title")}</h2>
+                  <h2 className="text-lg font-semibold">
+                    {t("cleaningReview.stepper.details.title")}
+                  </h2>
                   <p className="text-sm text-muted-foreground">
                     {t("cleaningReview.stepper.details.description")}
                   </p>
                 </div>
 
-                <div className="rounded-xl border bg-muted/30 p-4 space-y-2 text-sm">
+                <div className="space-y-2 rounded-xl border bg-muted/30 p-4 text-sm">
                   <div className="flex gap-2">
-                    <span className="text-muted-foreground w-20 shrink-0">{t("cleaningReview.stepper.details.housing")}</span>
+                    <span className="w-20 shrink-0 text-muted-foreground">
+                      {t("cleaningReview.stepper.details.housing")}
+                    </span>
                     <span className="font-medium">
                       {selectedReservation?.housing?.name ??
                         `#${selectedReservation?.housingId}`}
                     </span>
                   </div>
                   <div className="flex gap-2">
-                    <span className="text-muted-foreground w-20 shrink-0">{t("cleaningReview.stepper.details.employee")}</span>
-                    <span className="font-medium">{selectedEmployee?.fullName}</span>
+                    <span className="w-20 shrink-0 text-muted-foreground">
+                      {t("cleaningReview.stepper.details.employee")}
+                    </span>
+                    <span className="font-medium">
+                      {selectedEmployee?.fullName}
+                    </span>
                   </div>
                 </div>
 
@@ -503,9 +568,13 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                 )}
 
                 <Field>
-                  <FieldLabel>{t("cleaningReview.stepper.details.notes.label")}</FieldLabel>
+                  <FieldLabel>
+                    {t("cleaningReview.stepper.details.notes.label")}
+                  </FieldLabel>
                   <Textarea
-                    placeholder={t("cleaningReview.stepper.details.notes.placeholder")}
+                    placeholder={t(
+                      "cleaningReview.stepper.details.notes.placeholder"
+                    )}
                     rows={4}
                     value={additionalInfos}
                     onChange={(e) => setAdditionalInfos(e.target.value)}
@@ -517,7 +586,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                     {t("cleaningReview.stepper.back")}
                   </Button>
                   <Button onClick={handleFinish} disabled={isSubmitting}>
-                    {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+                    {isSubmitting && (
+                      <Loader2 className="size-4 animate-spin" />
+                    )}
                     {t("cleaningReview.stepper.details.submit")}
                     <ChevronRight className="size-4" />
                   </Button>
@@ -544,12 +615,12 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                   </div>
                 </div>
 
-                <div className="rounded-xl border bg-muted/40 p-4 space-y-3">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                <div className="space-y-3 rounded-xl border bg-muted/40 p-4">
+                  <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                     {t("cleaningReview.stepper.share.linkLabel")}
                   </p>
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 truncate rounded-lg bg-background border px-3 py-2 text-sm font-mono">
+                    <code className="flex-1 truncate rounded-lg border bg-background px-3 py-2 font-mono text-sm">
                       {publicLink}
                     </code>
                     <Button
@@ -579,7 +650,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                 {selectedEmployee?.email && (
                   <Button
                     variant={emailSent ? "default" : "outline"}
-                    className="gap-2 w-full"
+                    className="w-full gap-2"
                     onClick={handleSendEmail}
                     disabled={isSendingEmail || emailSent}
                   >
@@ -593,30 +664,17 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                     {isSendingEmail
                       ? t("cleaningReview.stepper.share.sending")
                       : emailSent
-                      ? t("cleaningReview.stepper.share.sent")
-                      : t("cleaningReview.stepper.share.sendEmail")}
+                        ? t("cleaningReview.stepper.share.sent")
+                        : t("cleaningReview.stepper.share.sendEmail")}
                   </Button>
-                )}
-
-                {generatedUri && generatedId && (
-                  <>
-                    <div className="relative flex items-center gap-3">
-                      <div className="h-px flex-1 bg-border" />
-                      <span className="text-xs text-muted-foreground">or submit the video yourself</span>
-                      <div className="h-px flex-1 bg-border" />
-                    </div>
-                    <AdminVideoUploader
-                      uri={generatedUri}
-                      apiUrl={apiUrl}
-                      reviewUrl={`/${locale}/app/cleaning-review/${generatedId}`}
-                    />
-                  </>
                 )}
 
                 <div className="flex justify-end gap-2">
                   <Button
                     variant="ghost"
-                    onClick={() => router.push(`/${locale}/app/cleaning-review`)}
+                    onClick={() =>
+                      router.push(`/${locale}/app/cleaning-review`)
+                    }
                   >
                     {t("cleaningReview.stepper.share.goToReviews")}
                   </Button>

@@ -99,6 +99,7 @@ export default class CleaningReviewRepository {
       })
       .preload('assignedEmployee')
       .preload('reservation', (q) => q.preload('housing'))
+      .orderBy('created_at', 'desc')
     if (reservationId) {
       query.where('reservation_id', reservationId)
     }
