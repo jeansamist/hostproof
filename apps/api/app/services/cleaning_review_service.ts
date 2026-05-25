@@ -11,12 +11,12 @@ import { HttpContext } from '@adonisjs/core/http'
 import { Logger } from '@adonisjs/core/logger'
 import app from '@adonisjs/core/services/app'
 import mail from '@adonisjs/mail/services/main'
+import transmit from '@adonisjs/transmit/services/main'
 import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdir, unlink } from 'node:fs/promises'
 import CronManager from '../managers/crons_manager.ts'
 import { AiService } from './ai_service.ts'
-
 type CleaningReviewStatus = 'Created' | 'AI Analizing' | 'Analized' | 'Done' | 'Failed'
 
 type CleaningReviewAiOutput = unknown
@@ -256,17 +256,26 @@ export class CleaningReviewService {
     return { relativePath, fileUri }
   }
 
-  async analyzeVideo(cleaningReviewId: number) {
+  async analyzeVideo(cleaningReviewId: number, uri?: string) {
     const cleaningReview = await this.repository.findById(cleaningReviewId)
     if (!cleaningReview.localVideoPath) {
       throw new Error('No video to analyze')
     }
     this.logger.info(`[CleaningReviewService]: Analyzing video content using file reference...`)
-    const response = await this.aiService.uploadAndAnalyzeVideo(cleaningReview.localVideoPath)
-    return this.repository.update(cleaningReview, {
-      aiOutput: response,
-      status: 'Analized',
-    })
+    const response = await this.aiService.uploadAndAnalyzeVideo(cleaningReview.localVideoPath, uri)
+
+    return this.repository
+      .update(cleaningReview, {
+        aiOutput: response,
+        status: 'Analized',
+      })
+      .then((updatedReview) => {
+        transmit.broadcast(`cleaning-reviews/${uri}`, {
+          message: 'AI_ANALYSIS_COMPLETED',
+          aiOutput: response,
+        })
+        return updatedReview
+      })
   }
 
   async submitVideo(data: { uri: string; videoPath: string; file: MultipartFile | null }) {
@@ -285,6 +294,7 @@ export class CleaningReviewService {
     if (!uploadResult) {
       throw httpError(500, 'Failed to process the video. Please try again.')
     }
+    transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
 
     const { relativePath: videoPath } = uploadResult
     return this.repository
@@ -298,7 +308,7 @@ export class CleaningReviewService {
           'ai-analysis',
           async () => {
             try {
-              await this.analyzeVideo(updatedReview.id)
+              await this.analyzeVideo(updatedReview.id, data.uri)
             } catch (error) {
               this.logger.error('Failed to analyze video for cleaning review')
               console.log({
@@ -306,6 +316,9 @@ export class CleaningReviewService {
                 cleaningReviewId: updatedReview.id,
               })
 
+              transmit.broadcast(`cleaning-reviews/${data.uri}`, {
+                message: 'AI_ANALYSIS_FAILED',
+              })
               await this.repository.update(updatedReview, { status: 'Failed' })
             }
           },

@@ -1,6 +1,7 @@
 import env from '#start/env'
 import { inject } from '@adonisjs/core'
 import { Logger } from '@adonisjs/core/logger'
+import transmit from '@adonisjs/transmit/services/main'
 import { GoogleGenAI } from '@google/genai'
 import { HumanMessage } from '@langchain/core/messages'
 import { ChatGoogle } from '@langchain/google'
@@ -26,7 +27,7 @@ export class AiService {
     'Analyze the video and provide insights strictly following the defined schema. Focus on accuracy and relevance in your response.'
   structuredModel = this.model.withStructuredOutput(this.schema)
 
-  async uploadFileToGoogleAi(localVideoPath: string) {
+  async uploadFileToGoogleAi(localVideoPath: string, uri?: string) {
     const VIDEO_PATH = path.join(process.cwd(), 'public', localVideoPath)
     this.logger.info(`[AiService]: Uploading video file to Google AI for analysis...`)
     const uploadedFile = await this.ai.files.upload({
@@ -37,18 +38,25 @@ export class AiService {
     if (!uploadedFile.name) {
       throw new Error('Google Files API: upload returned no file name')
     }
+    transmit.broadcast(`cleaning-reviews/${uri}`, { message: 'VIDEO_UPLOADED_TO_GOOGLE_AI' })
 
-    const activeFile = await this.waitForFileActiveByGoogleAi(uploadedFile.name)
+    const activeFile = await this.waitForFileActiveByGoogleAi(uploadedFile.name, uri)
     return activeFile
   }
 
-  async waitForFileActiveByGoogleAi(fileName: string, maxWaitMs = 120_000, pollIntervalMs = 3_000) {
+  async waitForFileActiveByGoogleAi(
+    fileName: string,
+    uri?: string,
+    maxWaitMs = 120_000,
+    pollIntervalMs = 3_000
+  ) {
     this.logger.info(`[AiService]: Waiting for file to become active...`)
     const deadline = Date.now() + maxWaitMs
     while (Date.now() < deadline) {
       const file = await this.ai.files.get({ name: fileName })
       if (file.state === 'ACTIVE') {
         this.logger.info(`[AiService]: File ${fileName} is now active.`)
+        transmit.broadcast(`cleaning-reviews/${uri}`, { message: 'VIDEO_PROCESSED_BY_GOOGLE_AI' })
         return file
       }
       if (file.state === 'FAILED') {
@@ -79,8 +87,13 @@ export class AiService {
       }),
     ])
   }
-  async uploadAndAnalyzeVideo(localVideoPath: string) {
+  async uploadAndAnalyzeVideo(localVideoPath: string, uri?: string) {
     const uploadedFile = await this.uploadFileToGoogleAi(localVideoPath)
-    return await this.analyzeVideo(uploadedFile)
+
+    return this.analyzeVideo(uploadedFile).then((response) => {
+      this.logger.info(`[AiService]: Video analysis completed.`)
+      transmit.broadcast(`cleaning-reviews/${uri}`, { message: 'VIDEO_ANALYZED_BY_GOOGLE_AI' })
+      return response
+    })
   }
 }

@@ -11,6 +11,30 @@ import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.ts'
 
+import transmit from '@adonisjs/transmit/services/main'
+
+transmit.registerRoutes()
+
+transmit.on('connect', ({ uid }) => {
+  console.log(`Client ${uid} connected`)
+})
+
+transmit.on('disconnect', ({ uid }) => {
+  console.log(`Client ${uid} disconnected`)
+})
+
+transmit.on('broadcast', ({ channel, payload }) => {
+  console.log(`Broadcast on ${channel}:`, payload)
+})
+
+transmit.on('subscribe', ({ uid, channel }) => {
+  console.log(`Client ${uid} subscribed to ${channel}`)
+})
+
+transmit.on('unsubscribe', ({ uid, channel }) => {
+  console.log(`Client ${uid} unsubscribed from ${channel}`)
+})
+
 router.get('/', () => {
   return { hello: 'world' }
 })
@@ -19,8 +43,14 @@ router
   .group(() => {
     router
       .group(() => {
-        router.get('/reviews/:uri', [() => import('#controllers/public_reviews_controller'), 'show'])
-        router.post('/reviews/:uri/submit', [() => import('#controllers/public_reviews_controller'), 'submit'])
+        router.get('/reviews/:uri', [
+          () => import('#controllers/public_reviews_controller'),
+          'show',
+        ])
+        router.post('/reviews/:uri/submit', [
+          () => import('#controllers/public_reviews_controller'),
+          'submit',
+        ])
       })
       .prefix('/public')
     router

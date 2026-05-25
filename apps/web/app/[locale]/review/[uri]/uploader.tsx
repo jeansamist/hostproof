@@ -1,10 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type { PublicReviewInfo } from "@/services/cleaning-review.services"
+import { Transmit } from "@adonisjs/transmit-client"
 import { cn } from "@packages/functions"
 import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
+import { Card, CardContent } from "@packages/ui/card"
+import { AnimatePresence, motion } from "framer-motion"
 import {
+  AlertCircle,
   CheckCircle2,
   Loader2,
   Mic,
@@ -12,9 +17,14 @@ import {
   Square,
   Upload,
   Video,
-  VideoOff,
 } from "lucide-react"
-import { FunctionComponent, useCallback, useEffect, useRef, useState } from "react"
+import {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 
 type UploaderProps = {
   uri: string
@@ -38,7 +48,10 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   apiUrl,
 }) => {
   const [mode, setMode] = useState<Mode>(
-    review.hasVideo || review.status === "AI Analizing" || review.status === "Done" || review.status === "Analized"
+    review.hasVideo ||
+      review.status === "AI Analizing" ||
+      review.status === "Done" ||
+      review.status === "Analized"
       ? "done"
       : "idle"
   )
@@ -55,6 +68,60 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const liveRef = useRef<HTMLVideoElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const TRANSMIT_MESSAGES: Record<string, string> = {
+    VIDEO_UPLOADED_AND_CONVERTED: "Video converted, uploading to Google AI...",
+    VIDEO_UPLOADED_TO_GOOGLE_AI: "Uploaded to Google AI, processing video...",
+    VIDEO_PROCESSED_BY_GOOGLE_AI: "Video processed, analysing cleaning...",
+    VIDEO_ANALYZED_BY_GOOGLE_AI: "Analysis complete, generating report...",
+    AI_ANALYSIS_COMPLETED: "Report ready!",
+    AI_ANALYSIS_FAILED: "Analysis failed. Please contact support.",
+  }
+
+  const terminalKey =
+    review.status === "Analized" || review.status === "Done"
+      ? "AI_ANALYSIS_COMPLETED"
+      : review.status === "Failed"
+        ? "AI_ANALYSIS_FAILED"
+        : null
+
+  const [MESSAGE, setMESSAGE] = useState<string>(
+    terminalKey === "AI_ANALYSIS_COMPLETED"
+      ? "Report ready!"
+      : terminalKey === "AI_ANALYSIS_FAILED"
+        ? "Analysis failed. Please contact support."
+        : "Converting the video to mp4..."
+  )
+  const [messageKey, setMessageKey] = useState<string | null>(terminalKey)
+  const [aiOutput, setAiOutput] = useState<any | null>(review.aiOutput ?? null)
+
+  useEffect(() => {
+    const transmit = new Transmit({
+      baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333",
+    })
+    const subscription = transmit.subscription(`cleaning-reviews/${uri}`)
+
+    subscription.create().then(() => {
+      subscription.onMessage((data: { message: string }) => {
+        const label = TRANSMIT_MESSAGES[data.message]
+        if (label) {
+          setMESSAGE(label)
+          setMessageKey(data.message)
+        }
+        if (data.message === "AI_ANALYSIS_COMPLETED") {
+          fetch(`${apiUrl}/api/public/reviews/${uri}`)
+            .then((r) => r.json())
+            .then((json) => setAiOutput(json?.data?.aiOutput ?? null))
+            .catch(() => {})
+        }
+      })
+    })
+
+    return () => {
+      subscription.delete().catch(() => {})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uri])
 
   useEffect(() => {
     return () => {
@@ -136,8 +203,8 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       const ext = videoBlob.type.includes("webm")
         ? "webm"
         : videoBlob.type.includes("mp4")
-        ? "mp4"
-        : "video"
+          ? "mp4"
+          : "video"
       formData.append("video", videoBlob, `recording.${ext}`)
 
       const res = await fetch(`${apiUrl}/api/public/reviews/${uri}/submit`, {
@@ -171,31 +238,84 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
 
   if (mode === "done") {
     return (
-      <div className="rounded-2xl border bg-card p-8 text-center space-y-4">
-        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-          <CheckCircle2 className="size-7 text-green-600 dark:text-green-400" />
+      <>
+        <div className="space-y-4 rounded-2xl border bg-card p-8 text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+            <CheckCircle2 className="size-7 text-green-600 dark:text-green-400" />
+          </div>
+          <div>
+            <p className="text-lg font-semibold">Video submitted!</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Thank you. The cleaning review is now being processed.
+            </p>
+          </div>
+          <Badge
+            variant={
+              messageKey === "AI_ANALYSIS_COMPLETED"
+                ? "default"
+                : messageKey === "AI_ANALYSIS_FAILED"
+                  ? "destructive"
+                  : "secondary"
+            }
+            className="text-xs"
+          >
+            {messageKey === "AI_ANALYSIS_COMPLETED"
+              ? STATUS_LABEL["Done"]
+              : messageKey === "AI_ANALYSIS_FAILED"
+                ? STATUS_LABEL["Failed"]
+                : STATUS_LABEL["AI Analizing"]}
+          </Badge>
         </div>
-        <div>
-          <p className="text-lg font-semibold">Video submitted!</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Thank you. The cleaning review is now being processed.
-          </p>
-        </div>
-        <Badge variant="secondary" className="text-xs">
-          {STATUS_LABEL["AI Analizing"]}
-        </Badge>
-      </div>
+        <Card>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              {messageKey === "AI_ANALYSIS_COMPLETED" ? (
+                <CheckCircle2 className="size-4 text-green-500" />
+              ) : messageKey === "AI_ANALYSIS_FAILED" ? (
+                <AlertCircle className="size-4 text-destructive" />
+              ) : (
+                <Loader2 className="size-4 animate-spin" />
+              )}
+              {terminalKey ? (
+                <span>{MESSAGE}</span>
+              ) : (
+                <AnimatePresence initial={false} mode="wait">
+                  <motion.span
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    key={MESSAGE}
+                  >
+                    {MESSAGE}
+                  </motion.span>
+                </AnimatePresence>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        {aiOutput && (
+          <Card>
+            <CardContent>
+              <pre className="overflow-auto rounded-lg bg-muted p-4 text-xs">
+                {JSON.stringify(aiOutput, null, 2)}
+              </pre>
+            </CardContent>
+          </Card>
+        )}
+      </>
     )
   }
 
   return (
     <div className="space-y-4">
       {/* Status card */}
-      <div className="rounded-xl border bg-muted/30 px-4 py-3 flex items-center justify-between">
+      <div className="flex items-center justify-between rounded-xl border bg-muted/30 px-4 py-3">
         <div className="text-sm">
           <span className="font-medium">Current status</span>
         </div>
-        <Badge variant="outline">{STATUS_LABEL[review.status] ?? review.status}</Badge>
+        <Badge variant="outline">
+          {STATUS_LABEL[review.status] ?? review.status}
+        </Badge>
       </div>
 
       {errorMsg && (
@@ -207,15 +327,15 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       {/* Recording mode: live preview */}
       {mode === "recording" && (
         <div className="space-y-4">
-          <div className="relative overflow-hidden rounded-2xl bg-black aspect-video">
+          <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
             <video
               ref={liveRef}
               muted
               playsInline
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
-            <div className="absolute top-3 left-3 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 text-white text-xs font-mono">
-              <span className="size-2 rounded-full bg-red-500 animate-pulse" />
+            <div className="absolute top-3 left-3 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 font-mono text-xs text-white">
+              <span className="size-2 animate-pulse rounded-full bg-red-500" />
               {fmt(elapsed)}
             </div>
           </div>
@@ -234,12 +354,12 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       {/* Preview mode */}
       {mode === "preview" && videoUrl && (
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-2xl bg-black aspect-video">
+          <div className="aspect-video overflow-hidden rounded-2xl bg-black">
             <video
               ref={previewRef}
               src={videoUrl}
               controls
-              className="w-full h-full object-contain"
+              className="h-full w-full object-contain"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -256,7 +376,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
 
       {/* Uploading */}
       {mode === "uploading" && (
-        <div className="rounded-2xl border bg-card p-8 text-center space-y-3">
+        <div className="space-y-3 rounded-2xl border bg-card p-8 text-center">
           <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" />
           <p className="text-sm text-muted-foreground">Uploading your video…</p>
         </div>
@@ -267,7 +387,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
         <div className="space-y-3">
           <div
             className={cn(
-              "rounded-2xl border-2 border-dashed p-10 text-center space-y-4 cursor-pointer transition-colors hover:bg-muted/30",
+              "cursor-pointer space-y-4 rounded-2xl border-2 border-dashed p-10 text-center transition-colors hover:bg-muted/30"
             )}
             onClick={() => fileInputRef.current?.click()}
           >
@@ -276,7 +396,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
             </div>
             <div>
               <p className="text-sm font-medium">Upload a video</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 MP4, WebM, MOV or AVI · max 500 MB
               </p>
             </div>
@@ -296,17 +416,13 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Button
-              size="lg"
-              className="w-full gap-2"
-              onClick={startRecording}
-            >
+            <Button size="lg" className="w-full gap-2" onClick={startRecording}>
               <Video className="size-4" />
               Record with camera
             </Button>
             <button
               type="button"
-              className="flex items-center gap-2 text-xs text-muted-foreground mx-auto hover:text-foreground transition-colors"
+              className="mx-auto flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
               onClick={() => setHasMic((v) => !v)}
             >
               {hasMic ? (

@@ -23,6 +23,7 @@ export default class PublicReviewsController {
         uri: review.uri,
         hasVideo: !!review.localVideoPath,
         housing: housing ? { name: housing.name, address: housing.address } : null,
+        aiOutput: review.aiOutput ?? null,
       })
     )
   }

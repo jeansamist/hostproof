@@ -4,6 +4,9 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
+    'event_stream': { paramsTuple?: []; params?: {} }
+    'subscribe': { paramsTuple?: []; params?: {} }
+    'unsubscribe': { paramsTuple?: []; params?: {} }
     'auth.sign_up': { paramsTuple?: []; params?: {} }
     'auth.verify_email': { paramsTuple?: []; params?: {} }
     'auth.sign_in': { paramsTuple?: []; params?: {} }
@@ -45,6 +48,7 @@ export type ScannedRoutes = {
     'cleaning_reviews.send_invitation': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
+    'event_stream': { paramsTuple?: []; params?: {} }
     'auth.profile': { paramsTuple?: []; params?: {} }
     'employees.index': { paramsTuple?: []; params?: {} }
     'employees.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -56,6 +60,7 @@ export type ScannedRoutes = {
     'cleaning_reviews.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
+    'event_stream': { paramsTuple?: []; params?: {} }
     'auth.profile': { paramsTuple?: []; params?: {} }
     'employees.index': { paramsTuple?: []; params?: {} }
     'employees.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -67,6 +72,8 @@ export type ScannedRoutes = {
     'cleaning_reviews.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
+    'subscribe': { paramsTuple?: []; params?: {} }
+    'unsubscribe': { paramsTuple?: []; params?: {} }
     'auth.sign_up': { paramsTuple?: []; params?: {} }
     'auth.verify_email': { paramsTuple?: []; params?: {} }
     'auth.sign_in': { paramsTuple?: []; params?: {} }

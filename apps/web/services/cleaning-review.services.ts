@@ -65,6 +65,8 @@ export type PublicReviewInfo = {
   uri: string
   hasVideo: boolean
   housing: { name: string; address: string } | null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  aiOutput: any | null
 }
 
 export const getCleaningReviews = async (
