@@ -19,12 +19,45 @@ export class AiService {
     apiKey: env.get('GOOGLE_API_KEY'),
   })
   schema = z.object({
-    summary: z.string().describe('A concise summary of what happens in the video'),
-    detectedObjects: z.array(z.string()).describe('List of prominent objects visible'),
-    dominantMood: z.string().describe('The overarching mood or atmosphere of the footage'),
+    summary: z
+      .string()
+      .describe(
+        "Un resume concis du contenu de la vidéo, donnant un avis genéral sur l'etat actuel logement"
+      ),
+    detectedObjects: z
+      .array(z.string())
+      .describe(
+        'Une liste d\'objets ou de problèmes spécifiques détectés dans la vidéo (ex: "fuite d\'eau", "moisissure", "fissure")'
+      ),
+    positiveAspects: z
+      .array(z.string())
+      .describe(
+        'Une liste d\'aspects positifs ou de points forts du logement détectés dans la vidéo (ex: "bonne luminosité", "espace suffisant", "propreté générale")'
+      ),
+    negativeAspects: z
+      .array(z.string())
+      .describe(
+        "Une liste d'aspects négatifs ou de points faibles du logement détectés dans la vidéo (ex: 'fuite d'eau', 'moisissure', 'fissure')"
+      ),
+    score: z
+      .number()
+      .describe(
+        "Un score global de l'état du logement sur une échelle de 1 à 10, où 10 représente un excellent état et 1 un état très mauvais"
+      ),
+    toDo: z
+      .array(z.string())
+      .describe(
+        'Une liste de recommandations ou d\'actions à entreprendre pour améliorer l\'état du logement pour s\'arranger avec la reservation, basée sur les problèmes détectés (ex: "réparer la fuite d\'eau", "nettoyer la moisissure", "sceller les fissures")'
+      ),
+    missingProducts: z
+      .array(z.string())
+      .optional()
+      .describe(
+        "Une liste de produits manquants ou à acheter pour améliorer l'état du logement pour s'arranger avec la reservation, basée sur les problèmes détectés"
+      ),
   })
   PROMPT: string =
-    'Analyze the video and provide insights strictly following the defined schema. Focus on accuracy and relevance in your response.'
+    "Tu es un expert en évaluation de l'état d'un logement à partir de vidéos. Un agent de netoyage vie juste de faire le menage et a fait cette video. Analyse attentivement le contenu de la vidéo et fournis une évaluation détaillée de la conformité du logement avec la reservations et ses details, en mettant en évidence les problèmes détectés, les aspects positifs, et en attribuant un score de conformite global sur 10. Propose également des recommandations concrètes pour arriver a un etat de conformite execelent du logement, ainsi que les produits nécessaires pour effectuer ces améliorations si applicable. On veut pouvoir reperer es points d oublis dans le menage."
   structuredModel = this.model.withStructuredOutput(this.schema)
 
   async uploadFileToGoogleAi(localVideoPath: string, uri?: string) {
@@ -69,14 +102,20 @@ export class AiService {
     )
   }
 
-  async analyzeVideo(file: Awaited<ReturnType<AiService['uploadFileToGoogleAi']>>) {
+  async analyzeVideo(
+    file: Awaited<ReturnType<AiService['uploadFileToGoogleAi']>>,
+    CUSTOM_PROMPT?: string
+  ) {
     this.logger.info(`[AiService]: Analyzing video content...`)
+    const PROMPT = this.PROMPT + (CUSTOM_PROMPT ? `\n\n${CUSTOM_PROMPT}` : '')
+    console.log(PROMPT)
+
     return await this.structuredModel.invoke([
       new HumanMessage({
         content: [
           {
             type: 'text',
-            text: this.PROMPT,
+            text: PROMPT,
           },
           {
             type: 'media',
@@ -87,10 +126,10 @@ export class AiService {
       }),
     ])
   }
-  async uploadAndAnalyzeVideo(localVideoPath: string, uri?: string) {
+  async uploadAndAnalyzeVideo(localVideoPath: string, uri?: string, CUSTOM_PROMPT?: string) {
     const uploadedFile = await this.uploadFileToGoogleAi(localVideoPath)
 
-    return this.analyzeVideo(uploadedFile).then((response) => {
+    return this.analyzeVideo(uploadedFile, CUSTOM_PROMPT).then((response) => {
       this.logger.info(`[AiService]: Video analysis completed.`)
       transmit.broadcast(`cleaning-reviews/${uri}`, { message: 'VIDEO_ANALYZED_BY_GOOGLE_AI' })
       return response

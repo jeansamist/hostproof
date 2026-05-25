@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Transmit } from "@adonisjs/transmit-client"
@@ -5,12 +6,7 @@ import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
 import { Card, CardContent } from "@packages/ui/card"
 import { AnimatePresence, motion } from "framer-motion"
-import {
-  AlertCircle,
-  CheckCircle2,
-  Loader2,
-  Upload,
-} from "lucide-react"
+import { AlertCircle, CheckCircle2, Loader2, Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { FunctionComponent, useEffect, useRef, useState } from "react"
 
@@ -49,7 +45,9 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
   const [submitted, setSubmitted] = useState(false)
   const [dragging, setDragging] = useState(false)
 
-  const [MESSAGE, setMESSAGE] = useState<string>("Converting the video to mp4...")
+  const [MESSAGE, setMESSAGE] = useState<string>(
+    "Converting the video to mp4..."
+  )
   const [messageKey, setMessageKey] = useState<string | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [aiOutput, setAiOutput] = useState<any | null>(null)
@@ -80,7 +78,7 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
     return () => {
       subscription.delete().catch(() => {})
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted])
 
   const submit = async (file: File) => {
@@ -127,7 +125,7 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
           </div>
           <div>
             <p className="text-sm font-semibold">Video submitted!</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               AI analysis has started.
             </p>
           </div>
@@ -148,7 +146,11 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
                 : STATUS_LABEL["processing"]}
           </Badge>
           {reviewUrl && (
-            <Button size="sm" variant="outline" onClick={() => router.push(reviewUrl)}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => router.push(reviewUrl)}
+            >
               View review
             </Button>
           )}
@@ -198,24 +200,34 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
         </div>
       )}
       <div
-        className={`rounded-2xl border-2 border-dashed p-8 text-center space-y-3 transition-colors ${
-          dragging ? "border-primary bg-primary/5" : "hover:bg-muted/30 cursor-pointer"
+        className={`space-y-3 rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${
+          dragging
+            ? "border-primary bg-primary/5"
+            : "cursor-pointer hover:bg-muted/30"
         } ${uploading ? "pointer-events-none opacity-60" : ""}`}
         onClick={() => !uploading && fileInputRef.current?.click()}
-        onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+        onDragOver={(e) => {
+          e.preventDefault()
+          setDragging(true)
+        }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
       >
         <div className="mx-auto flex size-10 items-center justify-center rounded-xl bg-muted">
-          {uploading
-            ? <Loader2 className="size-5 text-muted-foreground animate-spin" />
-            : <Upload className="size-5 text-muted-foreground" />
-          }
+          {uploading ? (
+            <Loader2 className="size-5 animate-spin text-muted-foreground" />
+          ) : (
+            <Upload className="size-5 text-muted-foreground" />
+          )}
         </div>
         <div>
-          <p className="text-sm font-medium">{uploading ? "Uploading…" : "Upload a video"}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {uploading ? "Please wait" : "MP4, WebM, MOV or AVI · Drag & drop or click"}
+          <p className="text-sm font-medium">
+            {uploading ? "Uploading…" : "Upload a video"}
+          </p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {uploading
+              ? "Please wait"
+              : "MP4, WebM, MOV or AVI · Drag & drop or click"}
           </p>
         </div>
         <input

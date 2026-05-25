@@ -262,7 +262,17 @@ export class CleaningReviewService {
       throw new Error('No video to analyze')
     }
     this.logger.info(`[CleaningReviewService]: Analyzing video content using file reference...`)
-    const response = await this.aiService.uploadAndAnalyzeVideo(cleaningReview.localVideoPath, uri)
+    //  Add review notes and reservation details to the prompt to give more context to the AI and improve the analysis accuracy
+    const response = await this.aiService.uploadAndAnalyzeVideo(
+      cleaningReview.localVideoPath,
+      uri,
+      `Additional context for the AI analysis:
+- Today date: ${new Date().toLocaleDateString()}
+- Review notes: ${cleaningReview.additionnalInfos ?? 'N/A'}
+- Reservation dates: ${cleaningReview.reservation ? `${cleaningReview.reservation.moveInDate.toString()} to ${cleaningReview.reservation.moveOutDate.toLocaleString()}` : 'N/A'}
+- Housing details: ${cleaningReview.reservation && cleaningReview.reservation.housing ? `Type: ${cleaningReview.reservation.housing.type}, Size: ${cleaningReview.reservation.housing.capacity.toString()} sqm` : 'N/A'}
+`
+    )
 
     return this.repository
       .update(cleaningReview, {
