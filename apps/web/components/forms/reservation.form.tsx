@@ -1,12 +1,16 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import {
   createReservationSchema,
   CreateReservationSchema,
 } from "@/schemas/reservation.schemas"
 import type { Housing } from "@/services/housing.services"
-import { createReservation, updateReservation } from "@/services/reservation.services"
 import type { Reservation } from "@/services/reservation.services"
+import {
+  createReservation,
+  updateReservation,
+} from "@/services/reservation.services"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Alert, AlertDescription } from "@packages/ui/alert"
 import { Button } from "@packages/ui/button"
@@ -21,7 +25,6 @@ import {
 } from "@packages/ui/select"
 import { Textarea } from "@packages/ui/textarea"
 import { LoaderCircle } from "lucide-react"
-import { useI18n } from "@/lib/i18n/client"
 import { useRouter } from "next/navigation"
 import { FunctionComponent, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
@@ -70,7 +73,6 @@ export const ReservationForm: FunctionComponent<ReservationFormProps> = ({
       return
     }
     router.push(returnUrl)
-    router.refresh()
   }
 
   return (
@@ -93,7 +95,9 @@ export const ReservationForm: FunctionComponent<ReservationFormProps> = ({
                 onValueChange={(v) => field.onChange(Number(v))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t("reservation.form.housing.placeholder")} />
+                  <SelectValue
+                    placeholder={t("reservation.form.housing.placeholder")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {housings.map((h) => (
@@ -116,7 +120,9 @@ export const ReservationForm: FunctionComponent<ReservationFormProps> = ({
             name="moveInDate"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>{t("reservation.form.moveInDate.label")}</FieldLabel>
+                <FieldLabel>
+                  {t("reservation.form.moveInDate.label")}
+                </FieldLabel>
                 <Input type="date" {...field} />
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>
@@ -129,7 +135,9 @@ export const ReservationForm: FunctionComponent<ReservationFormProps> = ({
             name="moveOutDate"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>{t("reservation.form.moveOutDate.label")}</FieldLabel>
+                <FieldLabel>
+                  {t("reservation.form.moveOutDate.label")}
+                </FieldLabel>
                 <Input type="date" {...field} />
                 {fieldState.error && (
                   <FieldError>{fieldState.error.message}</FieldError>
@@ -201,7 +209,9 @@ export const ReservationForm: FunctionComponent<ReservationFormProps> = ({
           name="specialInfos"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel>{t("reservation.form.specialNotes.label")}</FieldLabel>
+              <FieldLabel>
+                {t("reservation.form.specialNotes.label")}
+              </FieldLabel>
               <Textarea
                 placeholder={t("reservation.form.specialNotes.placeholder")}
                 rows={3}
@@ -221,7 +231,9 @@ export const ReservationForm: FunctionComponent<ReservationFormProps> = ({
             form="reservation-form"
             disabled={!form.formState.isValid || form.formState.isSubmitting}
           >
-            {reservation ? t("reservation.form.submit.update") : t("reservation.form.submit.create")}
+            {reservation
+              ? t("reservation.form.submit.update")
+              : t("reservation.form.submit.create")}
             {form.formState.isSubmitting && (
               <LoaderCircle className="animate-spin" />
             )}
