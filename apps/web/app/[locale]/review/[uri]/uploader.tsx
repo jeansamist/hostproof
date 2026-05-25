@@ -15,6 +15,7 @@ import {
   Loader2,
   Mic,
   MicOff,
+  RefreshCw,
   Square,
   Upload,
   Video,
@@ -97,6 +98,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   )
   const [messageKey, setMessageKey] = useState<string | null>(terminalKey)
   const [aiOutput, setAiOutput] = useState<any | null>(review.aiOutput ?? null)
+  const [isRetrying, setIsRetrying] = useState(false)
 
   useEffect(() => {
     const transmit = new Transmit({
@@ -227,6 +229,20 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     }
   }
 
+  const handleRetry = async () => {
+    setIsRetrying(true)
+    setMessageKey(null)
+    setMESSAGE("Retrying analysis…")
+    try {
+      await fetch(`${apiUrl}/api/public/reviews/${uri}/retry`, { method: "POST" })
+    } catch {
+      setMessageKey("AI_ANALYSIS_FAILED")
+      setMESSAGE("Analysis failed. Please contact support.")
+    } finally {
+      setIsRetrying(false)
+    }
+  }
+
   const reset = () => {
     if (videoUrl) URL.revokeObjectURL(videoUrl)
     setVideoBlob(null)
@@ -270,16 +286,16 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
           </Badge>
         </div>
         <Card>
-          <CardContent>
+          <CardContent className="space-y-3">
             <div className="flex items-center gap-4">
               {messageKey === "AI_ANALYSIS_COMPLETED" ? (
-                <CheckCircle2 className="size-4 text-green-500" />
+                <CheckCircle2 className="size-4 text-green-500 shrink-0" />
               ) : messageKey === "AI_ANALYSIS_FAILED" ? (
-                <AlertCircle className="size-4 text-destructive" />
+                <AlertCircle className="size-4 text-destructive shrink-0" />
               ) : (
-                <Loader2 className="size-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin shrink-0" />
               )}
-              {terminalKey ? (
+              {messageKey === "AI_ANALYSIS_COMPLETED" || messageKey === "AI_ANALYSIS_FAILED" ? (
                 <span>{MESSAGE}</span>
               ) : (
                 <AnimatePresence initial={false} mode="wait">
@@ -294,6 +310,22 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
                 </AnimatePresence>
               )}
             </div>
+            {messageKey === "AI_ANALYSIS_FAILED" && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full gap-2"
+                onClick={handleRetry}
+                disabled={isRetrying}
+              >
+                {isRetrying ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="size-4" />
+                )}
+                Retry analysis
+              </Button>
+            )}
           </CardContent>
         </Card>
         {aiOutput && (

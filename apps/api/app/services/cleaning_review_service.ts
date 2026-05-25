@@ -333,7 +333,8 @@ export class CleaningReviewService {
       uri,
       `Additional context for the AI analysis:
 - Today date: ${new Date().toLocaleDateString()}
-- Review notes: ${cleaningReview.additionnalInfos ?? 'N/A'}
+- Reservation notes: ${cleaningReview.reservation?.specialInfos ?? 'N/A'}
+- Notes told to the employee: ${cleaningReview.additionnalInfos ?? 'N/A'}
 - Reservation dates: ${cleaningReview.reservation ? `${cleaningReview.reservation.moveInDate.toString()} to ${cleaningReview.reservation.moveOutDate.toLocaleString()}` : 'N/A'}
 - Housing details: ${cleaningReview.reservation && cleaningReview.reservation.housing ? `Type: ${cleaningReview.reservation.housing.type}, Size: ${cleaningReview.reservation.housing.capacity.toString()} sqm` : 'N/A'}
 `
@@ -351,6 +352,35 @@ export class CleaningReviewService {
         })
         return updatedReview
       })
+  }
+
+  async retryAnalysis(uri: string) {
+    const cleaningReview = await this.repository.findByUri(uri)
+    if (cleaningReview.status !== 'Failed') {
+      throw httpError(422, 'Only failed reviews can be retried')
+    }
+    if (!cleaningReview.localVideoPath) {
+      throw httpError(422, 'No video found to re-analyse')
+    }
+
+    const updatedReview = await this.repository.update(cleaningReview, { status: 'AI Analizing' })
+    transmit.broadcast(`cleaning-reviews/${uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
+
+    this.cronManager.addQueueJob(
+      'ai-analysis',
+      async () => {
+        try {
+          await this.analyzeVideo(updatedReview.id, uri)
+        } catch (error) {
+          this.logger.error('Failed to retry video analysis for cleaning review')
+          transmit.broadcast(`cleaning-reviews/${uri}`, { message: 'AI_ANALYSIS_FAILED' })
+          await this.repository.update(updatedReview, { status: 'Failed' })
+        }
+      },
+      { retries: 2, retryDelayMs: 1000 }
+    )
+
+    return updatedReview
   }
 
   async submitVideo(data: { uri: string; videoPath: string; file: MultipartFile | null }) {

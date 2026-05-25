@@ -51,6 +51,11 @@ export default class PublicReviewsController {
     return response.ok(ApiResponse.success(null, 'Missing products notification sent successfully'))
   }
 
+  async retry({ params, response }: HttpContext) {
+    await this.cleaningReviewService.retryAnalysis(params.uri)
+    return response.ok(ApiResponse.success(null, 'Analysis retry queued successfully'))
+  }
+
   async submit({ params, request, response, serialize }: HttpContext) {
     const file = request.file('video', {
       size: '500mb',

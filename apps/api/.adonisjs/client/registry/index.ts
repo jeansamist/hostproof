@@ -36,6 +36,12 @@ const routes = {
     tokens: [{"old":"/api/public/reviews/:uri/submit","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/submit","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/submit","type":0,"val":"submit","end":""}],
     types: placeholder as Registry['public_reviews.submit']['types'],
   },
+  'public_reviews.retry': {
+    methods: ["POST"],
+    pattern: '/api/public/reviews/:uri/retry',
+    tokens: [{"old":"/api/public/reviews/:uri/retry","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/retry","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/retry","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/retry","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/retry","type":0,"val":"retry","end":""}],
+    types: placeholder as Registry['public_reviews.retry']['types'],
+  },
   'public_reviews.request_new_review': {
     methods: ["POST"],
     pattern: '/api/public/reviews/:uri/request-new-review',

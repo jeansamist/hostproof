@@ -67,6 +67,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['submit']>>>
     }
   }
+  'public_reviews.retry': {
+    methods: ["POST"]
+    pattern: '/api/public/reviews/:uri/retry'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { uri: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['retry']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['retry']>>>
+    }
+  }
   'public_reviews.request_new_review': {
     methods: ["POST"]
     pattern: '/api/public/reviews/:uri/request-new-review'

@@ -51,6 +51,10 @@ router
           () => import('#controllers/public_reviews_controller'),
           'submit',
         ])
+        router.post('/reviews/:uri/retry', [
+          () => import('#controllers/public_reviews_controller'),
+          'retry',
+        ])
         router.post('/reviews/:uri/request-new-review', [
           () => import('#controllers/public_reviews_controller'),
           'requestNewReview',
