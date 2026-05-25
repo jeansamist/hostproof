@@ -1,3 +1,4 @@
+import { AdminVideoUploader } from "@/components/customs/admin-video-uploader"
 import { getI18n } from "@/lib/i18n/server"
 import { getCleaningReviewById } from "@/services/cleaning-review.services"
 import { Badge } from "@packages/ui/badge"
@@ -131,6 +132,12 @@ export default async function CleaningReviewDetailPage({ params }: PageProps) {
               className="w-full h-full object-contain"
             />
           </div>
+        ) : (review.status === "Created" || review.status === "Failed") && review.uri ? (
+          <AdminVideoUploader
+            uri={review.uri}
+            apiUrl={apiUrl}
+            reviewUrl={`/${locale}/app/cleaning-review/${review.id}`}
+          />
         ) : (
           <p className="text-sm text-muted-foreground py-6 text-center rounded-2xl border border-dashed">
             {t("cleaningReview.detail.noVideo")}

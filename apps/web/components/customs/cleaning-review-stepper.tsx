@@ -1,5 +1,6 @@
 "use client"
 
+import { AdminVideoUploader } from "@/components/customs/admin-video-uploader"
 import { createReservationSchema, CreateReservationSchema } from "@/schemas/reservation.schemas"
 import { createCleaningReview, sendCleaningReviewInvitation } from "@/services/cleaning-review.services"
 import type { Employee } from "@/services/employee.services"
@@ -46,6 +47,7 @@ type StepperProps = {
   employees: Employee[]
   locale: string
   appUrl: string
+  apiUrl: string
 }
 
 type StepId = "reservation" | "employee" | "details" | "share"
@@ -56,6 +58,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
   employees,
   locale,
   appUrl,
+  apiUrl,
 }) => {
   const router = useRouter()
   const t = useI18n()
@@ -593,6 +596,21 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                       ? t("cleaningReview.stepper.share.sent")
                       : t("cleaningReview.stepper.share.sendEmail")}
                   </Button>
+                )}
+
+                {generatedUri && generatedId && (
+                  <>
+                    <div className="relative flex items-center gap-3">
+                      <div className="h-px flex-1 bg-border" />
+                      <span className="text-xs text-muted-foreground">or submit the video yourself</span>
+                      <div className="h-px flex-1 bg-border" />
+                    </div>
+                    <AdminVideoUploader
+                      uri={generatedUri}
+                      apiUrl={apiUrl}
+                      reviewUrl={`/${locale}/app/cleaning-review/${generatedId}`}
+                    />
+                  </>
                 )}
 
                 <div className="flex justify-end gap-2">

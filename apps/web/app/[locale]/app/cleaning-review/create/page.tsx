@@ -14,6 +14,7 @@ export default async function CreateCleaningReviewPage({ params }: PageProps) {
   const { locale } = await params
   const returnUrl = `/${locale}/app/cleaning-review`
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
 
   const [t, reservationsResult, employees, housings] = await Promise.all([
     getI18n(),
@@ -45,6 +46,7 @@ export default async function CreateCleaningReviewPage({ params }: PageProps) {
           employees={employees}
           locale={locale}
           appUrl={appUrl}
+          apiUrl={apiUrl}
         />
       </div>
     </div>

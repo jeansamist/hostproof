@@ -261,9 +261,7 @@ export class CleaningReviewService {
     if (!cleaningReview.localVideoPath) {
       throw new Error('No video to analyze')
     }
-    this.logger.info(
-      `[CleaningReviewService]: Analyzing video content using cached file reference...`
-    )
+    this.logger.info(`[CleaningReviewService]: Analyzing video content using file reference...`)
     const response = await this.aiService.uploadAndAnalyzeVideo(cleaningReview.localVideoPath)
     return this.repository.update(cleaningReview, {
       aiOutput: response,
