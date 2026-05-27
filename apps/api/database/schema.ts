@@ -50,7 +50,7 @@ export class ChecklistItemSchema extends BaseModel {
 }
 
 export class CleaningReviewSchema extends BaseModel {
-  static $columns = ['additionnalInfos', 'aiOutput', 'assignedEmployeeId', 'createdAt', 'id', 'localVideoPath', 'mimeType', 'reservationId', 'status', 'updatedAt', 'uri'] as const
+  static $columns = ['additionnalInfos', 'aiOutput', 'assignedEmployeeId', 'createdAt', 'id', 'localVideoPath', 'mimeType', 'reservationId', 'status', 'updatedAt', 'uri', 'voiceMessageFile'] as const
   $columns = CleaningReviewSchema.$columns
   @column()
   declare additionnalInfos: string | null
@@ -74,6 +74,8 @@ export class CleaningReviewSchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare uri: string | null
+  @column()
+  declare voiceMessageFile: string | null
 }
 
 export class EmployeeSchema extends BaseModel {

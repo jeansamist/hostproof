@@ -13,6 +13,7 @@ export default class CleaningReviewTransformer extends BaseTransformer<CleaningR
       'localVideoPath',
       'uri',
       'mimeType',
+      'voiceMessageFile',
       'createdAt',
       'updatedAt',
     ])

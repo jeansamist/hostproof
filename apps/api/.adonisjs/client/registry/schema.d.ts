@@ -103,6 +103,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['notifyMissingProducts']>>>
     }
   }
+  'public_reviews.submit_voice_message': {
+    methods: ["POST"]
+    pattern: '/api/public/reviews/:uri/voice-message'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { uri: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['submitVoiceMessage']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/public_reviews_controller').default['submitVoiceMessage']>>>
+    }
+  }
   'auth.sign_up': {
     methods: ["POST"]
     pattern: '/api/auth/sign-up'

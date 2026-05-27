@@ -6,6 +6,7 @@ import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
 const VIDEO_EXTNAMES = ['mp4', 'webm', 'mov', 'avi', 'mkv']
+const AUDIO_EXTNAMES = ['webm', 'mp3', 'ogg', 'wav', 'm4a', 'opus']
 @inject()
 export default class PublicReviewsController {
   constructor(protected readonly cleaningReviewService: CleaningReviewService) {}
@@ -24,6 +25,7 @@ export default class PublicReviewsController {
         hasVideo: !!review.localVideoPath,
         housing: housing ? { name: housing.name, address: housing.address } : null,
         aiOutput: review.aiOutput ?? null,
+        voiceMessageFile: review.voiceMessageFile ?? null,
       })
     )
   }
@@ -54,6 +56,22 @@ export default class PublicReviewsController {
   async retry({ params, response }: HttpContext) {
     await this.cleaningReviewService.retryAnalysis(params.uri)
     return response.ok(ApiResponse.success(null, 'Analysis retry queued successfully'))
+  }
+
+  async submitVoiceMessage({ params, request, response }: HttpContext) {
+    const { appReviewLink = '' } = request.only(['appReviewLink'])
+    const file = request.file('audio', {
+      size: '50mb',
+      extnames: AUDIO_EXTNAMES,
+    })
+    const fileUri = await this.cleaningReviewService.submitVoiceMessage(
+      params.uri,
+      file as any,
+      appReviewLink
+    )
+    return response.ok(
+      ApiResponse.success({ voiceMessageFile: fileUri }, 'Voice message submitted successfully')
+    )
   }
 
   async submit({ params, request, response, serialize }: HttpContext) {

@@ -3,6 +3,7 @@
 
 import type { PublicReviewInfo } from "@/services/cleaning-review.services"
 import { AiOutputDisplay } from "@/components/customs/ai-output-display"
+import { VoiceMessageRecorder } from "@/components/customs/voice-message-recorder"
 import { Transmit } from "@adonisjs/transmit-client"
 import { cn } from "@packages/functions"
 import { Badge } from "@packages/ui/badge"
@@ -337,6 +338,12 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
             appReviewLink={appReviewLink}
           />
         )}
+        <VoiceMessageRecorder
+          uri={uri}
+          apiUrl={apiUrl}
+          appReviewLink={appReviewLink}
+          existingFileUrl={review.voiceMessageFile}
+        />
       </>
     )
   }

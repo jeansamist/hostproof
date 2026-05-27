@@ -42,6 +42,7 @@ export type CleaningReview = {
   localVideoPath: string | null
   uri: string | null
   mimeType: string | null
+  voiceMessageFile: string | null
   employee?: CleaningReviewEmployee
   housing?: CleaningReviewHousing
   createdAt: string
@@ -67,6 +68,7 @@ export type PublicReviewInfo = {
   housing: { name: string; address: string } | null
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aiOutput: any | null
+  voiceMessageFile: string | null
 }
 
 export const getCleaningReviews = async (

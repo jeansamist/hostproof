@@ -11,6 +11,7 @@ export interface ApiDefinition {
     retry: typeof routes['public_reviews.retry']
     requestNewReview: typeof routes['public_reviews.request_new_review']
     notifyMissingProducts: typeof routes['public_reviews.notify_missing_products']
+    submitVoiceMessage: typeof routes['public_reviews.submit_voice_message']
   }
   auth: {
     signUp: typeof routes['auth.sign_up']

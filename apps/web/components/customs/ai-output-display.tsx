@@ -131,9 +131,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
 
   const [checked, setChecked] = useState<Record<number, boolean>>({})
   const [reviewRequested, setReviewRequested] = useState(false)
-  const [missingNotified, setMissingNotified] = useState(false)
   const [isPendingReview, startReviewTransition] = useTransition()
-  const [isPendingMissing, startMissingTransition] = useTransition()
 
   const allChecked = toDo.length > 0 && toDo.every((_, i) => checked[i])
 
@@ -149,21 +147,6 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
         body: JSON.stringify({ toDoItems: toDo, appReviewLink }),
       })
       setReviewRequested(true)
-    })
-  }
-
-  const handleNotifyMissing = () => {
-    if (!uri || !apiUrl) return
-    startMissingTransition(async () => {
-      await fetch(
-        `${apiUrl}/api/public/reviews/${uri}/notify-missing-products`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ missingProducts, appReviewLink }),
-        }
-      )
-      setMissingNotified(true)
     })
   }
 
@@ -268,8 +251,8 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
           </p>
         </Section>
       )}
-      {/* Missing products */}
-      {missingProducts.length > 0 && (
+      {/* Missing products — admin only (employees use voice messages instead) */}
+      {missingProducts.length > 0 && mode === "admin" && (
         <Section icon={Package} title="Missing products">
           <ul className="space-y-2">
             {missingProducts.map((item, i) => (
@@ -279,31 +262,6 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
               </li>
             ))}
           </ul>
-
-          {mode === "employee" && (
-            <div className="pt-2">
-              {missingNotified ? (
-                <div className="flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-950/30 dark:text-green-400">
-                  <CheckCircle2 className="size-4 shrink-0" />
-                  Manager notified about missing products.
-                </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  className="w-full gap-2"
-                  disabled={isPendingMissing}
-                  onClick={handleNotifyMissing}
-                >
-                  {isPendingMissing ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <Mail className="size-4" />
-                  )}
-                  Notify manager about missing products
-                </Button>
-              )}
-            </div>
-          )}
         </Section>
       )}
     </div>

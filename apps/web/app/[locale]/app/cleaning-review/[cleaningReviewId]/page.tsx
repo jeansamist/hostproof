@@ -5,7 +5,7 @@ import { getCleaningReviewById } from "@/services/cleaning-review.services"
 import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
 import { Separator } from "@packages/ui/separator"
-import { ChevronLeft, Edit, Plus, Sparkles, User, House, FileText, Link2, Video } from "lucide-react"
+import { ChevronLeft, Edit, Mic, Plus, Sparkles, User, House, FileText, Link2, Video } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -145,6 +145,27 @@ export default async function CleaningReviewDetailPage({ params }: PageProps) {
           </p>
         )}
       </div>
+
+      {/* Voice message from employee */}
+      {review.voiceMessageFile && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Mic className="size-4 text-muted-foreground" />
+            <h2 className="text-sm font-semibold">Voice message from employee</h2>
+          </div>
+          <Separator />
+          <div className="rounded-2xl border bg-card p-5 space-y-3">
+            <p className="text-xs text-muted-foreground">
+              The employee left a voice message about this review.
+            </p>
+            <audio
+              src={review.voiceMessageFile}
+              controls
+              className="w-full rounded-lg"
+            />
+          </div>
+        </div>
+      )}
 
       {/* AI analysis output */}
       {!!review.aiOutput && (

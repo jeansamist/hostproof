@@ -63,6 +63,10 @@ router
           () => import('#controllers/public_reviews_controller'),
           'notifyMissingProducts',
         ])
+        router.post('/reviews/:uri/voice-message', [
+          () => import('#controllers/public_reviews_controller'),
+          'submitVoiceMessage',
+        ])
       })
       .prefix('/public')
     router

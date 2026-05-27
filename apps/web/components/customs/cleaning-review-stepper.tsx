@@ -512,7 +512,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                   </Alert>
                 )}
 
-                <Field>
+                {/*<Field>
                   <FieldLabel>
                     {t("cleaningReview.stepper.details.notes.label")}
                   </FieldLabel>
@@ -524,7 +524,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                     value={additionalInfos}
                     onChange={(e) => setAdditionalInfos(e.target.value)}
                   />
-                </Field>
+                </Field>*/}
 
                 <div className="flex justify-between pt-2">
                   <Button variant="ghost" onClick={goPrev}>

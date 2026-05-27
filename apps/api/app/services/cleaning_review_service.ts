@@ -3,6 +3,7 @@ import { type EmployeeSchema, type HousingSchema } from '#database/schema'
 import CleaningReviewInvitationNotification from '#mails/cleaning_review_invitation_notification'
 import CleaningReviewMissingProductsNotification from '#mails/cleaning_review_missing_products_notification'
 import CleaningReviewRequestNewReviewNotification from '#mails/cleaning_review_request_new_review_notification'
+import CleaningReviewVoiceMessageNotification from '#mails/cleaning_review_voice_message_notification'
 import ChecklistItemRepository from '#repositories/checklist_item_repository'
 import CleaningReviewRepository from '#repositories/cleaning_review_repository'
 import EmployeeRepository from '#repositories/employee_repository'
@@ -34,6 +35,7 @@ type CreateCleaningReviewPayload = {
   localVideoPath?: string | null
   uri?: string | null
   mimeType?: string | null
+  voiceMessageFile?: string | null
 }
 
 type UpdateCleaningReviewPayload = Partial<CreateCleaningReviewPayload>
@@ -75,6 +77,7 @@ export class CleaningReviewService {
       localVideoPath: data.localVideoPath ?? null,
       uri: data.uri ?? null,
       mimeType: data.mimeType ?? null,
+      voiceMessageFile: data.voiceMessageFile ?? null,
     }
   }
 
@@ -90,6 +93,9 @@ export class CleaningReviewService {
         : {}),
       ...(Object.hasOwn(data, 'uri') ? { uri: data.uri ?? null } : {}),
       ...(Object.hasOwn(data, 'mimeType') ? { mimeType: data.mimeType ?? null } : {}),
+      ...(Object.hasOwn(data, 'voiceMessageFile')
+        ? { voiceMessageFile: data.voiceMessageFile ?? null }
+        : {}),
     }
   }
 
@@ -240,6 +246,59 @@ export class CleaningReviewService {
       'emails',
       async () => {
         this.logger.info('Send missing products email to owner')
+        await mail.send(notification)
+      },
+      { retries: 2, retryDelayMs: 1000 }
+    )
+  }
+
+  async submitVoiceMessage(uri: string, file: MultipartFile, appReviewLink: string) {
+    const cleaningReview = await this.repository.findByUri(uri)
+
+    if (!file || file.hasErrors) {
+      throw httpError(400, 'Invalid audio file')
+    }
+
+    const targetDirectory = app.makePath('public', 'uploads', 'audio', 'voice-messages')
+    await mkdir(targetDirectory, { recursive: true })
+
+    const fileName = `${randomUUID()}.${file.extname ?? 'webm'}`
+    await file.move(targetDirectory, { name: fileName })
+
+    const relativePath = `/uploads/audio/voice-messages/${fileName}`
+    const normalizedAppUrl = appUrl.endsWith('/') ? appUrl : `${appUrl}/`
+    const fileUri = new URL(relativePath.slice(1), normalizedAppUrl).toString()
+
+    await this.repository.update(cleaningReview, { voiceMessageFile: fileUri })
+    await this.sendVoiceMessageEmail(uri, appReviewLink)
+
+    return fileUri
+  }
+
+  async sendVoiceMessageEmail(uri: string, appReviewLink: string) {
+    const cleaningReview = await this.repository.findByUri(uri)
+    await cleaningReview.load('assignedEmployee')
+    await cleaningReview.load('reservation', (q) => q.preload('housing'))
+
+    const housing = (cleaningReview.reservation as any)?.housing
+    const ownerId = housing?.userId
+    if (!ownerId) throw httpError(422, 'Could not determine review owner')
+
+    const owner = await User.find(ownerId)
+    if (!owner) throw httpError(422, 'Review owner not found')
+
+    const employee = cleaningReview.assignedEmployee
+    const notification = new CleaningReviewVoiceMessageNotification(
+      `${owner.firstName} ${owner.lastName}`,
+      owner.email,
+      employee?.fullName ?? 'The employee',
+      appReviewLink,
+      housing?.name
+    )
+    this.cronManager.addQueueJob(
+      'emails',
+      async () => {
+        this.logger.info('Send voice message notification email to owner')
         await mail.send(notification)
       },
       { retries: 2, retryDelayMs: 1000 }

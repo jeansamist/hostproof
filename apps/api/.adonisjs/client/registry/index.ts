@@ -54,6 +54,12 @@ const routes = {
     tokens: [{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/notify-missing-products","type":0,"val":"notify-missing-products","end":""}],
     types: placeholder as Registry['public_reviews.notify_missing_products']['types'],
   },
+  'public_reviews.submit_voice_message': {
+    methods: ["POST"],
+    pattern: '/api/public/reviews/:uri/voice-message',
+    tokens: [{"old":"/api/public/reviews/:uri/voice-message","type":0,"val":"api","end":""},{"old":"/api/public/reviews/:uri/voice-message","type":0,"val":"public","end":""},{"old":"/api/public/reviews/:uri/voice-message","type":0,"val":"reviews","end":""},{"old":"/api/public/reviews/:uri/voice-message","type":1,"val":"uri","end":""},{"old":"/api/public/reviews/:uri/voice-message","type":0,"val":"voice-message","end":""}],
+    types: placeholder as Registry['public_reviews.submit_voice_message']['types'],
+  },
   'auth.sign_up': {
     methods: ["POST"],
     pattern: '/api/auth/sign-up',
