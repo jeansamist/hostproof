@@ -419,6 +419,7 @@ export default {
 
   // Settings — Appearance (additions)
   "settings.appearance.language.english": "English",
+  "settings.appearance.language.french": "Français",
 
   // Shared AI progress messages
   "ai.progress.converting": "Converting the video to mp4...",

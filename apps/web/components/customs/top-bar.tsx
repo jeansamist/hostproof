@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@packages/ui/dropdown-menu"
 import { cn } from "@packages/functions"
-import { CalendarClock, LayoutDashboard, LogOut, Settings, SparklesIcon } from "lucide-react"
+import { LayoutDashboard, LogOut, Settings, SparklesIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { FunctionComponent } from "react"
@@ -25,7 +25,6 @@ export const TopBar: FunctionComponent = () => {
 
   const navItems = [
     { label: t("nav.dashboard"), href: `/${locale}/app/dashboard`, icon: LayoutDashboard },
-    { label: t("nav.reservations"), href: `/${locale}/app/reservation`, icon: CalendarClock },
     { label: t("nav.reviews"), href: `/${locale}/app/cleaning-review`, icon: SparklesIcon },
   ]
 

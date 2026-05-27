@@ -10,6 +10,7 @@ export const {
   useCurrentLocale,
 } = createI18nClient({
   en: () => import("../../locales/en"),
+  fr: () => import("../../locales/fr"),
 })
 
 // Hook to build an URL based on the current locale

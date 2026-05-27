@@ -1,6 +1,6 @@
 "use client"
 
-import { useI18n } from "@/lib/i18n/client"
+import { useChangeLocale, useCurrentLocale, useI18n } from "@/lib/i18n/client"
 import { cn } from "@packages/functions"
 import { Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
@@ -9,11 +9,18 @@ import { FunctionComponent } from "react"
 export const SettingsAppearance: FunctionComponent = () => {
   const t = useI18n()
   const { theme, setTheme } = useTheme()
+  const changeLocale = useChangeLocale()
+  const currentLocale = useCurrentLocale()
 
   const themes = [
     { value: "light", label: t("settings.appearance.theme.light"), icon: Sun },
     { value: "dark", label: t("settings.appearance.theme.dark"), icon: Moon },
     { value: "system", label: t("settings.appearance.theme.system"), icon: Monitor },
+  ] as const
+
+  const languages = [
+    { value: "fr", label: t("settings.appearance.language.french") },
+    { value: "en", label: t("settings.appearance.language.english") },
   ] as const
 
   return (
@@ -48,13 +55,25 @@ export const SettingsAppearance: FunctionComponent = () => {
 
         <div className="space-y-2">
           <p className="text-xs font-medium text-muted-foreground">{t("settings.appearance.language")}</p>
-          <div
-            className="flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm opacity-60 cursor-not-allowed"
-          >
-            <span>{t("settings.appearance.language.english")}</span>
-            <span className="text-xs text-muted-foreground rounded-md bg-muted px-2 py-0.5">
-              en
-            </span>
+          <div className="grid grid-cols-2 gap-2">
+            {languages.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => changeLocale(value)}
+                className={cn(
+                  "flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors",
+                  currentLocale === value
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-border text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                )}
+              >
+                <span>{label}</span>
+                <span className="text-xs rounded-md bg-muted px-2 py-0.5 font-mono">
+                  {value}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
       </div>
