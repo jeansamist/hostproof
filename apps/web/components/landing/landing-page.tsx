@@ -6,28 +6,108 @@ import {
 } from "@packages/ui/accordion"
 import { getI18n } from "@/lib/i18n/server"
 import Link from "next/link"
+import { AnimateIn } from "./animate-in"
 import { LangSwitch } from "./lang-switch"
+import { PhoneProto } from "./phone-proto"
 
-type Props = {
-  locale: string
+/* ─── Design tokens ────────────────────────────────────── */
+const BG    = "oklch(0.085 0.018 244)"
+const CARD  = "oklch(0.13  0.024 244)"
+const CARD2 = "oklch(0.165 0.030 244)"
+const BORD  = "oklch(1 0 0 / 8%)"
+const BORD2 = "oklch(1 0 0 / 16%)"
+const TEXT  = "oklch(0.95  0.008 247)"
+const MUT   = "oklch(0.55  0.020 241)"
+const MUT2  = "oklch(0.38  0.015 241)"
+const BLUE  = "oklch(0.60  0.19  246)"
+const BLUEL = "oklch(0.74  0.14  246)"
+const BTN   = `linear-gradient(135deg, ${BLUE} 0%, oklch(0.52 0.22 260) 100%)`
+const GTEXT = `linear-gradient(120deg, ${BLUEL} 20%, ${BLUE} 100%)`
+
+/* ─── Dashboard proto ──────────────────────────────────── */
+function DashboardProto({ locale }: { locale: string }) {
+  const isFr = locale === "fr"
+  const stats = isFr
+    ? [{ v: "12", l: "Logements" }, { v: "4.9★", l: "Note moy.", amber: true }, { v: "0", l: "Alertes", green: true }]
+    : [{ v: "12", l: "Properties" }, { v: "4.9★", l: "Avg. rating", amber: true }, { v: "0", l: "Alerts", green: true }]
+  const reviews = isFr
+    ? [{ n: "Apt. Paris 11e", ok: true }, { n: "Villa Cap-Ferret", ok: true }, { n: "Studio Bordeaux", ok: false }]
+    : [{ n: "Apt. Paris 11e", ok: true }, { n: "Villa Nice", ok: true }, { n: "Studio Lyon", ok: false }]
+  const doneLabel   = isFr ? "✓ OK" : "✓ Done"
+  const aiLabel     = isFr ? "⚡ Analyse" : "⚡ Scanning"
+  const recentLabel = isFr ? "Bilans récents" : "Recent reviews"
+
+  return (
+    <div className="rounded-2xl overflow-hidden text-xs w-full"
+      style={{ background: CARD2, border: `1px solid ${BORD2}` }}>
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2.5"
+        style={{ background: "oklch(0.20 0.030 244)", borderBottom: `1px solid ${BORD}` }}>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-emerald-400" />
+          <span className="font-bold text-[10px]" style={{ color: BLUE }}>CleanPilot</span>
+        </div>
+        <span className="text-[9px]" style={{ color: MUT }}>
+          {isFr ? "Tableau de bord" : "Dashboard"}
+        </span>
+      </div>
+      {/* Stats row */}
+      <div className="grid grid-cols-3 text-center" style={{ borderBottom: `1px solid ${BORD}` }}>
+        {stats.map((s, i) => (
+          <div key={i} className="py-3 px-2"
+            style={{ borderRight: i < 2 ? `1px solid ${BORD}` : undefined }}>
+            <div className="text-sm font-bold leading-none mb-0.5"
+              style={{ color: s.amber ? "#f59e0b" : s.green ? "#34d399" : TEXT }}>
+              {s.v}
+            </div>
+            <div className="text-[8px]" style={{ color: MUT }}>{s.l}</div>
+          </div>
+        ))}
+      </div>
+      {/* Reviews list */}
+      <div className="px-4 py-3">
+        <p className="text-[8px] font-semibold uppercase tracking-wider mb-2" style={{ color: MUT2 }}>
+          {recentLabel}
+        </p>
+        <div className="flex flex-col gap-1.5">
+          {reviews.map((r, i) => (
+            <div key={i} className="flex items-center justify-between gap-2">
+              <span className="text-[10px] truncate" style={{ color: TEXT }}>{r.n}</span>
+              <span className="shrink-0 text-[8px] font-medium px-2 py-0.5 rounded-full"
+                style={r.ok
+                  ? { background: "oklch(0.34 0.10 163 / 25%)", color: "#34d399" }
+                  : { background: `oklch(0.45 0.14 246 / 20%)`, color: BLUEL, animation: "lp-pulse-scan 2s ease-in-out infinite" }
+                }>
+                {r.ok ? doneLabel : aiLabel}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
+
+/* ─── Main landing page ────────────────────────────────── */
+type Props = { locale: string }
 
 export async function LandingPage({ locale }: Props) {
   const t = await getI18n()
+  const isFr = locale === "fr"
 
   const steps = [
-    { title: t("landing.how.step1.title"), desc: t("landing.how.step1.desc") },
-    { title: t("landing.how.step2.title"), desc: t("landing.how.step2.desc") },
-    { title: t("landing.how.step3.title"), desc: t("landing.how.step3.desc") },
-    { title: t("landing.how.step4.title"), desc: t("landing.how.step4.desc") },
+    { icon: "📹", title: t("landing.how.step1.title"), desc: t("landing.how.step1.desc") },
+    { icon: "⚡", title: t("landing.how.step2.title"), desc: t("landing.how.step2.desc") },
+    { icon: "✅", title: t("landing.how.step3.title"), desc: t("landing.how.step3.desc") },
+    { icon: "📊", title: t("landing.how.step4.title"), desc: t("landing.how.step4.desc") },
   ]
 
   const benefits = [
-    t("landing.benefits.item1"),
-    t("landing.benefits.item2"),
-    t("landing.benefits.item3"),
-    t("landing.benefits.item4"),
-    t("landing.benefits.item5"),
+    { icon: "⭐", text: t("landing.benefits.item1") },
+    { icon: "📈", text: t("landing.benefits.item2") },
+    { icon: "📞", text: t("landing.benefits.item3") },
+    { icon: "💰", text: t("landing.benefits.item4") },
+    { icon: "⏱️", text: t("landing.benefits.item5") },
   ]
 
   const monthlyFeatures = [
@@ -39,28 +119,10 @@ export async function LandingPage({ locale }: Props) {
   ]
 
   const annualFeatures = [
-    t("landing.pricing.feature.unlimitedProperties"),
-    t("landing.pricing.feature.unlimitedScans"),
-    t("landing.pricing.feature.todoList"),
-    t("landing.pricing.feature.voice"),
+    ...monthlyFeatures.slice(0, -1),
     t("landing.pricing.feature.prioritySupport"),
     t("landing.pricing.feature.advancedDashboard"),
     t("landing.pricing.feature.export"),
-  ]
-
-  const testimonials = [
-    {
-      text: t("landing.testimonials.1.text"),
-      name: t("landing.testimonials.1.name"),
-      role: t("landing.testimonials.1.role"),
-      initials: "SL",
-    },
-    {
-      text: t("landing.testimonials.2.text"),
-      name: t("landing.testimonials.2.name"),
-      role: t("landing.testimonials.2.role"),
-      initials: "MD",
-    },
   ]
 
   const faqs = [
@@ -71,308 +133,517 @@ export async function LandingPage({ locale }: Props) {
   ]
 
   return (
-    <div className="bg-background min-h-screen">
-      <div className="max-w-[880px] mx-auto px-4 py-4">
+    /* Force dark mode for all shadcn/tailwind children */
+    <div className="dark min-h-screen" style={{ background: BG, color: TEXT }}>
 
-        {/* ─── Navbar ─── */}
-        <nav className="flex items-center justify-between flex-wrap gap-4 py-3 mb-6">
-          <span className="text-2xl font-bold tracking-tight text-primary">
+      {/* ── Sticky navbar ─────────────────────────────────── */}
+      <header className="sticky top-0 z-50"
+        style={{
+          background: `oklch(0.085 0.018 244 / 82%)`,
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          borderBottom: `1px solid ${BORD}`,
+        }}>
+        <div className="max-w-275 mx-auto px-5 sm:px-8 flex items-center justify-between h-14 sm:h-16">
+          <span className="text-[1.1rem] font-bold tracking-tight" style={{ color: TEXT }}>
             CleanPilot
           </span>
-          <div className="flex items-center gap-4 flex-wrap">
-            <a
-              href="#how-it-works"
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <a href="#how-it-works"
+              className="hidden sm:inline text-[13px] font-medium opacity-55 hover:opacity-100 transition-opacity"
+              style={{ color: TEXT }}>
               {t("landing.nav.howItWorks")}
             </a>
-            <div className="flex gap-2 items-center">
-              <Link
-                href={`/${locale}/auth/sign-up`}
-                className="text-sm font-medium border border-primary text-primary px-4 py-1.5 rounded-full hover:bg-accent transition-colors"
-              >
-                {t("landing.nav.signUp")}
-              </Link>
-              <Link
-                href={`/${locale}/auth/sign-in`}
-                className="text-sm font-medium bg-primary text-primary-foreground px-4 py-1.5 rounded-full hover:bg-primary/80 transition-colors"
-              >
-                {t("landing.nav.signIn")}
-              </Link>
-            </div>
+            <Link href={`/${locale}/auth/sign-in`}
+              className="text-[13px] font-medium px-4 py-1.5 rounded-full opacity-70 hover:opacity-100 transition-opacity"
+              style={{ color: TEXT, border: `1px solid ${BORD2}` }}>
+              {t("landing.nav.signIn")}
+            </Link>
+            <Link href={`/${locale}/auth/sign-up`}
+              className="text-[13px] font-semibold px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity text-white"
+              style={{ background: BTN }}>
+              {t("landing.nav.signUp")}
+            </Link>
             <LangSwitch currentLocale={locale} />
           </div>
-        </nav>
+        </div>
+      </header>
 
-        {/* ─── Hero ─── */}
-        <section className="bg-secondary border border-border rounded-2xl p-8 mb-8 text-center">
-          <span className="inline-block bg-green-100 dark:bg-green-950/40 text-green-800 dark:text-green-400 text-xs font-medium px-4 py-1 rounded-full mb-4">
-            {t("landing.hero.badge")}
-          </span>
-          <h1 className="text-[1.9rem] sm:text-[2.2rem] font-semibold tracking-tight leading-tight mb-4">
-            {t("landing.hero.title")}{" "}
-            <span className="text-primary">{t("landing.hero.titleAccent")}</span>
-          </h1>
-          <p className="text-muted-foreground max-w-lg mx-auto mb-6">
-            {t("landing.hero.description")}
-          </p>
-          <a
-            href="#"
-            className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-full font-semibold text-base hover:bg-primary/80 transition-colors mb-2"
-          >
-            {t("landing.hero.cta")}
-          </a>
-          <p className="text-xs text-muted-foreground">{t("landing.hero.trust")}</p>
+      <div className="max-w-275 mx-auto px-5 sm:px-8">
 
-          {/* Phone mockup */}
-          <div className="bg-card border border-border rounded-2xl p-4 mt-6 max-w-[280px] mx-auto text-left">
-            <div className="bg-muted rounded-xl h-20 flex items-center justify-center text-xs text-muted-foreground mb-3">
-              📹 {t("landing.hero.phone.room")}
-            </div>
-            <div className="bg-green-50 dark:bg-green-950/30 text-green-800 dark:text-green-400 px-3 py-2 rounded-lg text-sm font-medium mb-2">
-              {t("landing.hero.phone.checkOk")}
-            </div>
-            <div className="bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-400 px-3 py-2 rounded-lg text-sm font-medium">
-              {t("landing.hero.phone.checkFail")}
-            </div>
-          </div>
-        </section>
+        {/* ── Hero ──────────────────────────────────────────── */}
+        <section className="pt-20 sm:pt-28 pb-20 sm:pb-28 text-center relative overflow-hidden">
+          {/* Radial glow behind content */}
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: `radial-gradient(ellipse 90% 55% at 50% 0%, oklch(0.58 0.19 246 / 13%) 0%, transparent 70%)` }} />
 
-        {/* ─── Problem ─── */}
-        <section className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-            {t("landing.problem.label")}
-          </p>
-          <h2 className="text-[1.8rem] font-semibold tracking-tight mb-4">
-            {t("landing.problem.title")}
-          </h2>
-          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-5">
-            <p className="font-medium text-foreground mb-4 leading-relaxed">
-              {t("landing.problem.quote")}
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card border border-amber-200 dark:border-amber-800/40 rounded-xl p-3 text-center">
-                <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                  {t("landing.problem.stat1.num")}
-                </div>
-                <div className="text-sm text-muted-foreground mt-0.5">
-                  {t("landing.problem.stat1.label")}
-                </div>
-              </div>
-              <div className="bg-card border border-amber-200 dark:border-amber-800/40 rounded-xl p-3 text-center">
-                <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                  {t("landing.problem.stat2.num")}
-                </div>
-                <div className="text-sm text-muted-foreground mt-0.5">
-                  {t("landing.problem.stat2.label")}
-                </div>
+          <div className="relative flex flex-col items-center gap-6 sm:gap-7">
+            {/* Badge */}
+            <div style={{ animation: "lp-fade-up 0.5s 0s ease-out both" }}>
+              <div className="inline-flex items-center gap-2 text-[12px] sm:text-[13px] font-medium px-4 py-1.5 rounded-full"
+                style={{
+                  background: `oklch(0.58 0.19 246 / 12%)`,
+                  border: `1px solid oklch(0.58 0.19 246 / 28%)`,
+                  color: BLUEL,
+                }}>
+                {t("landing.hero.badge")}
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* ─── How it works ─── */}
-        <section id="how-it-works" className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-            {t("landing.how.label")}
-          </p>
-          <h2 className="text-[1.8rem] font-semibold tracking-tight mb-2">
-            {t("landing.how.title")}
-          </h2>
-          <p className="text-muted-foreground text-sm mb-6">
-            {t("landing.how.description")}
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {steps.map((step, i) => (
-              <div key={i} className="bg-card border border-border rounded-2xl p-4">
-                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center font-bold text-primary text-sm mb-3">
-                  {i + 1}
-                </div>
-                <h3 className="font-semibold mb-1">{step.title}</h3>
-                <p className="text-sm text-muted-foreground">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ─── Benefits ─── */}
-        <section className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-            {t("landing.benefits.label")}
-          </p>
-          <h2 className="text-[1.8rem] font-semibold tracking-tight mb-4">
-            {t("landing.benefits.title")}
-          </h2>
-          <ul className="flex flex-col gap-3 mb-4">
-            {benefits.map((item, i) => (
-              <li key={i} className="flex items-start gap-3 text-sm">
-                <span className="text-amber-500 mt-0.5 shrink-0">★</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800/40 rounded-xl p-3 flex gap-2 text-sm">
-            <span className="shrink-0">💡</span>
-            <p>{t("landing.benefits.bonus")}</p>
-          </div>
-        </section>
-
-        {/* ─── Pricing ─── */}
-        <section className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-            {t("landing.pricing.label")}
-          </p>
-          <h2 className="text-[1.8rem] font-semibold tracking-tight mb-6">
-            {t("landing.pricing.title")}
-          </h2>
-          <div className="flex gap-6 flex-wrap">
-            {/* Monthly */}
-            <div className="flex-1 min-w-[220px] bg-card border border-border rounded-2xl p-6 text-center flex flex-col">
-              <div className="text-[2.2rem] font-bold mb-1">
-                {t("landing.pricing.monthly.price")}
-                <span className="text-base font-normal text-muted-foreground">
-                  {t("landing.pricing.monthly.period")}
+            {/* Headline */}
+            <div style={{ animation: "lp-fade-up 0.55s 0.07s ease-out both" }}>
+              <h1
+                className="font-bold tracking-tight leading-[1.05] max-w-3xl mx-auto"
+                style={{
+                  color: TEXT,
+                  fontSize: "clamp(2.6rem, 6vw, 5rem)",
+                }}>
+                {t("landing.hero.title")}{" "}
+                <span style={{
+                  background: GTEXT,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}>
+                  {t("landing.hero.titleAccent")}
                 </span>
-              </div>
-              <p className="text-muted-foreground text-sm mb-4">
-                {t("landing.pricing.monthly.sub")}
+              </h1>
+            </div>
+
+            {/* Subtext */}
+            <div style={{ animation: "lp-fade-up 0.55s 0.14s ease-out both" }}>
+              <p className="text-[16px] sm:text-[18px] leading-relaxed max-w-lg" style={{ color: MUT }}>
+                {t("landing.hero.description")}
               </p>
-              <ul className="text-left text-sm space-y-2 mb-6 flex-1">
-                {monthlyFeatures.map((f, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#"
-                className="block w-full bg-primary text-primary-foreground text-center py-2.5 rounded-full font-semibold hover:bg-primary/80 transition-colors text-sm"
-              >
-                {t("landing.pricing.monthly.cta")}
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-3 items-center"
+              style={{ animation: "lp-fade-up 0.55s 0.21s ease-out both" }}>
+              <a href={`/${locale}/auth/sign-up`}
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[15px] text-white hover:opacity-90 transition-opacity"
+                style={{ background: BTN }}>
+                {t("landing.hero.cta")}
+              </a>
+              <a href="#how-it-works"
+                className="text-[14px] font-medium hover:opacity-80 transition-opacity"
+                style={{ color: MUT }}>
+                {t("landing.nav.howItWorks")} →
               </a>
             </div>
+
+            {/* Trust */}
+            <p className="text-[12px]" style={{ color: MUT2, animation: "lp-fade-up 0.55s 0.28s ease-out both" }}>
+              {t("landing.hero.trust")}
+            </p>
+
+            {/* Phone proto with glow */}
+            <div className="relative mt-2" style={{ animation: "lp-fade-in 0.8s 0.32s ease-out both" }}>
+              <div className="absolute -inset-10 pointer-events-none"
+                style={{ background: `radial-gradient(ellipse at center, oklch(0.58 0.19 246 / 20%) 0%, transparent 65%)` }} />
+              <PhoneProto locale={locale} />
+            </div>
+          </div>
+        </section>
+
+        {/* ── Problem ───────────────────────────────────────── */}
+        <section className="py-16 sm:py-24">
+          <AnimateIn>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: BLUE }}>
+              {t("landing.problem.label")}
+            </p>
+            <h2 className="font-bold tracking-tight leading-tight mb-10 max-w-xl"
+              style={{ color: TEXT, fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+              {t("landing.problem.title")}
+            </h2>
+          </AnimateIn>
+
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+            {/* Quote */}
+            <AnimateIn className="sm:col-span-3" variant="slide-left">
+              <div className="h-full rounded-2xl p-7 sm:p-9"
+                style={{ background: CARD, border: `1px solid ${BORD}` }}>
+                <p className="text-[17px] sm:text-[19px] leading-relaxed"
+                  style={{ color: "oklch(0.80 0.010 247)" }}>
+                  &ldquo;{t("landing.problem.quote")}&rdquo;
+                </p>
+              </div>
+            </AnimateIn>
+
+            {/* Stats */}
+            <div className="sm:col-span-2 flex flex-col gap-4">
+              {[
+                { num: t("landing.problem.stat1.num"), label: t("landing.problem.stat1.label"), accent: "oklch(0.75 0.19 45)" },
+                { num: t("landing.problem.stat2.num"), label: t("landing.problem.stat2.label"), accent: BLUE },
+              ].map((s, i) => (
+                <AnimateIn key={i} delay={80 + i * 70} variant="slide-right">
+                  <div className="flex-1 rounded-2xl p-6 text-center flex flex-col items-center justify-center gap-2 min-h-30"
+                    style={{ background: CARD, border: `1px solid ${BORD}` }}>
+                    <div className="font-bold leading-none"
+                      style={{ color: s.accent, fontSize: "clamp(2.5rem, 5vw, 3.5rem)" }}>
+                      {s.num}
+                    </div>
+                    <div className="text-[13px] leading-snug" style={{ color: MUT }}>{s.label}</div>
+                  </div>
+                </AnimateIn>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── How it works ──────────────────────────────────── */}
+        <section id="how-it-works" className="py-16 sm:py-24">
+          <AnimateIn>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: BLUE }}>
+              {t("landing.how.label")}
+            </p>
+            <h2 className="font-bold tracking-tight leading-tight mb-3 max-w-2xl"
+              style={{ color: TEXT, fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+              {t("landing.how.title")}
+            </h2>
+            <p className="text-[15px] sm:text-[16px] mb-12 max-w-lg" style={{ color: MUT }}>
+              {t("landing.how.description")}
+            </p>
+          </AnimateIn>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {steps.slice(0, 3).map((step, i) => (
+              <AnimateIn key={i} delay={i * 60}>
+                <div className="rounded-2xl p-6 h-full group hover:border-opacity-30 transition-all"
+                  style={{ background: CARD, border: `1px solid ${BORD}` }}>
+                  <p className="text-[10px] font-bold tabular-nums mb-4" style={{ color: MUT2 }}>
+                    0{i + 1}
+                  </p>
+                  <div className="text-2xl mb-3">{step.icon}</div>
+                  <h3 className="font-semibold text-[15px] mb-2" style={{ color: TEXT }}>{step.title}</h3>
+                  <p className="text-[13px] leading-relaxed" style={{ color: MUT }}>{step.desc}</p>
+                </div>
+              </AnimateIn>
+            ))}
+
+            {/* Step 4 with live dashboard */}
+            <AnimateIn delay={200}>
+              <div className="rounded-2xl p-6 h-full flex flex-col gap-5"
+                style={{ background: CARD, border: `1px solid oklch(0.58 0.19 246 / 35%)` }}>
+                <div>
+                  <p className="text-[10px] font-bold tabular-nums mb-4"
+                    style={{ color: `oklch(0.58 0.19 246 / 55%)` }}>
+                    04
+                  </p>
+                  <div className="text-2xl mb-3">{steps[3].icon}</div>
+                  <h3 className="font-semibold text-[15px] mb-2" style={{ color: TEXT }}>{steps[3].title}</h3>
+                  <p className="text-[13px] leading-relaxed" style={{ color: MUT }}>{steps[3].desc}</p>
+                </div>
+                <DashboardProto locale={locale} />
+              </div>
+            </AnimateIn>
+          </div>
+        </section>
+
+        {/* ── Benefits ──────────────────────────────────────── */}
+        <section className="py-16 sm:py-24">
+          <AnimateIn>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: BLUE }}>
+              {t("landing.benefits.label")}
+            </p>
+            <h2 className="font-bold tracking-tight leading-tight mb-12 max-w-xl"
+              style={{ color: TEXT, fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+              {t("landing.benefits.title")}
+            </h2>
+          </AnimateIn>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {benefits.map((b, i) => (
+              <AnimateIn key={i} delay={i * 55}>
+                <div className="rounded-2xl p-5 sm:p-6 h-full"
+                  style={{ background: CARD, border: `1px solid ${BORD}` }}>
+                  <div className="text-[1.5rem] mb-3">{b.icon}</div>
+                  <p className="text-[14px] leading-relaxed" style={{ color: "oklch(0.80 0.010 247)" }}>{b.text}</p>
+                </div>
+              </AnimateIn>
+            ))}
+          </div>
+
+          <AnimateIn delay={320}>
+            <div className="mt-4 rounded-2xl p-5 sm:p-6 flex items-start gap-3"
+              style={{ background: "oklch(0.22 0.06 150 / 25%)", border: `1px solid oklch(0.55 0.13 163 / 35%)` }}>
+              <span className="text-xl shrink-0 leading-none mt-0.5">💡</span>
+              <p className="text-[14px] leading-relaxed" style={{ color: "oklch(0.75 0.09 163)" }}>
+                {t("landing.benefits.bonus")}
+              </p>
+            </div>
+          </AnimateIn>
+        </section>
+
+        {/* ── Pricing ───────────────────────────────────────── */}
+        <section id="pricing" className="py-16 sm:py-24">
+          <AnimateIn>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: BLUE }}>
+              {t("landing.pricing.label")}
+            </p>
+            <h2 className="font-bold tracking-tight leading-tight mb-12"
+              style={{ color: TEXT, fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+              {t("landing.pricing.title")}
+            </h2>
+          </AnimateIn>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {/* Monthly */}
+            <AnimateIn delay={60} variant="fade-up">
+              <div className="flex flex-col rounded-2xl p-7 h-full"
+                style={{ background: CARD, border: `1px solid ${BORD}` }}>
+                <div className="mb-6">
+                  <div className="flex items-baseline gap-1.5 mb-1">
+                    <span className="font-bold" style={{ color: TEXT, fontSize: "clamp(2.2rem, 4vw, 2.8rem)" }}>
+                      {t("landing.pricing.monthly.price")}
+                    </span>
+                    <span className="text-[14px]" style={{ color: MUT }}>
+                      {t("landing.pricing.monthly.period")}
+                    </span>
+                  </div>
+                  <p className="text-[13px]" style={{ color: MUT }}>{t("landing.pricing.monthly.sub")}</p>
+                </div>
+                <ul className="flex flex-col gap-3 mb-8 flex-1">
+                  {monthlyFeatures.map((f, i) => (
+                    <li key={i} className="flex items-center gap-2.5 text-[14px]"
+                      style={{ color: "oklch(0.80 0.010 247)" }}>
+                      <span className="shrink-0 text-[12px]" style={{ color: "#34d399" }}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a href={`/${locale}/auth/sign-up`}
+                  className="block w-full text-center py-3 rounded-full font-semibold text-[14px] transition-opacity hover:opacity-80"
+                  style={{ background: CARD2, color: TEXT, border: `1px solid ${BORD2}` }}>
+                  {t("landing.pricing.monthly.cta")}
+                </a>
+              </div>
+            </AnimateIn>
 
             {/* Annual — recommended */}
-            <div className="flex-1 min-w-[220px] bg-card border-2 border-primary rounded-2xl p-6 text-center relative shadow-md flex flex-col">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-4 py-1 rounded-full whitespace-nowrap">
-                {t("landing.pricing.annual.badge")}
+            <AnimateIn delay={130} variant="fade-up">
+              <div className="flex flex-col rounded-2xl p-7 h-full relative"
+                style={{ background: CARD, border: `1px solid oklch(0.58 0.19 246 / 45%)` }}>
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-[11px] font-bold px-5 py-1.5 rounded-full whitespace-nowrap text-white"
+                  style={{ background: BTN }}>
+                  {t("landing.pricing.annual.badge")}
+                </div>
+                <div className="mt-3 mb-6">
+                  <div className="flex items-baseline gap-1.5 mb-1">
+                    <span className="font-bold" style={{ color: TEXT, fontSize: "clamp(2.2rem, 4vw, 2.8rem)" }}>
+                      {t("landing.pricing.annual.price")}
+                    </span>
+                    <span className="text-[14px]" style={{ color: MUT }}>
+                      {t("landing.pricing.annual.period")}
+                    </span>
+                  </div>
+                  <p className="text-[13px]" style={{ color: MUT }}>{t("landing.pricing.annual.sub")}</p>
+                </div>
+                <ul className="flex flex-col gap-3 mb-8 flex-1">
+                  {annualFeatures.map((f, i) => (
+                    <li key={i} className="flex items-center gap-2.5 text-[14px]"
+                      style={{ color: "oklch(0.80 0.010 247)" }}>
+                      <span className="shrink-0 text-[12px]" style={{ color: "#34d399" }}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a href={`/${locale}/auth/sign-up`}
+                  className="block w-full text-center py-3 rounded-full font-semibold text-[14px] text-white hover:opacity-90 transition-opacity"
+                  style={{ background: BTN }}>
+                  {t("landing.pricing.annual.cta")}
+                </a>
               </div>
-              <div className="text-[2.2rem] font-bold mb-1">
-                {t("landing.pricing.annual.price")}
-                <span className="text-base font-normal text-muted-foreground">
-                  {t("landing.pricing.annual.period")}
-                </span>
-              </div>
-              <p className="text-muted-foreground text-sm mb-4">
-                {t("landing.pricing.annual.sub")}
-              </p>
-              <ul className="text-left text-sm space-y-2 mb-6 flex-1">
-                {annualFeatures.map((f, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="text-green-600 dark:text-green-400 shrink-0">✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#"
-                className="block w-full bg-primary text-primary-foreground text-center py-2.5 rounded-full font-semibold hover:bg-primary/80 transition-colors text-sm"
-              >
-                {t("landing.pricing.annual.cta")}
-              </a>
+            </AnimateIn>
+          </div>
+
+          <AnimateIn delay={220}>
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full px-5 py-2 text-[12px] font-semibold"
+              style={{
+                background: "oklch(0.55 0.12 50 / 14%)",
+                border: `1px solid oklch(0.65 0.15 50 / 28%)`,
+                color: "oklch(0.82 0.13 65)",
+              }}>
+              {t("landing.pricing.limitedOffer")}
             </div>
-          </div>
-          <div className="mt-4 inline-block bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 rounded-full px-4 py-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
-            {t("landing.pricing.limitedOffer")}
-          </div>
+          </AnimateIn>
         </section>
 
-        {/* ─── Testimonials ─── */}
-        <section className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-            {t("landing.testimonials.label")}
-          </p>
-          <h2 className="text-[1.8rem] font-semibold tracking-tight mb-4">
-            {t("landing.testimonials.title")}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {testimonials.map((testi, i) => (
-              <div key={i} className="bg-card border border-border rounded-2xl p-4">
-                <div className="text-amber-400 mb-2 tracking-wide">★★★★★</div>
-                <p className="italic text-sm mb-4 text-foreground/80">{testi.text}</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-primary font-semibold text-sm shrink-0">
-                    {testi.initials}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{testi.name}</p>
-                    <p className="text-xs text-muted-foreground">{testi.role}</p>
+        {/* ── Testimonials ──────────────────────────────────── */}
+        <section className="py-16 sm:py-24">
+          <AnimateIn>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] mb-4" style={{ color: BLUE }}>
+              {t("landing.testimonials.label")}
+            </p>
+            <h2 className="font-bold tracking-tight leading-tight mb-10 max-w-xl"
+              style={{ color: TEXT, fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+              {t("landing.testimonials.title")}
+            </h2>
+          </AnimateIn>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {[
+              {
+                text: t("landing.testimonials.1.text"),
+                name: t("landing.testimonials.1.name"),
+                role: t("landing.testimonials.1.role"),
+                initials: "SL",
+              },
+              {
+                text: t("landing.testimonials.2.text"),
+                name: t("landing.testimonials.2.name"),
+                role: t("landing.testimonials.2.role"),
+                initials: "MD",
+              },
+            ].map((te, i) => (
+              <AnimateIn key={i} delay={i * 80}>
+                <div className="rounded-2xl p-7 flex flex-col gap-5 h-full"
+                  style={{ background: CARD, border: `1px solid ${BORD}` }}>
+                  <div className="text-amber-400 tracking-wider text-[13px]">★★★★★</div>
+                  <p className="text-[16px] sm:text-[17px] leading-relaxed flex-1"
+                    style={{ color: "oklch(0.83 0.010 247)" }}>
+                    {te.text.replace(/^"|"$/g, "")}
+                  </p>
+                  <div className="flex items-center gap-3 pt-4"
+                    style={{ borderTop: `1px solid ${BORD}` }}>
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
+                      style={{ background: `oklch(0.58 0.19 246 / 20%)`, color: BLUEL }}>
+                      {te.initials}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-[13px]" style={{ color: TEXT }}>{te.name}</div>
+                      <div className="text-[11px]" style={{ color: MUT }}>{te.role}</div>
+                    </div>
                   </div>
                 </div>
+              </AnimateIn>
+            ))}
+          </div>
+        </section>
+
+        {/* ── FAQ ───────────────────────────────────────────── */}
+        <section id="faq" className="py-16 sm:py-24">
+          <AnimateIn>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] mb-8" style={{ color: BLUE }}>
+              {t("landing.faq.label")}
+            </p>
+          </AnimateIn>
+          <AnimateIn delay={60}>
+            <Accordion type="single" collapsible>
+              {faqs.map((faq, i) => (
+                <AccordionItem key={i} value={`faq-${i}`}>
+                  <AccordionTrigger>{faq.q}</AccordionTrigger>
+                  <AccordionContent>{faq.a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </AnimateIn>
+        </section>
+
+        {/* ── Final CTA ─────────────────────────────────────── */}
+        <AnimateIn variant="fade-up">
+          <section className="rounded-3xl relative overflow-hidden mb-8"
+            style={{ background: CARD, border: `1px solid ${BORD}` }}>
+            {/* Radial glow */}
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: `radial-gradient(ellipse 80% 70% at 50% -10%, oklch(0.58 0.19 246 / 12%) 0%, transparent 65%)` }} />
+            <div className="relative text-center px-8 sm:px-16 py-16 sm:py-24">
+              <h2 className="font-bold tracking-tight leading-tight mb-4 max-w-2xl mx-auto"
+                style={{ color: TEXT, fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}>
+                {t("landing.finalCta.title")}
+              </h2>
+              <p className="text-[16px] mb-8 max-w-md mx-auto leading-relaxed" style={{ color: MUT }}>
+                {t("landing.finalCta.description")}
+              </p>
+              <a href={`/${locale}/auth/sign-up`}
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-[15px] text-white hover:opacity-90 transition-opacity"
+                style={{ background: BTN }}>
+                {t("landing.finalCta.cta")}
+              </a>
+              <p className="mt-5 text-[12px]" style={{ color: MUT2 }}>
+                {t("landing.finalCta.trust")}
+              </p>
+            </div>
+          </section>
+        </AnimateIn>
+
+        {/* ── Guarantee ─────────────────────────────────────── */}
+        <AnimateIn>
+          <div className="rounded-2xl px-5 py-4 flex items-start gap-3 mb-16 text-[14px]"
+            style={{ background: "oklch(0.20 0.07 163 / 22%)", border: `1px solid oklch(0.55 0.13 163 / 35%)` }}>
+            <span className="shrink-0 text-[15px] leading-none mt-0.5" style={{ color: "#34d399" }}>✓</span>
+            <p style={{ color: "oklch(0.78 0.08 163)" }}>{t("landing.guarantee")}</p>
+          </div>
+        </AnimateIn>
+
+        {/* ── Footer ────────────────────────────────────────── */}
+        <footer style={{ borderTop: `1px solid ${BORD}` }}>
+          <div className="pt-12 pb-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div className="col-span-2 sm:col-span-1">
+              <span className="text-[1.1rem] font-bold block mb-2.5" style={{ color: TEXT }}>CleanPilot</span>
+              <p className="text-[13px] leading-relaxed mb-4 max-w-[18ch]" style={{ color: MUT }}>
+                {t("landing.footer.tagline")}
+              </p>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="text-[11px]" style={{ color: MUT }}>
+                  {isFr ? "Tous systèmes OK" : "All systems OK"}
+                </span>
+              </div>
+            </div>
+
+            {[
+              {
+                title: isFr ? "Produit" : "Product",
+                links: [
+                  { label: t("landing.nav.howItWorks"), href: "#how-it-works" },
+                  { label: isFr ? "Tarifs" : "Pricing", href: "#pricing" },
+                  { label: "FAQ", href: "#faq" },
+                ],
+              },
+              {
+                title: isFr ? "Entreprise" : "Company",
+                links: [
+                  { label: t("landing.footer.legal"), href: "#" },
+                  { label: t("landing.footer.terms"), href: "#" },
+                  { label: t("landing.footer.contact"), href: "mailto:contact@cleanpilot.fr" },
+                ],
+              },
+              {
+                title: isFr ? "Compte" : "Account",
+                links: [
+                  { label: t("landing.nav.signUp"), href: `/${locale}/auth/sign-up` },
+                  { label: t("landing.nav.signIn"), href: `/${locale}/auth/sign-in` },
+                ],
+              },
+            ].map((col, i) => (
+              <div key={i}>
+                <p className="text-[10px] font-semibold uppercase tracking-widest mb-3.5" style={{ color: MUT2 }}>
+                  {col.title}
+                </p>
+                <ul className="flex flex-col gap-2.5">
+                  {col.links.map((l, j) => (
+                    <li key={j}>
+                      <Link href={l.href}
+                        className="text-[13px] hover:opacity-100 opacity-60 transition-opacity"
+                        style={{ color: TEXT }}>
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
-        </section>
 
-        {/* ─── FAQ ─── */}
-        <section className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-            {t("landing.faq.label")}
-          </p>
-          <Accordion type="single" collapsible>
-            {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`}>
-                <AccordionTrigger>{faq.q}</AccordionTrigger>
-                <AccordionContent>{faq.a}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </section>
-
-        {/* ─── Final CTA ─── */}
-        <section className="bg-primary rounded-2xl p-8 text-center mb-6">
-          <h2 className="text-2xl font-semibold tracking-tight text-primary-foreground mb-3">
-            {t("landing.finalCta.title")}
-          </h2>
-          <p className="text-primary-foreground/80 mb-6">
-            {t("landing.finalCta.description")}
-          </p>
-          <a
-            href="#"
-            className="inline-block bg-card text-primary px-6 py-3 rounded-full font-semibold hover:bg-card/90 transition-colors"
-          >
-            {t("landing.finalCta.cta")}
-          </a>
-          <p className="mt-3 text-xs text-primary-foreground/60">
-            {t("landing.finalCta.trust")}
-          </p>
-        </section>
-
-        {/* ─── Guarantee ─── */}
-        <div className="bg-secondary border border-border rounded-xl p-4 flex items-start gap-3 mb-8 text-sm">
-          <span className="text-green-600 dark:text-green-400 text-lg shrink-0 mt-0.5">✓</span>
-          <p>{t("landing.guarantee")}</p>
-        </div>
-
-        {/* ─── Footer ─── */}
-        <footer className="border-t border-border pt-6 pb-4 flex flex-col gap-1.5">
-          <div className="flex gap-6 flex-wrap mb-1">
-            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-              {t("landing.footer.legal")}
-            </a>
-            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-              {t("landing.footer.terms")}
-            </a>
-            <a
-              href="mailto:contact@cleanpilot.fr"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {t("landing.footer.contact")}
-            </a>
+          <div className="py-5 flex flex-col sm:flex-row items-center justify-between gap-1.5"
+            style={{ borderTop: `1px solid ${BORD}` }}>
+            <p className="text-[11px]" style={{ color: MUT2 }}>{t("landing.footer.copy")}</p>
+            <p className="text-[11px]" style={{ color: MUT2 }}>
+              {isFr ? "Fait avec ♥ pour les concierges" : "Made with ♥ for concierges"}
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground">{t("landing.footer.copy")}</p>
-          <p className="text-xs text-muted-foreground">{t("landing.footer.tagline")}</p>
         </footer>
 
       </div>

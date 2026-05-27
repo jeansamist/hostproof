@@ -149,3 +149,39 @@
     @apply font-sans;
   }
 }
+
+/* ── Landing page — dark section (always dark, theme-independent) ── */
+.lp-dark {
+  background: oklch(0.165 0.038 244);
+  color: oklch(0.948 0.012 247);
+}
+/* In dark mode the page bg is already navy — use a slightly lighter card */
+.dark .lp-dark {
+  background: oklch(0.215 0.042 244);
+}
+
+/* ── Landing page animations ─────────────────────────── */
+@keyframes lp-fade-up {
+  from { opacity: 0; transform: translateY(1.25rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes lp-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes lp-scan-grow {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+@keyframes lp-pulse-scan {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+@keyframes lp-typing-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes lp-progress-bar {
+  from { width: 0%; }
+  to   { width: 75%; }
+}
