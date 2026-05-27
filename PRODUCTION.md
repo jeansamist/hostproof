@@ -11,8 +11,8 @@ This monorepo contains two production apps:
 
 ## Prerequisites
 
-| Tool | Minimum version | Install |
-|------|----------------|---------|
+| Tool | Min version | Install |
+|------|------------|---------|
 | Node.js | 20 LTS | https://nodejs.org |
 | pnpm | 9+ | `npm i -g pnpm` |
 | PM2 | 5+ | `npm i -g pm2` |
@@ -26,35 +26,58 @@ This monorepo contains two production apps:
 # 1. Clone and enter the repo
 git clone <repo-url> hostproof && cd hostproof
 
-# 2. Copy and fill in the API env file
-cp apps/api/.env.example apps/api/.env
-$EDITOR apps/api/.env        # set APP_KEY, DB_*, SMTP_*, etc.
+# 2. Create the root-level env files from the templates
+cp .env.api.example .env.api
+cp .env.web.example .env.web
 
-# 3. (Optional) Set custom ports — defaults are 3333 / 3000
+# 3. Fill them in
+$EDITOR .env.api    # APP_KEY, DB_*, SMTP_*, GOOGLE_API_KEY …
+$EDITOR .env.web    # NEXT_PUBLIC_API_URL, NEXT_PUBLIC_APP_URL
+
+# 4. (Optional) custom ports — defaults are API:3333 / Web:3000
 export HOSTPROOF_API_PORT=3333
 export HOSTPROOF_WEB_PORT=3000
 
-# 4. Run the deploy script
+# 5. Deploy
 chmod +x deploy.sh
 ./deploy.sh
-
-# The script builds both apps, runs DB migrations, and starts PM2.
 ```
+
+The script will:
+1. Copy `.env.api` → `apps/api/.env` and `apps/api/build/.env`
+2. Copy `.env.web` → `apps/web/.env.production.local` *(before build, so `NEXT_PUBLIC_*` vars are baked in)*
+3. Install deps, build both apps, run DB migrations, start PM2.
 
 ---
 
-## Environment variables
+## Env files
 
-### `apps/api/.env` (required)
+All production secrets live at the **repo root** and are gitignored:
+
+```
+.env.api          ← API secrets (DB, SMTP, APP_KEY …)
+.env.web          ← Web public vars (API/app URLs)
+.env.api.example  ← committed template
+.env.web.example  ← committed template
+```
+
+The deploy script distributes them automatically:
+
+| Root file | Copied to |
+|-----------|-----------|
+| `.env.api` | `apps/api/.env` + `apps/api/build/.env` |
+| `.env.web` | `apps/web/.env.production.local` |
+
+### `.env.api` reference
 
 ```dotenv
 TZ=UTC
-PORT=3333                       # overridden by HOSTPROOF_API_PORT in PM2
+PORT=3333          # overridden by HOSTPROOF_API_PORT in PM2
 HOST=0.0.0.0
 NODE_ENV=production
 
 LOG_LEVEL=info
-APP_KEY=<generate with: node ace generate:key>
+APP_KEY=           # generate: node ace generate:key
 APP_URL=https://api.yourdomain.com
 
 SESSION_DRIVER=cookie
@@ -62,116 +85,69 @@ SESSION_DRIVER=cookie
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_USER=hostproof
-DB_PASSWORD=<strong-password>
+DB_PASSWORD=
 DB_DATABASE=hostproof
-
-SMTP_HOST=smtp.yourprovider.com
-SMTP_PORT=465
-SMTP_SECURE=true
-SMTP_USERNAME=you@yourdomain.com
-SMTP_PASSWORD=<smtp-password>
 
 MAIL_MAILER=smtp
 MAIL_FROM_NAME=Hostproof
 MAIL_FROM_ADDRESS=no-reply@yourdomain.com
+SMTP_HOST=smtp.yourprovider.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USERNAME=
+SMTP_PASSWORD=
 
 FRONTEND_APP_URL=https://app.yourdomain.com
 
-GOOGLE_API_KEY=<your-google-genai-key>
+GOOGLE_API_KEY=
 ```
 
-### `apps/web` environment (optional)
+### `.env.web` reference
 
-Pass via shell before running `deploy.sh`, or add to the `env_production` block in `ecosystem.config.cjs`:
-
-```bash
-export NEXT_PUBLIC_API_URL=https://api.yourdomain.com
-export NEXT_PUBLIC_APP_URL=https://app.yourdomain.com
+```dotenv
+# Baked into the client bundle at build time
+NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+NEXT_PUBLIC_APP_URL=https://app.yourdomain.com
 ```
 
 ---
 
 ## Manual step-by-step
 
-If you prefer to run each step yourself instead of using `deploy.sh`:
+If you prefer to run each step yourself:
 
 ```bash
-# 1. Install all dependencies
+# Distribute env files
+cp .env.api apps/api/.env
+cp .env.web apps/web/.env.production.local
+
+# Install deps
 pnpm install --frozen-lockfile
 
-# 2. Build the API
+# Build API
 pnpm build:api
-# Output: apps/api/build/
+# → apps/api/build/
 
-# 3. Install production-only deps inside the build folder
-cd apps/api/build
-pnpm install --prod
-cd ../../..
+# Copy .env into build dir (AdonisJS reads from cwd)
+cp .env.api apps/api/build/.env
 
-# 4. Copy the API .env into the build folder
-cp apps/api/.env apps/api/build/.env
+# Install prod-only deps in build dir
+cd apps/api/build && pnpm install --prod && cd ../../..
 
-# 5. Run database migrations
-cd apps/api/build
-node ace migration:run --force
-cd ../../..
+# Run migrations
+cd apps/api/build && node ace migration:run --force && cd ../../..
 
-# 6. Build the web app
+# Build web (NEXT_PUBLIC_* already set by env.production.local above)
 pnpm build:web
-# Output: apps/web/.next/
+# → apps/web/.next/
 
-# 7. Create the log directory
+# Start PM2
 mkdir -p logs
-
-# 8. Start (or reload) with PM2
 export HOSTPROOF_API_PORT=3333
 export HOSTPROOF_WEB_PORT=3000
 pm2 start ecosystem.config.cjs --env production
-
-# 9. Save the PM2 process list for auto-restart on reboot
 pm2 save
-pm2 startup    # follow the printed command to enable systemd/init integration
-```
-
----
-
-## PM2 cheat sheet
-
-```bash
-# View running processes
-pm2 list
-
-# Real-time logs (both apps)
-pm2 logs
-
-# Logs for a specific app
-pm2 logs hostproof-api
-pm2 logs hostproof-web
-
-# Zero-downtime reload (after a new build)
-pm2 reload ecosystem.config.cjs --env production
-
-# Restart a single app
-pm2 restart hostproof-api
-
-# Stop everything
-pm2 stop ecosystem.config.cjs
-
-# Delete from PM2 registry
-pm2 delete ecosystem.config.cjs
-
-# Monitor CPU / memory
-pm2 monit
-```
-
-Log files are written to the `logs/` directory at the repo root:
-
-```
-logs/
-  api-out.log
-  api-err.log
-  web-out.log
-  web-err.log
+pm2 startup   # follow the printed command to enable auto-start on reboot
 ```
 
 ---
@@ -179,33 +155,44 @@ logs/
 ## Re-deploying after code changes
 
 ```bash
-# Pull latest code
 git pull
-
-# Re-run the deploy script (builds + migrates + reloads PM2)
 ./deploy.sh
+# Existing PM2 processes are reloaded with zero downtime.
 ```
 
-Or manually:
+To skip rebuilding when only env vars changed:
 
 ```bash
-pnpm install --frozen-lockfile
-pnpm build:api
-pnpm build:web
-cp apps/api/.env apps/api/build/.env
-cd apps/api/build && pnpm install --prod && node ace migration:run --force && cd ../../..
-pm2 reload ecosystem.config.cjs --env production
+./deploy.sh --skip-build --skip-migrate
+```
+
+---
+
+## PM2 cheat sheet
+
+```bash
+pm2 list                                        # process status
+pm2 logs                                        # all logs (live)
+pm2 logs hostproof-api                          # API logs only
+pm2 logs hostproof-web                          # web logs only
+pm2 reload ecosystem.config.cjs --env production  # zero-downtime reload
+pm2 restart hostproof-api                       # hard restart one app
+pm2 stop ecosystem.config.cjs                   # stop all
+pm2 monit                                       # CPU / memory dashboard
+```
+
+Logs are written to `logs/` at the repo root:
+
+```
+logs/api-out.log   logs/api-err.log
+logs/web-out.log   logs/web-err.log
 ```
 
 ---
 
 ## Reverse proxy (Nginx example)
 
-Run Nginx in front of both apps to handle TLS and clean URLs:
-
 ```nginx
-# /etc/nginx/sites-available/hostproof
-
 # API
 server {
     listen 443 ssl;
@@ -227,7 +214,7 @@ server {
     }
 }
 
-# Web app
+# Web
 server {
     listen 443 ssl;
     server_name app.yourdomain.com;
@@ -253,14 +240,20 @@ server {
 
 ## Troubleshooting
 
-**API won't start — "Missing environment variable"**  
-Make sure `apps/api/build/.env` exists and contains all required keys. The deploy script copies it automatically; if you built manually, run `cp apps/api/.env apps/api/build/.env`.
+**`No API env file found`**
+Create `.env.api` from the template: `cp .env.api.example .env.api`
 
-**Web app returns 500 — API unreachable**  
-Check `NEXT_PUBLIC_API_URL` points to the correct API address and that the API is running (`pm2 list`).
+**API won't start — "Missing environment variable"**
+`apps/api/build/.env` is missing or incomplete. Re-run `./deploy.sh` so it is copied fresh from `.env.api`.
 
-**Database migration failed**  
-Verify the `DB_*` variables in `apps/api/build/.env` match your PostgreSQL instance and that the user has CREATE/ALTER TABLE privileges.
+**Web returns 500 — API unreachable**
+Check `NEXT_PUBLIC_API_URL` in `.env.web` and rebuild: `./deploy.sh`
 
-**Port already in use**  
-Change the port via `HOSTPROOF_API_PORT` / `HOSTPROOF_WEB_PORT` before starting, or kill the conflicting process with `lsof -ti:<port> | xargs kill`.
+**`NEXT_PUBLIC_*` vars have wrong value in production**
+These are baked in at build time. Update `.env.web` and re-run `./deploy.sh` (full rebuild needed).
+
+**Database migration failed**
+Check `DB_*` values in `.env.api` and ensure the PostgreSQL user has CREATE/ALTER TABLE privileges.
+
+**Port already in use**
+Change via `--api-port` / `--web-port` flags or the `HOSTPROOF_API_PORT` / `HOSTPROOF_WEB_PORT` env vars.
