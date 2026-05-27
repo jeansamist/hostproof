@@ -54,7 +54,7 @@ export const OnboardingCreateHousingsForm: FunctionComponent<
       setErrorMessage(undefined)
       await handleNext(data)
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unknown error")
+      setErrorMessage(error instanceof Error ? error.message : t("onboarding.error.unknown"))
     }
   }
   const { append, fields, remove } = useFieldArray({

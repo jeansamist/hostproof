@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import {
   createChecklistItem,
   deleteChecklistItem,
@@ -61,6 +62,7 @@ function SortableRow({
   onSave: (id: number) => void
   onDelete: (id: number) => void
 }) {
+  const t = useI18n()
   const controls = useDragControls()
   const isEditing = editingId === item.id
 
@@ -80,7 +82,7 @@ function SortableRow({
             ? "cursor-not-allowed text-muted-foreground/20 shrink-0"
             : "cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors shrink-0"
         }
-        aria-label="Drag to reorder"
+        aria-label={t("settings.checklist.aria.dragToReorder")}
       >
         <GripVertical className="size-4" />
       </button>
@@ -152,19 +154,22 @@ function SortableRow({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Delete checklist item?</AlertDialogTitle>
+                  <AlertDialogTitle>
+                    {t("settings.checklist.delete.title")}
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
-                    "<strong>{item.label}</strong>" will be removed from your default checklist.
-                    This won't affect past analyses.
+                    {t("settings.checklist.delete.description", { label: item.label })}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>
+                    {t("settings.checklist.delete.cancel")}
+                  </AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     onClick={() => onDelete(item.id)}
                   >
-                    Delete
+                    {t("settings.checklist.delete.confirm")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -184,6 +189,7 @@ type SettingsChecklistProps = {
 export const SettingsChecklist: FunctionComponent<SettingsChecklistProps> = ({
   initialItems,
 }) => {
+  const t = useI18n()
   const router = useRouter()
   const [items, setItems] = useState<ChecklistItem[]>(initialItems)
   const [newLabel, setNewLabel] = useState("")
@@ -263,14 +269,15 @@ export const SettingsChecklist: FunctionComponent<SettingsChecklistProps> = ({
       <div className="flex items-center gap-2 px-5 py-4 border-b">
         <CheckSquare className="size-4 text-muted-foreground shrink-0" />
         <div>
-          <p className="text-sm font-semibold">Default cleaning checklist</p>
+          <p className="text-sm font-semibold">
+            {t("settings.checklist.title")}
+          </p>
           <p className="text-xs text-muted-foreground">
-            These points are sent to the AI for every video analysis — it will flag any that are
-            missing. Drag the handle to reorder.
+            {t("settings.checklist.description")}
             {isReordering && (
               <span className="ml-2 inline-flex items-center gap-1 text-muted-foreground/60">
                 <Loader2 className="size-3 animate-spin" />
-                Saving order…
+                {t("settings.checklist.savingOrder")}
               </span>
             )}
           </p>
@@ -280,7 +287,7 @@ export const SettingsChecklist: FunctionComponent<SettingsChecklistProps> = ({
       {/* Sortable list */}
       {items.length === 0 ? (
         <p className="px-5 py-8 text-center text-sm text-muted-foreground">
-          No checklist items yet. Add your first one below.
+          {t("settings.checklist.empty")}
         </p>
       ) : (
         <Reorder.Group
@@ -313,7 +320,7 @@ export const SettingsChecklist: FunctionComponent<SettingsChecklistProps> = ({
       <div className="flex items-center gap-2 px-5 py-4 border-t">
         <Input
           className="h-9 text-sm flex-1"
-          placeholder="e.g. Check all light bulbs are working…"
+          placeholder={t("settings.checklist.item.placeholder")}
           value={newLabel}
           onChange={(e) => setNewLabel(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAdd()}
@@ -329,7 +336,7 @@ export const SettingsChecklist: FunctionComponent<SettingsChecklistProps> = ({
           ) : (
             <Plus className="size-4" />
           )}
-          Add
+          {t("settings.checklist.action.add")}
         </Button>
       </div>
     </div>

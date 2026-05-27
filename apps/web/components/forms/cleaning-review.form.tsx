@@ -22,14 +22,6 @@ import { useRouter } from "next/navigation"
 import { FunctionComponent, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-const STATUSES = [
-  { value: "Created", label: "Created" },
-  { value: "AI Analizing", label: "AI Analysing" },
-  { value: "Analized", label: "Analysed" },
-  { value: "Done", label: "Done" },
-  { value: "Failed", label: "Failed" },
-]
-
 type CleaningReviewFormProps = {
   review: CleaningReview
   employees: Employee[]
@@ -45,6 +37,14 @@ export const CleaningReviewForm: FunctionComponent<CleaningReviewFormProps> = ({
   const t = useI18n()
   const [errorMessage, setErrorMessage] = useState<string>()
 
+  const STATUSES = [
+    { value: "Created", label: t("cleaningReview.status.created") },
+    { value: "AI Analizing", label: t("cleaningReview.status.aiAnalysing") },
+    { value: "Analized", label: t("cleaningReview.status.analysed") },
+    { value: "Done", label: t("cleaningReview.status.done") },
+    { value: "Failed", label: t("cleaningReview.status.failed") },
+  ]
+
   const form = useForm<UpdateCleaningReviewSchema>({
     resolver: zodResolver(updateCleaningReviewSchema),
     mode: "onChange",
@@ -59,7 +59,7 @@ export const CleaningReviewForm: FunctionComponent<CleaningReviewFormProps> = ({
     setErrorMessage(undefined)
     const result = await updateCleaningReview({ ...data, id: review.id })
     if (!result?.success) {
-      setErrorMessage(result?.message ?? "Something went wrong")
+      setErrorMessage(result?.message ?? t("cleaningReview.form.error.general"))
       return
     }
     router.push(returnUrl)
@@ -119,7 +119,7 @@ export const CleaningReviewForm: FunctionComponent<CleaningReviewFormProps> = ({
               <FieldLabel>{t("cleaningReview.form.status.label")}</FieldLabel>
               <Select value={field.value ?? ""} onValueChange={field.onChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
+                  <SelectValue placeholder={t("cleaningReview.form.status.placeholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {STATUSES.map((s) => (

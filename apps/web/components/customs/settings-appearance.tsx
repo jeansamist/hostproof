@@ -51,7 +51,7 @@ export const SettingsAppearance: FunctionComponent = () => {
           <div
             className="flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm opacity-60 cursor-not-allowed"
           >
-            <span>English</span>
+            <span>{t("settings.appearance.language.english")}</span>
             <span className="text-xs text-muted-foreground rounded-md bg-muted px-2 py-0.5">
               en
             </span>

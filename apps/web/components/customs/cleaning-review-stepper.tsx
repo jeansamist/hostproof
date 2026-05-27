@@ -136,7 +136,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
 
     const result = await createReservation({ ...data, moveOutDate })
     if (!result?.success)
-      throw new Error(result?.message ?? "Failed to create reservation")
+      throw new Error(result?.message ?? t("cleaningReview.stepper.error.reservation"))
     setSelectedReservation(result.data as Reservation)
     goNext()
   }
@@ -156,7 +156,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
     })
     setIsSubmitting(false)
     if (!result?.success) {
-      setError(result?.message ?? "Something went wrong")
+      setError(result?.message ?? t("cleaningReview.stepper.error.general"))
       return
     }
     const uri = (result.data as any)?.uri
@@ -184,7 +184,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
     const result = await sendCleaningReviewInvitation(generatedId, publicLink)
     setIsSendingEmail(false)
     if (!(result as any)?.success) {
-      setError((result as any)?.message ?? "Failed to send email")
+      setError((result as any)?.message ?? t("cleaningReview.stepper.error.email"))
       return
     }
     setEmailSent(true)
@@ -553,9 +553,9 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                       {t("cleaningReview.stepper.share.title")}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      Share the link below with{" "}
-                      <strong>{selectedEmployee?.fullName}</strong> to let them
-                      upload the video.
+                      {t("cleaningReview.stepper.share.employeeDescription", {
+                        name: selectedEmployee?.fullName ?? "",
+                      })}
                     </p>
                   </div>
                 </div>

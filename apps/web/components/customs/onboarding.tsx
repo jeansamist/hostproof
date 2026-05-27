@@ -167,7 +167,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
   const handleCreateHousingsNext = async (data: CreateManyHousingSchema) => {
     const result = await createManyHousings(data)
     if (!result?.success) {
-      throw new Error(result?.message ?? "Unable to create housings")
+      throw new Error(result?.message ?? t("onboarding.error.createHousings"))
     }
     completeStep(0)
     goToNextStep()
@@ -181,7 +181,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
   const handleCreateEmployeesNext = async (data: CreateManyEmployeeSchema) => {
     const result = await createManyEmployees(data)
     if (!result?.success) {
-      throw new Error(result?.message ?? "Unable to create employees")
+      throw new Error(result?.message ?? t("onboarding.error.createEmployees"))
     }
     completeStep(1)
     goToNextStep()

@@ -13,14 +13,6 @@ type PageProps = {
   params: Promise<{ locale: string; cleaningReviewId: string }>
 }
 
-const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  Created: { label: "Created", variant: "outline" },
-  "AI Analizing": { label: "AI Analysing", variant: "secondary" },
-  Analized: { label: "Analysed", variant: "secondary" },
-  Done: { label: "Done", variant: "default" },
-  Failed: { label: "Failed", variant: "destructive" },
-}
-
 export default async function CleaningReviewDetailPage({ params }: PageProps) {
   const { locale, cleaningReviewId } = await params
   const returnUrl = `/${locale}/app/cleaning-review`
@@ -29,6 +21,14 @@ export default async function CleaningReviewDetailPage({ params }: PageProps) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
 
   const [t, review] = await Promise.all([getI18n(), getCleaningReviewById(Number(cleaningReviewId))])
+
+  const STATUS_CONFIG: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+    Created: { label: t("cleaningReview.status.created"), variant: "outline" },
+    "AI Analizing": { label: t("cleaningReview.status.aiAnalysing"), variant: "secondary" },
+    Analized: { label: t("cleaningReview.status.analysed"), variant: "secondary" },
+    Done: { label: t("cleaningReview.status.done"), variant: "default" },
+    Failed: { label: t("cleaningReview.status.failed"), variant: "destructive" },
+  }
 
   if (!review) notFound()
 
@@ -151,12 +151,12 @@ export default async function CleaningReviewDetailPage({ params }: PageProps) {
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Mic className="size-4 text-muted-foreground" />
-            <h2 className="text-sm font-semibold">Voice message from employee</h2>
+            <h2 className="text-sm font-semibold">{t("cleaningReview.detail.voiceMessage.title")}</h2>
           </div>
           <Separator />
           <div className="rounded-2xl border bg-card p-5 space-y-3">
             <p className="text-xs text-muted-foreground">
-              The employee left a voice message about this review.
+              {t("cleaningReview.detail.voiceMessage.description")}
             </p>
             <audio
               src={review.voiceMessageFile}
@@ -173,12 +173,12 @@ export default async function CleaningReviewDetailPage({ params }: PageProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="size-4 text-muted-foreground" />
-              <h2 className="text-sm font-semibold">AI Analysis</h2>
+              <h2 className="text-sm font-semibold">{t("cleaningReview.detail.aiAnalysis")}</h2>
             </div>
             <Button asChild size="sm" variant="outline">
               <Link href={`/${locale}/app/cleaning-review/new`}>
                 <Plus className="size-4" />
-                New cleaning review
+                {t("cleaningReview.detail.action.newReview")}
               </Link>
             </Button>
           </div>
@@ -195,7 +195,7 @@ export default async function CleaningReviewDetailPage({ params }: PageProps) {
         <Button asChild variant="outline" className="w-full gap-2">
           <Link href={`/${locale}/app/cleaning-review/new`}>
             <Plus className="size-4" />
-            Create a new cleaning review
+            {t("cleaningReview.detail.action.createNewReview")}
           </Link>
         </Button>
       )}

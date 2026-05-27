@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import { AiOutputDisplay } from "@/components/customs/ai-output-display"
 import { VoiceMessageRecorder } from "@/components/customs/voice-message-recorder"
 import type { PublicReviewInfo } from "@/services/cleaning-review.services"
@@ -37,20 +38,31 @@ type UploaderProps = {
 
 type Mode = "idle" | "recording" | "preview" | "uploading" | "done" | "error"
 
-const STATUS_LABEL: Record<string, string> = {
-  Created: "Pending video",
-  "AI Analizing": "Under review",
-  Analized: "Analysed",
-  Done: "Completed",
-  Failed: "Failed",
-}
-
 export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   uri,
   review,
   apiUrl,
   appReviewLink = "",
 }) => {
+  const t = useI18n()
+
+  const STATUS_LABEL: Record<string, string> = {
+    Created: t("publicReview.status.pendingVideo"),
+    "AI Analizing": t("publicReview.status.underReview"),
+    Analized: t("publicReview.status.analysed"),
+    Done: t("publicReview.status.completed"),
+    Failed: t("publicReview.status.failed"),
+  }
+
+  const TRANSMIT_MESSAGES: Record<string, string> = {
+    VIDEO_UPLOADED_AND_CONVERTED: t("ai.progress.uploadedAndConverted"),
+    VIDEO_UPLOADED_TO_GOOGLE_AI: t("ai.progress.uploadedToGoogleAI"),
+    VIDEO_PROCESSED_BY_GOOGLE_AI: t("ai.progress.processedByGoogle"),
+    VIDEO_ANALYZED_BY_GOOGLE_AI: t("ai.progress.analyzedByGoogle"),
+    AI_ANALYSIS_COMPLETED: t("ai.progress.completed"),
+    AI_ANALYSIS_FAILED: t("ai.progress.failed"),
+  }
+
   const [mode, setMode] = useState<Mode>(
     review.hasVideo ||
       review.status === "AI Analizing" ||
@@ -73,15 +85,6 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const TRANSMIT_MESSAGES: Record<string, string> = {
-    VIDEO_UPLOADED_AND_CONVERTED: "Video converted, uploading to Google AI...",
-    VIDEO_UPLOADED_TO_GOOGLE_AI: "Uploaded to Google AI, processing video...",
-    VIDEO_PROCESSED_BY_GOOGLE_AI: "Video processed, analysing cleaning...",
-    VIDEO_ANALYZED_BY_GOOGLE_AI: "Analysis complete, generating report...",
-    AI_ANALYSIS_COMPLETED: "Report ready!",
-    AI_ANALYSIS_FAILED: "Analysis failed. Please contact support.",
-  }
-
   const terminalKey =
     review.status === "Analized" || review.status === "Done"
       ? "AI_ANALYSIS_COMPLETED"
@@ -91,10 +94,10 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
 
   const [MESSAGE, setMESSAGE] = useState<string>(
     terminalKey === "AI_ANALYSIS_COMPLETED"
-      ? "Report ready!"
+      ? t("ai.progress.completed")
       : terminalKey === "AI_ANALYSIS_FAILED"
-        ? "Analysis failed. Please contact support."
-        : "Converting the video to mp4..."
+        ? t("ai.progress.failed")
+        : t("ai.progress.converting")
   )
   const [messageKey, setMessageKey] = useState<string | null>(terminalKey)
   const [aiOutput, setAiOutput] = useState<any | null>(review.aiOutput ?? null)
@@ -178,9 +181,9 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000)
       setMode("recording")
     } catch (err: any) {
-      setErrorMsg(err?.message ?? "Could not access camera/microphone.")
+      setErrorMsg(err?.message ?? t("publicReview.error.cameraAccess"))
     }
-  }, [hasMic])
+  }, [hasMic, t])
 
   const stopRecording = useCallback(() => {
     if (timerRef.current) {
@@ -189,15 +192,6 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     }
     recorderRef.current?.stop()
   }, [])
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const url = URL.createObjectURL(file)
-    setVideoBlob(file)
-    setVideoUrl(url)
-    setMode("preview")
-  }
 
   const handleSubmit = async () => {
     if (!videoBlob) return
@@ -219,12 +213,12 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
 
       if (!res.ok) {
         const json = await res.json().catch(() => ({}))
-        throw new Error(json?.message ?? "Upload failed")
+        throw new Error(json?.message ?? t("publicReview.error.uploadFailed"))
       }
 
       setMode("done")
     } catch (err: any) {
-      setErrorMsg(err?.message ?? "Upload failed. Please try again.")
+      setErrorMsg(err?.message ?? t("publicReview.error.uploadFailed"))
       setMode("preview")
     }
   }
@@ -232,14 +226,14 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const handleRetry = async () => {
     setIsRetrying(true)
     setMessageKey(null)
-    setMESSAGE("Retrying analysis…")
+    setMESSAGE(t("ai.progress.retrying"))
     try {
       await fetch(`${apiUrl}/api/public/reviews/${uri}/retry`, {
         method: "POST",
       })
     } catch {
       setMessageKey("AI_ANALYSIS_FAILED")
-      setMESSAGE("Analysis failed. Please contact support.")
+      setMESSAGE(t("ai.progress.failed"))
     } finally {
       setIsRetrying(false)
     }
@@ -265,9 +259,9 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
             <CheckCircle2 className="size-7 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <p className="text-lg font-semibold">Video submitted!</p>
+            <p className="text-lg font-semibold">{t("publicReview.submitted.title")}</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Thank you. The cleaning review is now being processed.
+              {t("publicReview.submitted.description")}
             </p>
           </div>
           <Badge
@@ -326,7 +320,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
                 ) : (
                   <RefreshCw className="size-4" />
                 )}
-                Retry analysis
+                {t("publicReview.action.retryAnalysis")}
               </Button>
             )}
           </CardContent>
@@ -357,7 +351,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       {/* Status card */}
       <div className="flex items-center justify-between rounded-xl border bg-muted/30 px-4 py-3">
         <div className="text-sm">
-          <span className="font-medium">Current status</span>
+          <span className="font-medium">{t("publicReview.currentStatus")}</span>
         </div>
         <Badge variant="outline">
           {STATUS_LABEL[review.status] ?? review.status}
@@ -392,7 +386,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
             onClick={stopRecording}
           >
             <Square className="size-4" />
-            Stop recording
+            {t("publicReview.action.stopRecording")}
           </Button>
         </div>
       )}
@@ -410,11 +404,11 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" onClick={reset}>
-              Re-record
+              {t("publicReview.action.reRecord")}
             </Button>
             <Button onClick={handleSubmit} className="gap-2">
               <Upload className="size-4" />
-              Submit video
+              {t("publicReview.action.submitVideo")}
             </Button>
           </div>
         </div>
@@ -424,47 +418,17 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       {mode === "uploading" && (
         <div className="space-y-3 rounded-2xl border bg-card p-8 text-center">
           <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Uploading your video…</p>
+          <p className="text-sm text-muted-foreground">{t("publicReview.uploading")}</p>
         </div>
       )}
 
       {/* Idle: record or upload */}
       {mode === "idle" && (
         <div className="space-y-3">
-          {/* <div
-            className={cn(
-              "cursor-pointer space-y-4 rounded-2xl border-2 border-dashed p-10 text-center transition-colors hover:bg-muted/30"
-            )}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-muted">
-              <Upload className="size-6 text-muted-foreground" />
-            </div>
-            <div>
-              <p className="text-sm font-medium">Upload a video</p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                MP4, WebM, MOV or AVI · max 500 MB
-              </p>
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="video/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </div>
-
-          <div className="relative flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-xs text-muted-foreground">or</span>
-            <div className="h-px flex-1 bg-border" />
-          </div> */}
-
           <div className="space-y-2">
             <Button size="lg" className="w-full gap-2" onClick={startRecording}>
               <Video className="size-4" />
-              Record with camera
+              {t("publicReview.action.recordWithCamera")}
             </Button>
             <button
               type="button"
@@ -476,7 +440,8 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
               ) : (
                 <MicOff className="size-3.5" />
               )}
-              {hasMic ? "Microphone on" : "Microphone off"} — click to toggle
+              {hasMic ? t("publicReview.action.micOn") : t("publicReview.action.micOff")}{" "}
+              {t("publicReview.action.micToggle")}
             </button>
           </div>
         </div>

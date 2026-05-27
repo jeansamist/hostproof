@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import { createChecklistItem } from "@/services/checklist-item.services"
 import { Button } from "@packages/ui/button"
 import { Input } from "@packages/ui/input"
@@ -11,7 +12,7 @@ import {
   Plus,
   X,
 } from "lucide-react"
-import { FunctionComponent, useRef, useState, useTransition } from "react"
+import { FunctionComponent, useState, useTransition } from "react"
 
 type Item = { id: string; label: string }
 
@@ -51,6 +52,7 @@ function SortableItem({
   onRemove: (id: string) => void
   onEnter: () => void
 }) {
+  const t = useI18n()
   const controls = useDragControls()
 
   return (
@@ -64,7 +66,7 @@ function SortableItem({
         type="button"
         onPointerDown={(e) => controls.start(e)}
         className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground/40 hover:text-muted-foreground transition-colors shrink-0"
-        aria-label="Drag to reorder"
+        aria-label={t("settings.checklist.aria.dragToReorder")}
       >
         <GripVertical className="size-4" />
       </button>
@@ -75,7 +77,7 @@ function SortableItem({
 
       <Input
         className="h-9 text-sm flex-1"
-        placeholder="Add a checklist item…"
+        placeholder={t("onboarding.checklist.item.placeholder")}
         value={item.label}
         onChange={(e) => onUpdate(item.id, e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && onEnter()}
@@ -100,6 +102,7 @@ function SortableItem({
 export const OnboardingCreateChecklistForm: FunctionComponent<
   OnboardingCreateChecklistFormProps
 > = ({ handleNext, handleSkip }) => {
+  const t = useI18n()
   const [items, setItems] = useState<Item[]>(() =>
     DEFAULT_LABELS.map((label) => makeItem(label))
   )
@@ -117,7 +120,7 @@ export const OnboardingCreateChecklistForm: FunctionComponent<
   const handleSubmit = () => {
     const validLabels = items.map((i) => i.label.trim()).filter(Boolean)
     if (validLabels.length === 0) {
-      setError("Add at least one checklist item, or skip this step.")
+      setError(t("onboarding.checklist.error.empty"))
       return
     }
     setError(null)
@@ -134,10 +137,9 @@ export const OnboardingCreateChecklistForm: FunctionComponent<
       <div className="space-y-5 p-6 md:p-8">
         {/* Hint */}
         <div className="rounded-xl border bg-muted/40 px-4 py-3 text-sm text-muted-foreground leading-relaxed">
-          These tasks will be sent to the AI for every cleaning video analysis — it will check that
-          each point is clearly shown in the video and flag any that are missing.
+          {t("onboarding.checklist.hint.main")}
           <br />
-          <span className="text-xs opacity-70">Drag the handle to reorder.</span>
+          <span className="text-xs opacity-70">{t("onboarding.checklist.hint.reorder")}</span>
         </div>
 
         {/* Sortable list */}
@@ -168,7 +170,7 @@ export const OnboardingCreateChecklistForm: FunctionComponent<
           onClick={addItem}
         >
           <Plus className="size-4" />
-          Add item
+          {t("onboarding.checklist.action.addItem")}
         </Button>
 
         {error && <p className="text-sm text-destructive">{error}</p>}
@@ -180,7 +182,7 @@ export const OnboardingCreateChecklistForm: FunctionComponent<
             onClick={handleSkip}
             className="text-sm text-muted-foreground underline-offset-4 hover:underline"
           >
-            Skip for now
+            {t("onboarding.checklist.action.skip")}
           </button>
           <Button
             type="button"
@@ -193,7 +195,7 @@ export const OnboardingCreateChecklistForm: FunctionComponent<
             ) : (
               <CheckSquare className="size-4" />
             )}
-            Save & continue
+            {t("onboarding.checklist.action.save")}
           </Button>
         </div>
       </div>

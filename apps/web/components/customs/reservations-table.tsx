@@ -44,14 +44,6 @@ type ReservationsTableProps = {
   locale: string
 }
 
-const STATUS_BADGE: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  Created: { label: "Created", variant: "secondary" },
-  "AI Analizing": { label: "Analysing", variant: "outline" },
-  Analized: { label: "Analysed", variant: "outline" },
-  Done: { label: "Done", variant: "default" },
-  Failed: { label: "Failed", variant: "destructive" },
-}
-
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -92,6 +84,14 @@ const DetailModal: FunctionComponent<DetailModalProps> = ({
 
   const t = useI18n()
 
+  const STATUS_BADGE: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+    Created: { label: t("reservation.review.status.created"), variant: "secondary" },
+    "AI Analizing": { label: t("reservation.review.status.analysing"), variant: "outline" },
+    Analized: { label: t("reservation.review.status.analysed"), variant: "outline" },
+    Done: { label: t("reservation.review.status.done"), variant: "default" },
+    Failed: { label: t("reservation.review.status.failed"), variant: "destructive" },
+  }
+
   if (!reservation) return null
 
   const totalGuests =
@@ -101,7 +101,7 @@ const DetailModal: FunctionComponent<DetailModalProps> = ({
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Reservation #{reservation.id}</DialogTitle>
+          <DialogTitle>{t("reservation.detail.modal.title")} #{reservation.id}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -131,7 +131,7 @@ const DetailModal: FunctionComponent<DetailModalProps> = ({
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Users className="size-4 text-muted-foreground" />
-              <span>{totalGuests} guest{totalGuests !== 1 ? "s" : ""}</span>
+              <span>{totalGuests} {totalGuests !== 1 ? t("reservation.detail.guests") : t("reservation.detail.guest")}</span>
               <span className="text-muted-foreground text-xs">
                 ({reservation.numberOfAdult}A · {reservation.numberOfChild}C · {reservation.numberOfBaby}B)
               </span>
@@ -148,7 +148,7 @@ const DetailModal: FunctionComponent<DetailModalProps> = ({
             <p className="text-sm font-medium mb-2">{t("reservation.detail.cleaningReviews")}</p>
             {loadingReviews ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
-                <Loader2 className="size-4 animate-spin" /> Loading…
+                <Loader2 className="size-4 animate-spin" /> {t("reservation.detail.loading")}
               </div>
             ) : reviews.length === 0 ? (
               <p className="text-sm text-muted-foreground py-2">
@@ -172,7 +172,7 @@ const DetailModal: FunctionComponent<DetailModalProps> = ({
                           <div className="size-4 rounded-full border-2 border-muted-foreground/40" />
                         )}
                         <div>
-                          <p className="text-sm font-medium">Review #{r.id}</p>
+                          <p className="text-sm font-medium">{t("reservation.detail.review")} #{r.id}</p>
                           <p className="text-xs text-muted-foreground">
                             {formatDate(r.createdAt)}
                           </p>
@@ -289,9 +289,10 @@ export const ReservationsTable: FunctionComponent<ReservationsTableProps> = ({
                           <AlertDialogHeader>
                             <AlertDialogTitle>{t("reservation.delete.title")}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This will permanently delete the reservation for{" "}
-                              <strong>{r.housing?.name ?? `housing #${r.housingId}`}</strong>{" "}
-                              on {formatDate(r.moveInDate)}. This action cannot be undone.
+                              {t("reservation.delete.description", {
+                                name: r.housing?.name ?? `housing #${r.housingId}`,
+                                date: formatDate(r.moveInDate),
+                              })}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

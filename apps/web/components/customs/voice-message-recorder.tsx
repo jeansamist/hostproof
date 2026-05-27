@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import { Button } from "@packages/ui/button"
 import { cn } from "@packages/functions"
 import {
@@ -28,6 +29,7 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
   appReviewLink = "",
   existingFileUrl,
 }) => {
+  const t = useI18n()
   const [state, setState] = useState<RecorderState>(
     existingFileUrl ? "done" : "idle"
   )
@@ -87,10 +89,10 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
       timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000)
       setState("recording")
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Could not access microphone."
+      const message = err instanceof Error ? err.message : t("voiceMessage.error.micAccess")
       setErrorMsg(message)
     }
-  }, [])
+  }, [t])
 
   const stopRecording = useCallback(() => {
     if (timerRef.current) {
@@ -125,11 +127,11 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
       })
       if (!res.ok) {
         const json = await res.json().catch(() => ({}))
-        throw new Error(json?.message ?? "Upload failed")
+        throw new Error(json?.message ?? t("voiceMessage.error.uploadFailed"))
       }
       setState("done")
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Upload failed. Please try again."
+      const message = err instanceof Error ? err.message : t("voiceMessage.error.uploadFailed")
       setErrorMsg(message)
       setState("preview")
     }
@@ -140,10 +142,10 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
       {/* Header */}
       <div className="flex items-center gap-2">
         <Mic className="size-4 shrink-0 text-muted-foreground" />
-        <h3 className="text-sm font-semibold">Voice message</h3>
+        <h3 className="text-sm font-semibold">{t("voiceMessage.title")}</h3>
       </div>
       <p className="text-xs text-muted-foreground">
-        Noticed something to flag? Leave a quick audio note for the manager.
+        {t("voiceMessage.description")}
       </p>
 
       {errorMsg && (
@@ -161,7 +163,7 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
           onClick={startRecording}
         >
           <Mic className="size-4" />
-          Start recording
+          {t("voiceMessage.action.startRecording")}
         </Button>
       )}
 
@@ -173,7 +175,7 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
             <span className="font-mono text-sm tabular-nums text-foreground">
               {fmt(elapsed)}
             </span>
-            <span className="text-xs text-muted-foreground">Recording…</span>
+            <span className="text-xs text-muted-foreground">{t("voiceMessage.status.recording")}</span>
           </div>
           <Button
             type="button"
@@ -182,7 +184,7 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
             onClick={stopRecording}
           >
             <Square className="size-4" />
-            Stop recording
+            {t("voiceMessage.action.stopRecording")}
           </Button>
         </div>
       )}
@@ -206,11 +208,11 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
               onClick={discard}
             >
               <Trash2 className="size-4" />
-              Discard
+              {t("voiceMessage.action.discard")}
             </Button>
             <Button type="button" className="gap-2" onClick={handleSubmit}>
               <Send className="size-4" />
-              Send to manager
+              {t("voiceMessage.action.sendToManager")}
             </Button>
           </div>
         </div>
@@ -220,7 +222,7 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
       {state === "uploading" && (
         <div className="flex items-center justify-center gap-2 py-4 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
-          Sending voice message…
+          {t("voiceMessage.status.sending")}
         </div>
       )}
 
@@ -236,7 +238,7 @@ export const VoiceMessageRecorder: FunctionComponent<VoiceMessageRecorderProps> 
           )}
           <div className="flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-950/30 dark:text-green-400">
             <CheckCircle2 className="size-4 shrink-0" />
-            Voice message sent — the manager has been notified.
+            {t("voiceMessage.status.sent")}
           </div>
         </div>
       )}

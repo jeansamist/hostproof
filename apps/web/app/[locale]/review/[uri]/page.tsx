@@ -1,5 +1,6 @@
 import { PublicVideoUploader } from "./uploader"
 import { getCleaningReviewByUri } from "@/services/cleaning-review.services"
+import { getI18n } from "@/lib/i18n/server"
 
 type PageProps = {
   params: Promise<{ locale: string; uri: string }>
@@ -7,7 +8,7 @@ type PageProps = {
 
 export default async function PublicReviewPage({ params }: PageProps) {
   const { locale, uri } = await params
-  const review = await getCleaningReviewByUri(uri)
+  const [t, review] = await Promise.all([getI18n(), getCleaningReviewByUri(uri)])
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   const appReviewLink = review ? `${appUrl}/${locale}/app/cleaning-review/${review.id}` : ""
@@ -19,16 +20,18 @@ export default async function PublicReviewPage({ params }: PageProps) {
           <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-bold text-lg">
             H
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Cleaning Review</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {t("publicReview.page.title")}
+          </h1>
           {review ? (
             <p className="text-sm text-muted-foreground">
               {review.housing?.name
                 ? `${review.housing.name} · ${review.housing.address}`
-                : "Please upload your cleaning review video below."}
+                : t("publicReview.page.uploadHint")}
             </p>
           ) : (
             <p className="text-sm text-destructive">
-              This review link is invalid or has expired.
+              {t("publicReview.page.noReview")}
             </p>
           )}
         </div>

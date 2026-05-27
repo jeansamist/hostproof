@@ -1,5 +1,6 @@
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import { cn } from "@packages/functions"
 import { Button } from "@packages/ui/button"
 import { Checkbox } from "@packages/ui/checkbox"
@@ -37,6 +38,7 @@ type AiOutputDisplayProps = {
 }
 
 function ScoreRing({ score }: { score: number }) {
+  const t = useI18n()
   const pct = Math.round((score / 10) * 100)
   const color =
     score >= 8
@@ -86,7 +88,7 @@ function ScoreRing({ score }: { score: number }) {
           {score}
         </span>
       </div>
-      <p className="text-xs font-medium text-muted-foreground">Score / 10</p>
+      <p className="text-xs font-medium text-muted-foreground">{t("aiOutput.score")}</p>
     </div>
   )
 }
@@ -120,6 +122,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
   apiUrl,
   appReviewLink = "",
 }) => {
+  const t = useI18n()
   const {
     summary,
     score,
@@ -156,7 +159,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
       <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-[auto_1fr]">
         {score !== undefined && <ScoreRing score={score} />}
         {toDo.length > 0 && (
-          <Section icon={ClipboardList} title="To-do" className="flex-1">
+          <Section icon={ClipboardList} title={t("aiOutput.section.todo")} className="flex-1">
             <ul className="space-y-3">
               {toDo.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
@@ -189,7 +192,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
                 {reviewRequested ? (
                   <div className="flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-950/30 dark:text-green-400">
                     <CheckCircle2 className="size-4 shrink-0" />
-                    New review requested — the manager has been notified.
+                    {t("aiOutput.status.reviewRequested")}
                   </div>
                 ) : (
                   <Button
@@ -202,12 +205,12 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
                     ) : (
                       <Mail className="size-4" />
                     )}
-                    Request a new review
+                    {t("aiOutput.action.requestNewReview")}
                   </Button>
                 )}
                 {!allChecked && (
                   <p className="mt-2 text-center text-xs text-muted-foreground">
-                    Check all tasks above to unlock this button.
+                    {t("aiOutput.hint.checkAllTasks")}
                   </p>
                 )}
               </div>
@@ -218,7 +221,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
 
       {/* Positive aspects */}
       {positiveAspects.length > 0 && (
-        <Section icon={ThumbsUp} title="Positive aspects">
+        <Section icon={ThumbsUp} title={t("aiOutput.section.positiveAspects")}>
           <ul className="space-y-2">
             {positiveAspects.map((item, i) => (
               <li key={i} className="flex items-start gap-2.5 text-sm">
@@ -232,7 +235,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
 
       {/* Negative aspects */}
       {negativeAspects.length > 0 && (
-        <Section icon={ThumbsDown} title="Points to improve">
+        <Section icon={ThumbsDown} title={t("aiOutput.section.pointsToImprove")}>
           <ul className="space-y-2">
             {negativeAspects.map((item, i) => (
               <li key={i} className="flex items-start gap-2.5 text-sm">
@@ -245,7 +248,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
       )}
 
       {summary && (
-        <Section icon={Sparkles} title="Summary" className="flex-1">
+        <Section icon={Sparkles} title={t("aiOutput.section.summary")} className="flex-1">
           <p className="text-sm leading-relaxed text-muted-foreground">
             {summary}
           </p>
@@ -253,7 +256,7 @@ export const AiOutputDisplay: FunctionComponent<AiOutputDisplayProps> = ({
       )}
       {/* Missing products — admin only (employees use voice messages instead) */}
       {missingProducts.length > 0 && mode === "admin" && (
-        <Section icon={Package} title="Missing products">
+        <Section icon={Package} title={t("aiOutput.section.missingProducts")}>
           <ul className="space-y-2">
             {missingProducts.map((item, i) => (
               <li key={i} className="flex items-start gap-2.5 text-sm">

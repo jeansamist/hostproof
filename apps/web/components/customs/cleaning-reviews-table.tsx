@@ -65,17 +65,6 @@ type CleaningReviewsTableProps = {
   appUrl: string
 }
 
-const STATUS_CONFIG: Record<
-  string,
-  { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof CheckCircle2 | null }
-> = {
-  Created: { label: "Created", variant: "outline", icon: null },
-  "AI Analizing": { label: "AI Analysing", variant: "secondary", icon: Sparkles },
-  Analized: { label: "Analysed", variant: "secondary", icon: Sparkles },
-  Done: { label: "Done", variant: "default", icon: CheckCircle2 },
-  Failed: { label: "Failed", variant: "destructive", icon: XCircle },
-}
-
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -92,12 +81,13 @@ type VideoDialogProps = {
 }
 
 const VideoDialog: FunctionComponent<VideoDialogProps> = ({ review, open, onOpenChange, apiUrl }) => {
+  const t = useI18n()
   const videoUrl = review?.localVideoPath ? `${apiUrl}${review.localVideoPath}` : null
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-0">
-          <DialogTitle>Video — Review #{review?.id}</DialogTitle>
+          <DialogTitle>{t("cleaningReview.table.video.dialog.title")} #{review?.id}</DialogTitle>
         </DialogHeader>
         <div className="p-4">
           {videoUrl ? (
@@ -111,7 +101,7 @@ const VideoDialog: FunctionComponent<VideoDialogProps> = ({ review, open, onOpen
             </div>
           ) : (
             <p className="py-12 text-center text-sm text-muted-foreground">
-              No video uploaded yet.
+              {t("cleaningReview.table.noVideo")}
             </p>
           )}
         </div>
@@ -127,6 +117,18 @@ export const CleaningReviewsTable: FunctionComponent<CleaningReviewsTableProps> 
 }) => {
   const router = useRouter()
   const t = useI18n()
+
+  const STATUS_CONFIG: Record<
+    string,
+    { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof CheckCircle2 | null }
+  > = {
+    Created: { label: t("cleaningReview.status.created"), variant: "outline", icon: null },
+    "AI Analizing": { label: t("cleaningReview.status.aiAnalysing"), variant: "secondary", icon: Sparkles },
+    Analized: { label: t("cleaningReview.status.analysed"), variant: "secondary", icon: Sparkles },
+    Done: { label: t("cleaningReview.status.done"), variant: "default", icon: CheckCircle2 },
+    Failed: { label: t("cleaningReview.status.failed"), variant: "destructive", icon: XCircle },
+  }
+
   const [isPending, startTransition] = useTransition()
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [copiedId, setCopiedId] = useState<number | null>(null)
@@ -165,8 +167,8 @@ export const CleaningReviewsTable: FunctionComponent<CleaningReviewsTableProps> 
               <TableHead>{t("cleaningReview.table.housing")}</TableHead>
               <TableHead>{t("cleaningReview.table.employee")}</TableHead>
               <TableHead>{t("cleaningReview.table.status")}</TableHead>
-              <TableHead className="w-36">AI Score</TableHead>
-              <TableHead>Created</TableHead>
+              <TableHead className="w-36">{t("cleaningReview.table.aiScore")}</TableHead>
+              <TableHead>{t("cleaningReview.table.createdAt")}</TableHead>
               <TableHead className="text-right w-12">{t("cleaningReview.table.actions")}</TableHead>
             </TableRow>
           </TableHeader>
@@ -318,12 +320,9 @@ export const CleaningReviewsTable: FunctionComponent<CleaningReviewsTableProps> 
                               {t("cleaningReview.delete.title")}
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              This will permanently delete the review for{" "}
-                              <strong>
-                                {r.housing?.name ??
-                                  `reservation #${r.reservationId}`}
-                              </strong>
-                              . This action cannot be undone.
+                              {t("cleaningReview.delete.description", {
+                                name: r.housing?.name ?? `reservation #${r.reservationId}`,
+                              })}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

@@ -85,7 +85,7 @@ export const SettingsHousings: FunctionComponent<SettingsHousingsProps> = ({ ini
 
   const handleSave = async () => {
     if (!form.name || !form.address || !form.type || !form.capacity) {
-      setError("All fields are required.")
+      setError(t("settings.housings.error.required"))
       return
     }
     setSaving(true)
@@ -155,7 +155,7 @@ export const SettingsHousings: FunctionComponent<SettingsHousingsProps> = ({ ini
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate">{h.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{h.address} · {h.capacity} guests</p>
+                    <p className="text-xs text-muted-foreground truncate">{h.address} · {t("settings.housings.capacityHint", { count: h.capacity })}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 ml-2">
@@ -191,7 +191,7 @@ export const SettingsHousings: FunctionComponent<SettingsHousingsProps> = ({ ini
               <Input
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                placeholder="e.g. Apartment Paris 11"
+                placeholder={t("settings.housings.placeholder.name")}
               />
             </div>
             <div className="space-y-1.5">
@@ -199,7 +199,7 @@ export const SettingsHousings: FunctionComponent<SettingsHousingsProps> = ({ ini
               <Input
                 value={form.address}
                 onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-                placeholder="e.g. 12 Rue de Rivoli, Paris"
+                placeholder={t("settings.housings.placeholder.address")}
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -210,7 +210,7 @@ export const SettingsHousings: FunctionComponent<SettingsHousingsProps> = ({ ini
                   onValueChange={(v) => setForm((f) => ({ ...f, type: v as HousingType }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder={t("settings.housings.type.select")} />
                   </SelectTrigger>
                   <SelectContent>
                     {typeOptions.map((o) => (
@@ -248,9 +248,9 @@ export const SettingsHousings: FunctionComponent<SettingsHousingsProps> = ({ ini
       <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete housing?</AlertDialogTitle>
+            <AlertDialogTitle>{t("settings.housings.delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete <strong>{deleteTarget?.name}</strong>. This action cannot be undone.
+              {t("settings.housings.delete.description", { name: deleteTarget?.name ?? "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -261,7 +261,7 @@ export const SettingsHousings: FunctionComponent<SettingsHousingsProps> = ({ ini
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isPending && <Loader2 className="size-4 animate-spin" />}
-              Delete
+              {t("settings.housings.delete.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

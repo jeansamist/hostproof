@@ -350,6 +350,196 @@ export default {
   "settings.employees.gender.other": "Other",
 
   unknownError: "Something went wrong",
+
+  // Voice Message Recorder
+  "voiceMessage.title": "Voice message",
+  "voiceMessage.description":
+    "Noticed something to flag? Leave a quick audio note for the manager.",
+  "voiceMessage.error.micAccess": "Could not access microphone.",
+  "voiceMessage.error.uploadFailed": "Upload failed. Please try again.",
+  "voiceMessage.action.startRecording": "Start recording",
+  "voiceMessage.action.stopRecording": "Stop recording",
+  "voiceMessage.action.discard": "Discard",
+  "voiceMessage.action.sendToManager": "Send to manager",
+  "voiceMessage.status.recording": "Recording…",
+  "voiceMessage.status.sending": "Sending voice message…",
+  "voiceMessage.status.sent":
+    "Voice message sent — the manager has been notified.",
+
+  // AI Output Display
+  "aiOutput.score": "Score / 10",
+  "aiOutput.section.todo": "To-do",
+  "aiOutput.section.positiveAspects": "Positive aspects",
+  "aiOutput.section.pointsToImprove": "Points to improve",
+  "aiOutput.section.summary": "Summary",
+  "aiOutput.section.missingProducts": "Missing products",
+  "aiOutput.action.requestNewReview": "Request a new review",
+  "aiOutput.status.reviewRequested":
+    "New review requested — the manager has been notified.",
+  "aiOutput.hint.checkAllTasks":
+    "Check all tasks above to unlock this button.",
+
+  // Settings — Checklist
+  "settings.checklist.title": "Default cleaning checklist",
+  "settings.checklist.description":
+    "These points are sent to the AI for every video analysis — it will flag any that are missing. Drag the handle to reorder.",
+  "settings.checklist.empty": "No checklist items yet. Add your first one below.",
+  "settings.checklist.savingOrder": "Saving order…",
+  "settings.checklist.item.placeholder":
+    "e.g. Check all light bulbs are working…",
+  "settings.checklist.action.add": "Add",
+  "settings.checklist.delete.title": "Delete checklist item?",
+  "settings.checklist.delete.description":
+    "\"{label}\" will be removed from your default checklist. This won't affect past analyses.",
+  "settings.checklist.delete.cancel": "Cancel",
+  "settings.checklist.delete.confirm": "Delete",
+  "settings.checklist.aria.dragToReorder": "Drag to reorder",
+
+  // Settings — Employees (additions)
+  "settings.employees.error.required": "Full name and gender are required.",
+  "settings.employees.noContact": "No contact info",
+  "settings.employees.placeholder.fullName": "e.g. Maria Santos",
+  "settings.employees.placeholder.email": "employee@example.com",
+  "settings.employees.placeholder.phone": "+33 6 00 00 00 00",
+  "settings.employees.delete.title": "Delete employee?",
+  "settings.employees.delete.description":
+    "This will permanently remove {name} from your team.",
+  "settings.employees.delete.confirm": "Delete",
+
+  // Settings — Housings (additions)
+  "settings.housings.error.required": "All fields are required.",
+  "settings.housings.capacityHint": "{count} guests",
+  "settings.housings.placeholder.name": "e.g. Apartment Paris 11",
+  "settings.housings.placeholder.address": "e.g. 12 Rue de Rivoli, Paris",
+  "settings.housings.type.select": "Select type",
+  "settings.housings.delete.title": "Delete housing?",
+  "settings.housings.delete.description":
+    "This will permanently delete {name}. This action cannot be undone.",
+  "settings.housings.delete.confirm": "Delete",
+
+  // Settings — Appearance (additions)
+  "settings.appearance.language.english": "English",
+
+  // Shared AI progress messages
+  "ai.progress.converting": "Converting the video to mp4...",
+  "ai.progress.uploadedAndConverted":
+    "Video converted, uploading to Google AI...",
+  "ai.progress.uploadedToGoogleAI":
+    "Uploaded to Google AI, processing video...",
+  "ai.progress.processedByGoogle": "Video processed, analysing cleaning...",
+  "ai.progress.analyzedByGoogle": "Analysis complete, generating report...",
+  "ai.progress.completed": "Report ready!",
+  "ai.progress.failed": "Analysis failed. Please contact support.",
+  "ai.progress.retrying": "Retrying analysis…",
+
+  // Shared cleaning review status labels (admin view)
+  "cleaningReview.status.created": "Created",
+  "cleaningReview.status.aiAnalysing": "AI Analysing",
+  "cleaningReview.status.analysed": "Analysed",
+  "cleaningReview.status.done": "Done",
+  "cleaningReview.status.failed": "Failed",
+
+  // Public Review Page / Uploader
+  "publicReview.page.title": "Cleaning Review",
+  "publicReview.page.noReview":
+    "This review link is invalid or has expired.",
+  "publicReview.page.uploadHint":
+    "Please upload your cleaning review video below.",
+  "publicReview.submitted.title": "Video submitted!",
+  "publicReview.submitted.description":
+    "Thank you. The cleaning review is now being processed.",
+  "publicReview.currentStatus": "Current status",
+  "publicReview.action.stopRecording": "Stop recording",
+  "publicReview.action.reRecord": "Re-record",
+  "publicReview.action.submitVideo": "Submit video",
+  "publicReview.action.recordWithCamera": "Record with camera",
+  "publicReview.action.retryAnalysis": "Retry analysis",
+  "publicReview.action.micOn": "Microphone on",
+  "publicReview.action.micOff": "Microphone off",
+  "publicReview.action.micToggle": "— click to toggle",
+  "publicReview.uploading": "Uploading your video…",
+  "publicReview.error.cameraAccess": "Could not access camera/microphone.",
+  "publicReview.error.uploadFailed": "Upload failed. Please try again.",
+  "publicReview.status.pendingVideo": "Pending video",
+  "publicReview.status.underReview": "Under review",
+  "publicReview.status.analysed": "Analysed",
+  "publicReview.status.completed": "Completed",
+  "publicReview.status.failed": "Failed",
+
+  // Admin Video Uploader
+  "adminVideoUploader.submitted.title": "Video submitted!",
+  "adminVideoUploader.submitted.description": "AI analysis has started.",
+  "adminVideoUploader.action.viewReview": "View review",
+  "adminVideoUploader.uploading.title": "Uploading…",
+  "adminVideoUploader.upload.title": "Upload a video",
+  "adminVideoUploader.upload.hint":
+    "MP4, WebM, MOV or AVI · Drag & drop or click",
+  "adminVideoUploader.uploading.hint": "Please wait",
+  "adminVideoUploader.error.uploadFailed": "Upload failed. Please try again.",
+  "adminVideoUploader.status.processing": "Under review",
+  "adminVideoUploader.status.completed": "Completed",
+  "adminVideoUploader.status.failed": "Failed",
+
+  // Cleaning Reviews Table (additions)
+  "cleaningReview.table.aiScore": "AI Score",
+  "cleaningReview.table.createdAt": "Created",
+  "cleaningReview.table.video.dialog.title": "Video — Review",
+  "cleaningReview.table.noVideo": "No video uploaded yet.",
+  "cleaningReview.delete.description":
+    "This will permanently delete the review for {name}. This action cannot be undone.",
+
+  // Reservations Table (additions)
+  "reservation.detail.modal.title": "Reservation",
+  "reservation.detail.loading": "Loading…",
+  "reservation.detail.guest": "guest",
+  "reservation.detail.guests": "guests",
+  "reservation.detail.review": "Review",
+  "reservation.delete.description":
+    "This will permanently delete the reservation for {name} on {date}. This action cannot be undone.",
+  "reservation.review.status.created": "Created",
+  "reservation.review.status.analysing": "Analysing",
+  "reservation.review.status.analysed": "Analysed",
+  "reservation.review.status.done": "Done",
+  "reservation.review.status.failed": "Failed",
+
+  // Cleaning Review Stepper (additions)
+  "cleaningReview.stepper.share.employeeDescription":
+    "Share the link below with {name} to let them upload the video.",
+  "cleaningReview.stepper.error.reservation": "Failed to create reservation",
+  "cleaningReview.stepper.error.general": "Something went wrong",
+  "cleaningReview.stepper.error.email": "Failed to send email",
+
+  // Cleaning Review Detail Page (additions)
+  "cleaningReview.detail.voiceMessage.title": "Voice message from employee",
+  "cleaningReview.detail.voiceMessage.description":
+    "The employee left a voice message about this review.",
+  "cleaningReview.detail.aiAnalysis": "AI Analysis",
+  "cleaningReview.detail.action.newReview": "New cleaning review",
+  "cleaningReview.detail.action.createNewReview":
+    "Create a new cleaning review",
+
+  // Onboarding — Checklist Form
+  "onboarding.checklist.hint.main":
+    "These tasks will be sent to the AI for every cleaning video analysis — it will check that each point is clearly shown in the video and flag any that are missing.",
+  "onboarding.checklist.hint.reorder": "Drag the handle to reorder.",
+  "onboarding.checklist.item.placeholder": "Add a checklist item…",
+  "onboarding.checklist.error.empty":
+    "Add at least one checklist item, or skip this step.",
+  "onboarding.checklist.action.addItem": "Add item",
+  "onboarding.checklist.action.skip": "Skip for now",
+  "onboarding.checklist.action.save": "Save & continue",
+
+  // Cleaning Review Form (additions)
+  "cleaningReview.form.status.placeholder": "Select a status",
+  "cleaningReview.form.error.general": "Something went wrong",
+
+  // Dashboard (additions)
+  "dashboard.review.noEmployee": "No employee assigned",
+
+  // Onboarding errors
+  "onboarding.error.createHousings": "Unable to create housings",
+  "onboarding.error.createEmployees": "Unable to create employees",
+  "onboarding.error.unknown": "Unknown error",
 } as const
 export type Locale = typeof import("./en").default
 export type LocaleKey = keyof Locale

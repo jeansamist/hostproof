@@ -69,7 +69,7 @@ export const ReservationForm: FunctionComponent<ReservationFormProps> = ({
       : await createReservation(data)
 
     if (!result?.success) {
-      setErrorMessage(result?.message ?? "Something went wrong")
+      setErrorMessage(result?.message ?? t("unknownError"))
       return
     }
     router.push(returnUrl)

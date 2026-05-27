@@ -21,17 +21,6 @@ type PageProps = {
   params: Promise<{ locale: string }>
 }
 
-const STATUS_CONFIG: Record<
-  string,
-  { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof CheckCircle2 | null }
-> = {
-  Created: { label: "Created", variant: "outline", icon: null },
-  "AI Analizing": { label: "AI Analysing", variant: "secondary", icon: Sparkles },
-  Analized: { label: "Analysed", variant: "secondary", icon: Sparkles },
-  Done: { label: "Done", variant: "default", icon: CheckCircle2 },
-  Failed: { label: "Failed", variant: "destructive", icon: XCircle },
-}
-
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -50,6 +39,17 @@ export default async function DashboardPage({ params }: PageProps) {
   ])
 
   const recentReviews = reviewsResult?.data ?? []
+
+  const STATUS_CONFIG: Record<
+    string,
+    { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof CheckCircle2 | null }
+  > = {
+    Created: { label: t("cleaningReview.status.created"), variant: "outline", icon: null },
+    "AI Analizing": { label: t("cleaningReview.status.aiAnalysing"), variant: "secondary", icon: Sparkles },
+    Analized: { label: t("cleaningReview.status.analysed"), variant: "secondary", icon: Sparkles },
+    Done: { label: t("cleaningReview.status.done"), variant: "default", icon: CheckCircle2 },
+    Failed: { label: t("cleaningReview.status.failed"), variant: "destructive", icon: XCircle },
+  }
 
   const metrics = [
     {
@@ -146,7 +146,7 @@ export default async function DashboardPage({ params }: PageProps) {
                         {r.housing?.name ?? `Reservation #${r.reservationId}`}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
-                        {r.employee?.fullName ?? "No employee assigned"} · {formatDate(r.createdAt)}
+                        {r.employee?.fullName ?? t("dashboard.review.noEmployee")} · {formatDate(r.createdAt)}
                       </p>
                     </div>
                     <Badge variant={cfg.variant} className="flex shrink-0 items-center gap-1">

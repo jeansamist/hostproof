@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import { useI18n } from "@/lib/i18n/client"
 import { Transmit } from "@adonisjs/transmit-client"
 import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
@@ -17,27 +18,13 @@ type AdminVideoUploaderProps = {
   onSuccess?: () => void
 }
 
-const TRANSMIT_MESSAGES: Record<string, string> = {
-  VIDEO_UPLOADED_AND_CONVERTED: "Video converted, uploading to Google AI...",
-  VIDEO_UPLOADED_TO_GOOGLE_AI: "Uploaded to Google AI, processing video...",
-  VIDEO_PROCESSED_BY_GOOGLE_AI: "Video processed, analysing cleaning...",
-  VIDEO_ANALYZED_BY_GOOGLE_AI: "Analysis complete, generating report...",
-  AI_ANALYSIS_COMPLETED: "Report ready!",
-  AI_ANALYSIS_FAILED: "Analysis failed. Please contact support.",
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  processing: "Under review",
-  completed: "Completed",
-  failed: "Failed",
-}
-
 export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
   uri,
   apiUrl,
   reviewUrl,
   onSuccess,
 }) => {
+  const t = useI18n()
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
@@ -45,9 +32,22 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
   const [submitted, setSubmitted] = useState(false)
   const [dragging, setDragging] = useState(false)
 
-  const [MESSAGE, setMESSAGE] = useState<string>(
-    "Converting the video to mp4..."
-  )
+  const TRANSMIT_MESSAGES: Record<string, string> = {
+    VIDEO_UPLOADED_AND_CONVERTED: t("ai.progress.uploadedAndConverted"),
+    VIDEO_UPLOADED_TO_GOOGLE_AI: t("ai.progress.uploadedToGoogleAI"),
+    VIDEO_PROCESSED_BY_GOOGLE_AI: t("ai.progress.processedByGoogle"),
+    VIDEO_ANALYZED_BY_GOOGLE_AI: t("ai.progress.analyzedByGoogle"),
+    AI_ANALYSIS_COMPLETED: t("ai.progress.completed"),
+    AI_ANALYSIS_FAILED: t("ai.progress.failed"),
+  }
+
+  const STATUS_LABEL: Record<string, string> = {
+    processing: t("adminVideoUploader.status.processing"),
+    completed: t("adminVideoUploader.status.completed"),
+    failed: t("adminVideoUploader.status.failed"),
+  }
+
+  const [MESSAGE, setMESSAGE] = useState<string>(t("ai.progress.converting"))
   const [messageKey, setMessageKey] = useState<string | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [aiOutput, setAiOutput] = useState<any | null>(null)
@@ -93,12 +93,12 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
       })
       if (!res.ok) {
         const json = await res.json().catch(() => ({}))
-        throw new Error(json?.message ?? "Upload failed")
+        throw new Error(json?.message ?? t("adminVideoUploader.error.uploadFailed"))
       }
       setSubmitted(true)
       onSuccess?.()
     } catch (err: any) {
-      setError(err?.message ?? "Upload failed. Please try again.")
+      setError(err?.message ?? t("adminVideoUploader.error.uploadFailed"))
     } finally {
       setUploading(false)
     }
@@ -124,9 +124,9 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
             <CheckCircle2 className="size-5 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <p className="text-sm font-semibold">Video submitted!</p>
+            <p className="text-sm font-semibold">{t("adminVideoUploader.submitted.title")}</p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              AI analysis has started.
+              {t("adminVideoUploader.submitted.description")}
             </p>
           </div>
           <Badge
@@ -151,7 +151,7 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
               variant="outline"
               onClick={() => router.push(reviewUrl)}
             >
-              View review
+              {t("adminVideoUploader.action.viewReview")}
             </Button>
           )}
         </div>
@@ -222,12 +222,12 @@ export const AdminVideoUploader: FunctionComponent<AdminVideoUploaderProps> = ({
         </div>
         <div>
           <p className="text-sm font-medium">
-            {uploading ? "Uploading…" : "Upload a video"}
+            {uploading ? t("adminVideoUploader.uploading.title") : t("adminVideoUploader.upload.title")}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {uploading
-              ? "Please wait"
-              : "MP4, WebM, MOV or AVI · Drag & drop or click"}
+              ? t("adminVideoUploader.uploading.hint")
+              : t("adminVideoUploader.upload.hint")}
           </p>
         </div>
         <input

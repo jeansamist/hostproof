@@ -90,7 +90,7 @@ export const SettingsEmployees: FunctionComponent<SettingsEmployeesProps> = ({ i
 
   const handleSave = async () => {
     if (!form.fullName || !form.gender) {
-      setError("Full name and gender are required.")
+      setError(t("settings.employees.error.required"))
       return
     }
     setSaving(true)
@@ -166,7 +166,7 @@ export const SettingsEmployees: FunctionComponent<SettingsEmployeesProps> = ({ i
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate">{e.fullName}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {e.email ?? e.tel ?? "No contact info"}
+                      {e.email ?? e.tel ?? t("settings.employees.noContact")}
                     </p>
                   </div>
                 </div>
@@ -203,7 +203,7 @@ export const SettingsEmployees: FunctionComponent<SettingsEmployeesProps> = ({ i
               <Input
                 value={form.fullName}
                 onChange={(e) => setForm((f) => ({ ...f, fullName: e.target.value }))}
-                placeholder="e.g. Maria Santos"
+                placeholder={t("settings.employees.placeholder.fullName")}
               />
             </div>
             <div className="space-y-1.5">
@@ -229,7 +229,7 @@ export const SettingsEmployees: FunctionComponent<SettingsEmployeesProps> = ({ i
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                  placeholder="employee@example.com"
+                  placeholder={t("settings.employees.placeholder.email")}
                 />
               </div>
               <div className="space-y-1.5">
@@ -237,7 +237,7 @@ export const SettingsEmployees: FunctionComponent<SettingsEmployeesProps> = ({ i
                 <Input
                   value={form.tel}
                   onChange={(e) => setForm((f) => ({ ...f, tel: e.target.value }))}
-                  placeholder="+33 6 00 00 00 00"
+                  placeholder={t("settings.employees.placeholder.phone")}
                 />
               </div>
             </div>
@@ -259,9 +259,9 @@ export const SettingsEmployees: FunctionComponent<SettingsEmployeesProps> = ({ i
       <AlertDialog open={!!deleteTarget} onOpenChange={(o) => !o && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete employee?</AlertDialogTitle>
+            <AlertDialogTitle>{t("settings.employees.delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove <strong>{deleteTarget?.fullName}</strong> from your team.
+              {t("settings.employees.delete.description", { name: deleteTarget?.fullName ?? "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -272,7 +272,7 @@ export const SettingsEmployees: FunctionComponent<SettingsEmployeesProps> = ({ i
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isPending && <Loader2 className="size-4 animate-spin" />}
-              Delete
+              {t("settings.employees.delete.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
