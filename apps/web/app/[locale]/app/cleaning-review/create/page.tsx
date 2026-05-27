@@ -2,7 +2,6 @@ import { getI18n } from "@/lib/i18n/server"
 import { CleaningReviewStepper } from "@/components/customs/cleaning-review-stepper"
 import { getEmployees } from "@/services/employee.services"
 import { getHousings } from "@/services/housing.services"
-import { getReservations } from "@/services/reservation.services"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 
@@ -16,14 +15,11 @@ export default async function CreateCleaningReviewPage({ params }: PageProps) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
 
-  const [t, reservationsResult, employees, housings] = await Promise.all([
+  const [t, employees, housings] = await Promise.all([
     getI18n(),
-    getReservations(1, 200),
     getEmployees(),
     getHousings(),
   ])
-
-  const reservations = reservationsResult?.data ?? []
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
@@ -41,7 +37,6 @@ export default async function CreateCleaningReviewPage({ params }: PageProps) {
 
       <div className="rounded-2xl border bg-card p-6">
         <CleaningReviewStepper
-          reservations={reservations}
           housings={housings}
           employees={employees}
           locale={locale}

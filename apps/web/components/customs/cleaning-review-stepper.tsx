@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useI18n } from "@/lib/i18n/client"
@@ -41,15 +42,19 @@ import {
   Link2,
   Loader2,
   Mail,
-  Plus,
   Users,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { FunctionComponent, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+// Local schema — moveOutDate is auto-generated from moveInDate + 1 day
+const reservationInfoSchema = createReservationSchema.omit({
+  moveOutDate: true,
+})
+type ReservationInfoForm = Omit<CreateReservationSchema, "moveOutDate">
+
 type StepperProps = {
-  reservations: Reservation[]
   housings: Housing[]
   employees: Employee[]
   locale: string
@@ -60,7 +65,6 @@ type StepperProps = {
 type StepId = "reservation" | "employee" | "details" | "share"
 
 export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
-  reservations,
   housings,
   employees,
   locale,
@@ -94,7 +98,6 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
   // Step data
   const [selectedReservation, setSelectedReservation] =
     useState<Reservation | null>(null)
-  const [creatingReservation, setCreatingReservation] = useState(false)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
   )
@@ -106,14 +109,13 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
   const [isSendingEmail, setIsSendingEmail] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
 
-  // Inline reservation form
-  const reservationForm = useForm<CreateReservationSchema>({
-    resolver: zodResolver(createReservationSchema),
+  // Reservation creation form (step 0)
+  const reservationForm = useForm<ReservationInfoForm>({
+    resolver: zodResolver(reservationInfoSchema),
     mode: "onChange",
     defaultValues: {
       housingId: undefined,
       moveInDate: "",
-      moveOutDate: "",
       numberOfAdult: 1,
       numberOfChild: 0,
       numberOfBaby: 0,
@@ -121,15 +123,22 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
     },
   })
 
-  const handleCreateInlineReservation = async (
-    data: CreateReservationSchema
-  ) => {
-    const result = await createReservation(data)
+  /**
+   * Creates the reservation with an auto-generated moveOutDate (moveInDate + 1 day),
+   * stores it in state, then advances to step 1.
+   */
+  const handleCreateReservation = async (data: ReservationInfoForm) => {
+    // Auto-generate moveOutDate = moveInDate + 1 day (YYYY-MM-DD)
+    const moveIn = new Date(data.moveInDate)
+    const moveOut = new Date(moveIn)
+    moveOut.setDate(moveOut.getDate() + 1)
+    const moveOutDate = moveOut.toISOString().split("T")[0]
+
+    const result = await createReservation({ ...data, moveOutDate })
     if (!result?.success)
       throw new Error(result?.message ?? "Failed to create reservation")
     setSelectedReservation(result.data as Reservation)
-    setCreatingReservation(false)
-    reservationForm.reset()
+    goNext()
   }
 
   const goNext = () => setActiveStep((s) => Math.min(s + 1, STEPS.length - 1))
@@ -241,7 +250,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.18 }}
           >
-            {/* STEP 1: Reservation */}
+            {/* STEP 1: Reservation Info */}
             {activeStep === 0 && (
               <div className="space-y-4">
                 <div>
@@ -253,201 +262,137 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                   </p>
                 </div>
 
-                {!creatingReservation ? (
-                  <>
-                    <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
-                      {reservations.length === 0 && (
-                        <p className="py-4 text-center text-sm text-muted-foreground">
-                          {t("cleaningReview.stepper.reservation.empty")}
-                        </p>
-                      )}
-                      {reservations.map((r) => {
-                        const isSelected = selectedReservation?.id === r.id
-                        return (
-                          <button
-                            key={r.id}
-                            type="button"
-                            onClick={() => setSelectedReservation(r)}
-                            className={cn(
-                              "w-full rounded-xl border p-4 text-left transition-colors",
-                              isSelected
-                                ? "border-primary bg-primary/5"
-                                : "border-border hover:bg-accent"
-                            )}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <p className="text-sm font-medium">
-                                  {r.housing?.name ?? `Housing #${r.housingId}`}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {new Date(r.moveInDate).toLocaleDateString()}{" "}
-                                  →{" "}
-                                  {new Date(r.moveOutDate).toLocaleDateString()}
-                                </p>
-                              </div>
-                              {isSelected && (
-                                <CheckCircle2 className="size-4 shrink-0 text-primary" />
+                <FieldGroup className="gap-4">
+                  {/* Housing */}
+                  <Controller
+                    control={reservationForm.control}
+                    name="housingId"
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>
+                          {t(
+                            "cleaningReview.stepper.reservation.housing.label"
+                          )}
+                        </FieldLabel>
+                        <Select
+                          value={field.value ? String(field.value) : ""}
+                          onValueChange={(v) => field.onChange(Number(v))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={t(
+                                "cleaningReview.stepper.reservation.housing.placeholder"
                               )}
-                            </div>
-                          </button>
-                        )
-                      })}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5"
-                      onClick={() => setCreatingReservation(true)}
-                    >
-                      <Plus className="size-4" />
-                      {t("cleaningReview.stepper.reservation.createNew")}
-                    </Button>
-                  </>
-                ) : (
-                  <div className="space-y-4 rounded-xl border bg-muted/30 p-4">
-                    <p className="text-sm font-medium">
-                      {t("cleaningReview.stepper.reservation.newTitle")}
-                    </p>
-                    <FieldGroup className="gap-4">
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {housings.map((h) => (
+                              <SelectItem key={h.id} value={String(h.id)}>
+                                {h.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {fieldState.error && (
+                          <FieldError>{fieldState.error.message}</FieldError>
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  {/* Move-in date (moveOutDate auto-generated as moveInDate + 1 day) */}
+                  <Controller
+                    control={reservationForm.control}
+                    name="moveInDate"
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>
+                          {t("cleaningReview.stepper.reservation.moveIn")}
+                        </FieldLabel>
+                        <Input type="date" {...field} />
+                        {fieldState.error && (
+                          <FieldError>{fieldState.error.message}</FieldError>
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  {/* Guest counts */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {(
+                      [
+                        [
+                          "numberOfAdult",
+                          t("cleaningReview.stepper.reservation.adults"),
+                        ],
+                        [
+                          "numberOfChild",
+                          t("cleaningReview.stepper.reservation.children"),
+                        ],
+                        [
+                          "numberOfBaby",
+                          t("cleaningReview.stepper.reservation.babies"),
+                        ],
+                      ] as const
+                    ).map(([name, label]) => (
                       <Controller
+                        key={name}
                         control={reservationForm.control}
-                        name="housingId"
-                        render={({ field, fieldState }) => (
-                          <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel>
-                              {t(
-                                "cleaningReview.stepper.reservation.housing.label"
-                              )}
-                            </FieldLabel>
-                            <Select
-                              value={field.value ? String(field.value) : ""}
-                              onValueChange={(v) => field.onChange(Number(v))}
-                            >
-                              <SelectTrigger>
-                                <SelectValue
-                                  placeholder={t(
-                                    "cleaningReview.stepper.reservation.housing.placeholder"
-                                  )}
-                                />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {housings.map((h) => (
-                                  <SelectItem key={h.id} value={String(h.id)}>
-                                    {h.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            {fieldState.error && (
-                              <FieldError>
-                                {fieldState.error.message}
-                              </FieldError>
-                            )}
+                        name={name}
+                        render={({ field }) => (
+                          <Field>
+                            <FieldLabel>{label}</FieldLabel>
+                            <Input
+                              type="number"
+                              min={0}
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value))
+                              }
+                            />
                           </Field>
                         )}
                       />
-                      <div className="grid grid-cols-2 gap-3">
-                        <Controller
-                          control={reservationForm.control}
-                          name="moveInDate"
-                          render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                              <FieldLabel>
-                                {t("cleaningReview.stepper.reservation.moveIn")}
-                              </FieldLabel>
-                              <Input type="date" {...field} />
-                            </Field>
-                          )}
-                        />
-                        <Controller
-                          control={reservationForm.control}
-                          name="moveOutDate"
-                          render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                              <FieldLabel>
-                                {t(
-                                  "cleaningReview.stepper.reservation.moveOut"
-                                )}
-                              </FieldLabel>
-                              <Input type="date" {...field} />
-                            </Field>
-                          )}
-                        />
-                      </div>
-                      <div className="grid grid-cols-3 gap-3">
-                        {(
-                          [
-                            [
-                              "numberOfAdult",
-                              t("cleaningReview.stepper.reservation.adults"),
-                            ],
-                            [
-                              "numberOfChild",
-                              t("cleaningReview.stepper.reservation.children"),
-                            ],
-                            [
-                              "numberOfBaby",
-                              t("cleaningReview.stepper.reservation.babies"),
-                            ],
-                          ] as const
-                        ).map(([name, label]) => (
-                          <Controller
-                            key={name}
-                            control={reservationForm.control}
-                            name={name}
-                            render={({ field }) => (
-                              <Field>
-                                <FieldLabel>{label}</FieldLabel>
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  {...field}
-                                  onChange={(e) =>
-                                    field.onChange(Number(e.target.value))
-                                  }
-                                />
-                              </Field>
-                            )}
-                          />
-                        ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          size="sm"
-                          disabled={
-                            !reservationForm.formState.isValid ||
-                            reservationForm.formState.isSubmitting
-                          }
-                          onClick={reservationForm.handleSubmit(
-                            handleCreateInlineReservation
-                          )}
-                        >
-                          {reservationForm.formState.isSubmitting && (
-                            <Loader2 className="size-4 animate-spin" />
-                          )}
-                          {t("cleaningReview.stepper.reservation.create")}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setCreatingReservation(false)
-                            reservationForm.reset()
-                          }}
-                        >
-                          {t("cleaningReview.stepper.reservation.cancel")}
-                        </Button>
-                      </div>
-                    </FieldGroup>
+                    ))}
                   </div>
-                )}
+
+                  {/* Special notes */}
+                  <Controller
+                    control={reservationForm.control}
+                    name="specialInfos"
+                    render={({ field }) => (
+                      <Field>
+                        <FieldLabel>
+                          {t(
+                            "cleaningReview.stepper.reservation.specialInfos.label"
+                          )}
+                        </FieldLabel>
+                        <Textarea
+                          placeholder={t(
+                            "cleaningReview.stepper.reservation.specialInfos.placeholder"
+                          )}
+                          rows={3}
+                          {...field}
+                          value={field.value ?? ""}
+                        />
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
 
                 <div className="flex justify-end pt-2">
-                  <Button disabled={!selectedReservation} onClick={goNext}>
+                  <Button
+                    disabled={
+                      !reservationForm.formState.isValid ||
+                      reservationForm.formState.isSubmitting
+                    }
+                    onClick={reservationForm.handleSubmit(
+                      handleCreateReservation
+                    )}
+                  >
+                    {reservationForm.formState.isSubmitting ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : null}
                     {t("cleaningReview.stepper.next")}
                     <ChevronRight className="size-4" />
                   </Button>
@@ -689,6 +634,7 @@ export const CleaningReviewStepper: FunctionComponent<StepperProps> = ({
                       setCopied(false)
                       setEmailSent(false)
                       setError(undefined)
+                      reservationForm.reset()
                     }}
                   >
                     {t("cleaningReview.stepper.share.createAnother")}
