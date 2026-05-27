@@ -32,6 +32,23 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class ChecklistItemSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'label', 'position', 'updatedAt', 'userId'] as const
+  $columns = ChecklistItemSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare label: string
+  @column()
+  declare position: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+}
+
 export class CleaningReviewSchema extends BaseModel {
   static $columns = ['additionnalInfos', 'aiOutput', 'assignedEmployeeId', 'createdAt', 'id', 'localVideoPath', 'mimeType', 'reservationId', 'status', 'updatedAt', 'uri'] as const
   $columns = CleaningReviewSchema.$columns

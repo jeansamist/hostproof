@@ -288,6 +288,30 @@ const routes = {
     tokens: [{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"api","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"auth","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"cleaning-reviews","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":1,"val":"id","end":""},{"old":"/api/auth/cleaning-reviews/:id/send-invitation","type":0,"val":"send-invitation","end":""}],
     types: placeholder as Registry['cleaning_reviews.send_invitation']['types'],
   },
+  'checklist_items.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/auth/checklist-items',
+    tokens: [{"old":"/api/auth/checklist-items","type":0,"val":"api","end":""},{"old":"/api/auth/checklist-items","type":0,"val":"auth","end":""},{"old":"/api/auth/checklist-items","type":0,"val":"checklist-items","end":""}],
+    types: placeholder as Registry['checklist_items.index']['types'],
+  },
+  'checklist_items.store': {
+    methods: ["POST"],
+    pattern: '/api/auth/checklist-items',
+    tokens: [{"old":"/api/auth/checklist-items","type":0,"val":"api","end":""},{"old":"/api/auth/checklist-items","type":0,"val":"auth","end":""},{"old":"/api/auth/checklist-items","type":0,"val":"checklist-items","end":""}],
+    types: placeholder as Registry['checklist_items.store']['types'],
+  },
+  'checklist_items.update': {
+    methods: ["PUT"],
+    pattern: '/api/auth/checklist-items/:id',
+    tokens: [{"old":"/api/auth/checklist-items/:id","type":0,"val":"api","end":""},{"old":"/api/auth/checklist-items/:id","type":0,"val":"auth","end":""},{"old":"/api/auth/checklist-items/:id","type":0,"val":"checklist-items","end":""},{"old":"/api/auth/checklist-items/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['checklist_items.update']['types'],
+  },
+  'checklist_items.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/auth/checklist-items/:id',
+    tokens: [{"old":"/api/auth/checklist-items/:id","type":0,"val":"api","end":""},{"old":"/api/auth/checklist-items/:id","type":0,"val":"auth","end":""},{"old":"/api/auth/checklist-items/:id","type":0,"val":"checklist-items","end":""},{"old":"/api/auth/checklist-items/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['checklist_items.destroy']['types'],
+  },
   'dashboard.stats': {
     methods: ["GET","HEAD"],
     pattern: '/api/auth/dashboard/stats',

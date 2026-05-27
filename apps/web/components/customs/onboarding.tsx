@@ -10,6 +10,7 @@ import { Button } from "@packages/ui/button"
 import { AnimatePresence, motion } from "framer-motion"
 import {
   Check,
+  CheckSquare,
   ChevronRight,
   House,
   LucideIcon,
@@ -18,6 +19,7 @@ import {
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { FunctionComponent, useMemo, useState } from "react"
+import { OnboardingCreateChecklistForm } from "../forms/onboarding-create-checklist.form"
 import { OnboardingCreateEmployeesForm } from "../forms/onboarding-create-employees.form"
 import { OnboardingCreateHousingsForm } from "../forms/onboarding-create-housings.form"
 export type OnboardingProps = {
@@ -88,6 +90,11 @@ const onboardingSteps: Step[] = [
     icon: Users,
   },
   {
+    name: "Define your checklist",
+    description: "Set the default tasks the AI will verify in every video",
+    icon: CheckSquare,
+  },
+  {
     name: "Completed",
     description: "Start reviewing your housing",
     icon: Check,
@@ -112,6 +119,11 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
       name: t("onboarding.step.employees.name"),
       description: t("onboarding.step.employees.description"),
       icon: Users,
+    },
+    {
+      name: t("onboarding.step.checklist.name"),
+      description: t("onboarding.step.checklist.description"),
+      icon: CheckSquare,
     },
     {
       name: t("onboarding.step.completed.name"),
@@ -175,6 +187,11 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
     goToNextStep()
   }
 
+  const handleChecklistNext = () => {
+    completeStep(2)
+    goToNextStep()
+  }
+
   const finishOnboarding = () => {
     router.push("/")
   }
@@ -226,6 +243,11 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
                 <OnboardingCreateEmployeesForm
                   handleNext={handleCreateEmployeesNext}
                   handleSkip={handleEmployeeNext}
+                />
+              ) : activeStepIndex === 2 ? (
+                <OnboardingCreateChecklistForm
+                  handleNext={handleChecklistNext}
+                  handleSkip={handleChecklistNext}
                 />
               ) : (
                 <div className="overflow-hidden rounded-2xl border bg-card">

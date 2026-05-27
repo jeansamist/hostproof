@@ -131,6 +131,14 @@ router
           .use([middleware.auth()])
         router
           .group(() => {
+            router.get('/checklist-items', [controllers.ChecklistItems, 'index'])
+            router.post('/checklist-items', [controllers.ChecklistItems, 'store'])
+            router.put('/checklist-items/:id', [controllers.ChecklistItems, 'update'])
+            router.delete('/checklist-items/:id', [controllers.ChecklistItems, 'destroy'])
+          })
+          .use([middleware.auth()])
+        router
+          .group(() => {
             router.get('/dashboard/stats', [
               () => import('#controllers/dashboard_controller'),
               'stats',

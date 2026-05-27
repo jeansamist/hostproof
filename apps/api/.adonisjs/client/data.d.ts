@@ -10,6 +10,7 @@ import type EmployeeTransformer from '#transformers/employee_transformer'
 import type HousingTransformer from '#transformers/housing_transformer'
 import type ReservationTransformer from '#transformers/reservation_transformer'
 import type UserTransformer from '#transformers/user_transformer'
+import type ChecklistItemTransformer from '#transformers/checklist_item_transformer'
 
 export namespace Data {
   export type CleaningReview = InferData<CleaningReviewTransformer>
@@ -31,5 +32,9 @@ export namespace Data {
   export type User = InferData<UserTransformer>
   export namespace User {
     export type Variants = InferVariants<UserTransformer>
+  }
+  export type ChecklistItem = InferData<ChecklistItemTransformer>
+  export namespace ChecklistItem {
+    export type Variants = InferVariants<ChecklistItemTransformer>
   }
 }

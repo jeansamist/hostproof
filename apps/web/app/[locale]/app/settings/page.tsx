@@ -1,9 +1,11 @@
 import { SettingsAppearance } from "@/components/customs/settings-appearance"
+import { SettingsChecklist } from "@/components/customs/settings-checklist"
 import { SettingsEmployees } from "@/components/customs/settings-employees"
 import { SettingsHousings } from "@/components/customs/settings-housings"
 import { SettingsProfile } from "@/components/customs/settings-profile"
 import { getI18n } from "@/lib/i18n/server"
 import { getProfile } from "@/services/auth.services"
+import { getChecklistItems } from "@/services/checklist-item.services"
 import { getEmployees } from "@/services/employee.services"
 import { getHousings } from "@/services/housing.services"
 import { redirect } from "next/navigation"
@@ -15,11 +17,12 @@ type PageProps = {
 export default async function SettingsPage({ params }: PageProps) {
   const { locale } = await params
 
-  const [t, user, housings, employees] = await Promise.all([
+  const [t, user, housings, employees, checklistItems] = await Promise.all([
     getI18n(),
     getProfile(),
     getHousings(),
     getEmployees(),
+    getChecklistItems(),
   ])
 
   if (!user) redirect(`/${locale}/auth/sign-in`)
@@ -46,6 +49,9 @@ export default async function SettingsPage({ params }: PageProps) {
 
       {/* Employees */}
       <SettingsEmployees initialEmployees={employees} />
+
+      {/* Default cleaning checklist */}
+      <SettingsChecklist initialItems={checklistItems} />
     </div>
   )
 }

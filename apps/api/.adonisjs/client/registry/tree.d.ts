@@ -63,6 +63,12 @@ export interface ApiDefinition {
     destroy: typeof routes['cleaning_reviews.destroy']
     sendInvitation: typeof routes['cleaning_reviews.send_invitation']
   }
+  checklistItems: {
+    index: typeof routes['checklist_items.index']
+    store: typeof routes['checklist_items.store']
+    update: typeof routes['checklist_items.update']
+    destroy: typeof routes['checklist_items.destroy']
+  }
   dashboard: {
     stats: typeof routes['dashboard.stats']
   }

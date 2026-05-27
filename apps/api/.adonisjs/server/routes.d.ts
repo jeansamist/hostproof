@@ -46,6 +46,10 @@ export type ScannedRoutes = {
     'cleaning_reviews.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.send_invitation': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'checklist_items.index': { paramsTuple?: []; params?: {} }
+    'checklist_items.store': { paramsTuple?: []; params?: {} }
+    'checklist_items.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'checklist_items.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'event_stream': { paramsTuple?: []; params?: {} }
@@ -58,6 +62,7 @@ export type ScannedRoutes = {
     'reservations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.index': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'checklist_items.index': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
     'event_stream': { paramsTuple?: []; params?: {} }
@@ -70,6 +75,7 @@ export type ScannedRoutes = {
     'reservations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.index': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'checklist_items.index': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'subscribe': { paramsTuple?: []; params?: {} }
@@ -91,6 +97,7 @@ export type ScannedRoutes = {
     'cleaning_reviews.store': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.create_many': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.send_invitation': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'checklist_items.store': { paramsTuple?: []; params?: {} }
   }
   PUT: {
     'auth.update_profile': { paramsTuple?: []; params?: {} }
@@ -102,12 +109,14 @@ export type ScannedRoutes = {
     'reservations.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.update_many': { paramsTuple?: []; params?: {} }
     'cleaning_reviews.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'checklist_items.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {
     'employees.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'housings.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'reservations.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'cleaning_reviews.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'checklist_items.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

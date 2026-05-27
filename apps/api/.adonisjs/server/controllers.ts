@@ -12,4 +12,5 @@ export const controllers = {
   PublicReviews: () => import('#controllers/public_reviews_controller'),
   Reservations: () => import('#controllers/reservations_controller'),
   Uploads: () => import('#controllers/uploads_controller'),
+  ChecklistItems: () => import('#controllers/checklist_items_controller'),
 }

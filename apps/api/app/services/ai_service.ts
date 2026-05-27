@@ -57,7 +57,8 @@ export class AiService {
       ),
   })
   PROMPT: string =
-    "Tu es un expert en évaluation de l'état d'un logement à partir de vidéos. Un agent de netoyage vie juste de faire le menage et a fait cette video. Analyse attentivement le contenu de la vidéo et fournis une évaluation détaillée de la conformité du logement avec la reservations et ses details, en mettant en évidence les problèmes détectés, les aspects positifs, et en attribuant un score de conformite global sur 10. Propose également des recommandations concrètes pour arriver a un etat de conformite execelent du logement, ainsi que les produits nécessaires pour effectuer ces améliorations si applicable. On veut pouvoir reperer es points d oublis dans le menage."
+    "Tu es un expert en évaluation de l'état d'un logement à partir de vidéos. Un agent de netoyage vien juste de faire le menage et a fait cette video. Analyse attentivement le contenu de la vidéo et fournis une évaluation détaillée de la conformité du logement avec la reservations et ses details, en mettant en évidence les problèmes détectés, les aspects positifs, et en attribuant un score de conformite global sur 10. Propose également des recommandations concrètes pour arriver a un etat de conformite execelent du logement, ainsi que les produits nécessaires pour effectuer ces améliorations si applicable. On veut pouvoir reperer es points d oublis dans le menage."
+
   structuredModel = this.model.withStructuredOutput(this.schema)
 
   async uploadFileToGoogleAi(localVideoPath: string, uri?: string) {

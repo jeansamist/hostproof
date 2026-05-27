@@ -571,6 +571,54 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cleaning_reviews_controller').default['sendInvitation']>>>
     }
   }
+  'checklist_items.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/auth/checklist-items'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['index']>>>
+    }
+  }
+  'checklist_items.store': {
+    methods: ["POST"]
+    pattern: '/api/auth/checklist-items'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/checklist_item').createChecklistItemValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/checklist_item').createChecklistItemValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'checklist_items.update': {
+    methods: ["PUT"]
+    pattern: '/api/auth/checklist-items/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/checklist_item').updateChecklistItemValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/checklist_item').updateChecklistItemValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'checklist_items.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/auth/checklist-items/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklist_items_controller').default['destroy']>>>
+    }
+  }
   'dashboard.stats': {
     methods: ["GET","HEAD"]
     pattern: '/api/auth/dashboard/stats'

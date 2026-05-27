@@ -86,6 +86,8 @@ export default {
   "onboarding.step.employees.name": "Add your employee",
   "onboarding.step.employees.description":
     "If you have employees for cleaning, add them here",
+  "onboarding.step.checklist.name": "Define your checklist",
+  "onboarding.step.checklist.description": "Set tasks the AI will verify in every cleaning video",
   "onboarding.step.completed.name": "Completed",
   "onboarding.step.completed.description": "Start reviewing your housing",
 
@@ -141,9 +143,11 @@ export default {
   "dashboard.metric.totalEmployees": "Total Employees",
   "dashboard.metric.totalEmployees.description": "Cleaning team members",
   "dashboard.metric.upcomingReservations": "Upcoming Reservations",
-  "dashboard.metric.upcomingReservations.description": "Check-ins from today onwards",
+  "dashboard.metric.upcomingReservations.description":
+    "Check-ins from today onwards",
   "dashboard.metric.succeededReviews": "Succeeded Reviews",
-  "dashboard.metric.succeededReviews.description": "Cleaning reviews marked Done",
+  "dashboard.metric.succeededReviews.description":
+    "Cleaning reviews marked Done",
 
   "nav.dashboard": "Dashboard",
   "nav.reservations": "Reservations",
@@ -155,7 +159,8 @@ export default {
   "reservation.search.submit": "Search",
   "reservation.search.clear": "Clear",
   "reservation.create.title": "New reservation",
-  "reservation.create.description": "Fill in the details to create a new reservation.",
+  "reservation.create.description":
+    "Fill in the details to create a new reservation.",
   "reservation.create.back": "Back to reservations",
   "reservation.edit.title": "Edit reservation",
   "reservation.edit.back": "Back to reservations",
@@ -167,7 +172,8 @@ export default {
   "reservation.form.children.label": "Children",
   "reservation.form.babies.label": "Babies",
   "reservation.form.specialNotes.label": "Special notes",
-  "reservation.form.specialNotes.placeholder": "Any special information for the cleaning team…",
+  "reservation.form.specialNotes.placeholder":
+    "Any special information for the cleaning team…",
   "reservation.form.submit.create": "Create reservation",
   "reservation.form.submit.update": "Save changes",
   "reservation.form.cancel": "Cancel",
@@ -187,12 +193,14 @@ export default {
   "reservation.detail.moveOut": "Move-out",
   "reservation.detail.notes": "Notes",
   "reservation.detail.cleaningReviews": "Cleaning reviews",
-  "reservation.detail.noReviews": "No cleaning review for this reservation yet.",
+  "reservation.detail.noReviews":
+    "No cleaning review for this reservation yet.",
 
   "cleaningReview.title": "Cleaning Reviews",
   "cleaningReview.action.new": "New review",
   "cleaningReview.create.title": "New cleaning review",
-  "cleaningReview.create.description": "Follow the steps to assign a cleaning review to an employee.",
+  "cleaningReview.create.description":
+    "Follow the steps to assign a cleaning review to an employee.",
   "cleaningReview.create.back": "Back to reviews",
   "cleaningReview.edit.title": "Edit cleaning review",
   "cleaningReview.edit.back": "Back to reviews",
@@ -228,7 +236,7 @@ export default {
   "cleaningReview.detail.video": "Uploaded video",
   "cleaningReview.detail.noVideo": "No video uploaded yet.",
   "cleaningReview.detail.edit": "Edit review",
-
+  // https://www.clean-pilot.online/
   "cleaningReview.stepper.step.reservation": "Reservation",
   "cleaningReview.stepper.step.employee": "Employee",
   "cleaningReview.stepper.step.details": "Details",
@@ -236,7 +244,8 @@ export default {
   "cleaningReview.stepper.back": "Back",
   "cleaningReview.stepper.next": "Next",
   "cleaningReview.stepper.reservation.title": "Select a reservation",
-  "cleaningReview.stepper.reservation.description": "Pick an existing reservation or create a new one.",
+  "cleaningReview.stepper.reservation.description":
+    "Pick an existing reservation or create a new one.",
   "cleaningReview.stepper.reservation.empty": "No reservations yet.",
   "cleaningReview.stepper.reservation.createNew": "Create a new reservation",
   "cleaningReview.stepper.reservation.newTitle": "New reservation",
@@ -250,18 +259,22 @@ export default {
   "cleaningReview.stepper.reservation.create": "Create & select",
   "cleaningReview.stepper.reservation.cancel": "Cancel",
   "cleaningReview.stepper.employee.title": "Assign an employee",
-  "cleaningReview.stepper.employee.description": "Select the team member who will perform this cleaning review.",
+  "cleaningReview.stepper.employee.description":
+    "Select the team member who will perform this cleaning review.",
   "cleaningReview.stepper.employee.empty": "No employees yet.",
   "cleaningReview.stepper.details.title": "Additional details",
-  "cleaningReview.stepper.details.description": "Add any notes for the cleaning team (optional).",
+  "cleaningReview.stepper.details.description":
+    "Add any notes for the cleaning team (optional).",
   "cleaningReview.stepper.details.housing": "Housing",
   "cleaningReview.stepper.details.employee": "Employee",
   "cleaningReview.stepper.details.notes.label": "Notes for the employee",
-  "cleaningReview.stepper.details.notes.placeholder": "Any specific areas to check, access codes, special instructions…",
+  "cleaningReview.stepper.details.notes.placeholder":
+    "Any specific areas to check, access codes, special instructions…",
   "cleaningReview.stepper.details.submit": "Create & get link",
   "cleaningReview.stepper.share.title": "Review created!",
   "cleaningReview.stepper.share.linkLabel": "Public review link",
-  "cleaningReview.stepper.share.linkDescription": "The employee will be able to record or upload a video at this link. The review status will automatically change to AI Analysing once the video is submitted.",
+  "cleaningReview.stepper.share.linkDescription":
+    "The employee will be able to record or upload a video at this link. The review status will automatically change to AI Analysing once the video is submitted.",
   "cleaningReview.stepper.share.sendEmail": "Send invitation by email",
   "cleaningReview.stepper.share.sending": "Sending…",
   "cleaningReview.stepper.share.sent": "Invitation sent!",
@@ -286,10 +299,12 @@ export default {
   "settings.profile.save": "Save changes",
   "settings.profile.saving": "Saving…",
   "settings.profile.delete.title": "Delete account",
-  "settings.profile.delete.description": "Permanently delete your account and all associated data. This action cannot be undone.",
+  "settings.profile.delete.description":
+    "Permanently delete your account and all associated data. This action cannot be undone.",
   "settings.profile.delete.button": "Delete account",
   "settings.profile.delete.confirm.title": "Delete your account?",
-  "settings.profile.delete.confirm.description": "This will permanently delete your account and all data. You will be signed out immediately. This action cannot be undone.",
+  "settings.profile.delete.confirm.description":
+    "This will permanently delete your account and all data. You will be signed out immediately. This action cannot be undone.",
   "settings.profile.delete.confirm.cancel": "Cancel",
   "settings.profile.delete.confirm.action": "Delete my account",
 

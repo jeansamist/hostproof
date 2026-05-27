@@ -3,6 +3,7 @@ import { type EmployeeSchema, type HousingSchema } from '#database/schema'
 import CleaningReviewInvitationNotification from '#mails/cleaning_review_invitation_notification'
 import CleaningReviewMissingProductsNotification from '#mails/cleaning_review_missing_products_notification'
 import CleaningReviewRequestNewReviewNotification from '#mails/cleaning_review_request_new_review_notification'
+import ChecklistItemRepository from '#repositories/checklist_item_repository'
 import CleaningReviewRepository from '#repositories/cleaning_review_repository'
 import EmployeeRepository from '#repositories/employee_repository'
 import ReservationRepository from '#repositories/reservation_repository'
@@ -51,6 +52,7 @@ export class CleaningReviewService {
     private readonly repository: CleaningReviewRepository,
     private readonly employeeRepository: EmployeeRepository,
     private readonly reservationRepository: ReservationRepository,
+    private readonly checklistItemRepository: ChecklistItemRepository,
     private readonly ctx: HttpContext,
     protected readonly cronManager: CronManager,
     protected readonly logger: Logger,
@@ -327,7 +329,19 @@ export class CleaningReviewService {
       throw new Error('No video to analyze')
     }
     this.logger.info(`[CleaningReviewService]: Analyzing video content using file reference...`)
-    //  Add review notes and reservation details to the prompt to give more context to the AI and improve the analysis accuracy
+
+    // Load the checklist defined by the housing owner so the AI can verify each point
+    const ownerId = (cleaningReview.reservation as any)?.housing?.userId as number | undefined
+    const checklistItems = ownerId
+      ? await this.checklistItemRepository.findAllByUserId(ownerId)
+      : []
+
+    const checklistSection =
+      checklistItems.length > 0
+        ? `\n\nDefault cleaning checklist defined by the property manager — verify that EACH of these points has been filmed and confirmed in the video. Flag any that are missing or unclear in negativeAspects and toDo:\n${checklistItems.map((item, i) => `${i + 1}. ${item.label}`).join('\n')}`
+        : ''
+
+    //  Add review notes, reservation details, and owner checklist to give more context to the AI
     const response = await this.aiService.uploadAndAnalyzeVideo(
       cleaningReview.localVideoPath,
       uri,
@@ -336,7 +350,7 @@ export class CleaningReviewService {
 - Reservation notes: ${cleaningReview.reservation?.specialInfos ?? 'N/A'}
 - Notes told to the employee: ${cleaningReview.additionnalInfos ?? 'N/A'}
 - Reservation dates: ${cleaningReview.reservation ? `${cleaningReview.reservation.moveInDate.toString()} to ${cleaningReview.reservation.moveOutDate.toLocaleString()}` : 'N/A'}
-- Housing details: ${cleaningReview.reservation && cleaningReview.reservation.housing ? `Type: ${cleaningReview.reservation.housing.type}, Size: ${cleaningReview.reservation.housing.capacity.toString()} sqm` : 'N/A'}
+- Housing details: ${cleaningReview.reservation && cleaningReview.reservation.housing ? `Type: ${cleaningReview.reservation.housing.type}, Size: ${cleaningReview.reservation.housing.capacity.toString()} sqm` : 'N/A'}${checklistSection}
 `
     )
 
