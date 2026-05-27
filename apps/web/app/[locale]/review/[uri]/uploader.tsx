@@ -338,12 +338,14 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
             appReviewLink={appReviewLink}
           />
         )}
-        <VoiceMessageRecorder
-          uri={uri}
-          apiUrl={apiUrl}
-          appReviewLink={appReviewLink}
-          existingFileUrl={review.voiceMessageFile}
-        />
+        {messageKey === "AI_ANALYSIS_COMPLETED" && (
+          <VoiceMessageRecorder
+            uri={uri}
+            apiUrl={apiUrl}
+            appReviewLink={appReviewLink}
+            existingFileUrl={review.voiceMessageFile}
+          />
+        )}
       </>
     )
   }
