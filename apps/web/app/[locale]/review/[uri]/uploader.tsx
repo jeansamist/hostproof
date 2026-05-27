@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import type { PublicReviewInfo } from "@/services/cleaning-review.services"
 import { AiOutputDisplay } from "@/components/customs/ai-output-display"
 import { VoiceMessageRecorder } from "@/components/customs/voice-message-recorder"
+import type { PublicReviewInfo } from "@/services/cleaning-review.services"
 import { Transmit } from "@adonisjs/transmit-client"
-import { cn } from "@packages/functions"
 import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
 import { Card, CardContent } from "@packages/ui/card"
@@ -126,7 +125,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     return () => {
       subscription.delete().catch(() => {})
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uri])
 
   useEffect(() => {
@@ -235,7 +234,9 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     setMessageKey(null)
     setMESSAGE("Retrying analysis…")
     try {
-      await fetch(`${apiUrl}/api/public/reviews/${uri}/retry`, { method: "POST" })
+      await fetch(`${apiUrl}/api/public/reviews/${uri}/retry`, {
+        method: "POST",
+      })
     } catch {
       setMessageKey("AI_ANALYSIS_FAILED")
       setMESSAGE("Analysis failed. Please contact support.")
@@ -290,13 +291,14 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
           <CardContent className="space-y-3">
             <div className="flex items-center gap-4">
               {messageKey === "AI_ANALYSIS_COMPLETED" ? (
-                <CheckCircle2 className="size-4 text-green-500 shrink-0" />
+                <CheckCircle2 className="size-4 shrink-0 text-green-500" />
               ) : messageKey === "AI_ANALYSIS_FAILED" ? (
-                <AlertCircle className="size-4 text-destructive shrink-0" />
+                <AlertCircle className="size-4 shrink-0 text-destructive" />
               ) : (
-                <Loader2 className="size-4 animate-spin shrink-0" />
+                <Loader2 className="size-4 shrink-0 animate-spin" />
               )}
-              {messageKey === "AI_ANALYSIS_COMPLETED" || messageKey === "AI_ANALYSIS_FAILED" ? (
+              {messageKey === "AI_ANALYSIS_COMPLETED" ||
+              messageKey === "AI_ANALYSIS_FAILED" ? (
                 <span>{MESSAGE}</span>
               ) : (
                 <AnimatePresence initial={false} mode="wait">
@@ -429,7 +431,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       {/* Idle: record or upload */}
       {mode === "idle" && (
         <div className="space-y-3">
-          <div
+          {/* <div
             className={cn(
               "cursor-pointer space-y-4 rounded-2xl border-2 border-dashed p-10 text-center transition-colors hover:bg-muted/30"
             )}
@@ -457,7 +459,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
             <div className="h-px flex-1 bg-border" />
             <span className="text-xs text-muted-foreground">or</span>
             <div className="h-px flex-1 bg-border" />
-          </div>
+          </div> */}
 
           <div className="space-y-2">
             <Button size="lg" className="w-full gap-2" onClick={startRecording}>
