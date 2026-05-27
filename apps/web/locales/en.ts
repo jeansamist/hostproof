@@ -560,6 +560,115 @@ export default {
   "onboarding.checklist.default.floors": "Vacuum and mop all floors",
   "onboarding.checklist.default.trash": "Empty all trash bins and replace bin bags",
   "onboarding.checklist.default.alarms": "Check the smoke detectors and CO₂ alarms are functional",
+
+  // Landing page
+  "landing.nav.howItWorks": "How it works",
+  "landing.nav.signUp": "Create account",
+  "landing.nav.signIn": "Log in",
+
+  "landing.hero.badge": "✨ 7-day free trial · no credit card required",
+  "landing.hero.title": "One tiny cleaning slip, and your",
+  "landing.hero.titleAccent": "ratings plummet",
+  "landing.hero.description":
+    "Scan your properties with video — eliminate bad reviews before guests even arrive.",
+  "landing.hero.cta": "Start 7-day free trial →",
+  "landing.hero.trust": "Cancel anytime · Secure payment",
+  "landing.hero.phone.room": "Video of the room",
+  "landing.hero.phone.checkOk": "✔ Towels  ✔ Soap  ✔ Water",
+  "landing.hero.phone.checkFail": "⚠️ Missing 2 toilet paper rolls!",
+
+  "landing.problem.label": "The real pain",
+  "landing.problem.title": "The Saturday nightmare (you know it)",
+  "landing.problem.quote":
+    "Your guests arrive in 1 hour. The cleaner left. And you realize they forgot the toilet paper, towels, or water. Result: a 4-star review and a 20% drop in bookings.",
+  "landing.problem.stat1.num": "−20%",
+  "landing.problem.stat1.label": "fewer bookings if rating < 4.8",
+  "landing.problem.stat2.num": "3 min",
+  "landing.problem.stat2.label": "to verify with CleanPilot",
+
+  "landing.how.label": "The fix",
+  "landing.how.title": "Your properties checked in 1 minute — from anywhere",
+  "landing.how.description": "CleanPilot does quality control for you. No more excuses.",
+  "landing.how.step1.title": "Full video scan",
+  "landing.how.step1.desc":
+    "Cleaner records each room for 30 seconds. No app needed — simple link.",
+  "landing.how.step2.title": "Dynamic AI analysis",
+  "landing.how.step2.desc":
+    "Our AI analyzes video frame by frame, detects every detail (supplies, equipment, issues).",
+  "landing.how.step3.title": "To-do list & voice memo",
+  "landing.how.step3.desc":
+    "Results appear as a task list. If something is missing or broken, the cleaner leaves a voice message for the manager.",
+  "landing.how.step4.title": "Manager dashboard",
+  "landing.how.step4.desc":
+    "The manager accesses all analyses, videos, photos, and to-do lists from a central dashboard.",
+
+  "landing.benefits.label": "What you gain",
+  "landing.benefits.title": "Take back your time (and your ratings)",
+  "landing.benefits.item1": "No more cleaning-related bad reviews — consistent excellence",
+  "landing.benefits.item2": "Ratings climb to 4.9/5 — become the top choice",
+  "landing.benefits.item3": "No more Saturday evening emergency runs for a missing towel",
+  "landing.benefits.item4": "Tips instead of complaints — guests notice the care",
+  "landing.benefits.item5": "Manage 30 properties as calmly as 5",
+  "landing.benefits.bonus":
+    "Unexpected bonus: Our AI also spots burnt-out bulbs, cracks, or stains. You get repairs done before guests complain.",
+
+  "landing.pricing.label": "Transparent pricing",
+  "landing.pricing.title": "One tool, two ways to pay",
+  "landing.pricing.monthly.price": "$47",
+  "landing.pricing.monthly.period": "/month",
+  "landing.pricing.monthly.sub": "Cancel anytime",
+  "landing.pricing.monthly.cta": "Choose monthly",
+  "landing.pricing.annual.price": "$470",
+  "landing.pricing.annual.period": "/year",
+  "landing.pricing.annual.sub": "Save $94 (2 months free)",
+  "landing.pricing.annual.cta": "Choose yearly",
+  "landing.pricing.annual.badge": "★ Recommended",
+  "landing.pricing.feature.unlimitedProperties": "Unlimited properties",
+  "landing.pricing.feature.unlimitedScans": "Unlimited video scans",
+  "landing.pricing.feature.todoList": "Smart to-do list",
+  "landing.pricing.feature.voice": "Voice commands",
+  "landing.pricing.feature.emailSupport": "Standard email support",
+  "landing.pricing.feature.prioritySupport": "Priority support 7/7",
+  "landing.pricing.feature.advancedDashboard": "Advanced dashboard",
+  "landing.pricing.feature.export": "Data export",
+  "landing.pricing.limitedOffer":
+    "🎯 Launch offer: first 50 customers keep lifetime price (23 spots left)",
+
+  "landing.testimonials.label": "Trusted by pros",
+  "landing.testimonials.title": "Concierges who never work without CleanPilot",
+  "landing.testimonials.1.text":
+    "\"Since CleanPilot, my 12 properties are rated 5 stars for cleanliness. I gained back 3 extra rental nights per month. Huge relief.\"",
+  "landing.testimonials.1.name": "Sophie L.",
+  "landing.testimonials.1.role": "Independent concierge, Lyon · 12 units",
+  "landing.testimonials.2.text":
+    "\"My cleaners love it — they don't stress about missing details. I manage 30 properties from my couch with zero bad surprises.\"",
+  "landing.testimonials.2.name": "Marc D.",
+  "landing.testimonials.2.role": "Concierge agency, Bordeaux · 30 units",
+
+  "landing.faq.label": "FAQ",
+  "landing.faq.1.q": "Do I need to install an app?",
+  "landing.faq.1.a": "No. Your cleaners get a link via SMS/WhatsApp — that's it.",
+  "landing.faq.2.q": "Does it work for any room?",
+  "landing.faq.2.a": "Yes, from a studio to a 6-bedroom villa. Configure your templates in 3 clicks.",
+  "landing.faq.3.q": "What if the video is blurry or dark?",
+  "landing.faq.3.a": "The tool detects it and asks for a new video. Zero false positives.",
+  "landing.faq.4.q": "Can I cancel anytime?",
+  "landing.faq.4.a": "Yes, one-click cancellation, no hidden fees.",
+
+  "landing.finalCta.title": "Ready to stop losing stars over a tiny oversight?",
+  "landing.finalCta.description":
+    "7-day free trial, no credit card required. If it's not for you, we part as friends.",
+  "landing.finalCta.cta": "Start my 7-day free trial →",
+  "landing.finalCta.trust": "Then $47/month · Cancel anytime · Secure Stripe",
+
+  "landing.guarantee":
+    "30-day money-back guarantee. If CleanPilot hasn't saved you from at least one oversight in 30 days, we refund you fully. No questions asked.",
+
+  "landing.footer.legal": "Legal",
+  "landing.footer.terms": "Terms",
+  "landing.footer.contact": "Contact",
+  "landing.footer.copy": "© 2025 CleanPilot · All rights reserved",
+  "landing.footer.tagline": "Built for concierges who want 5 stars.",
 } as const
 export type Locale = typeof import("./en").default
 export type LocaleKey = keyof Locale

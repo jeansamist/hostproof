@@ -34,7 +34,7 @@ export function CleaningReviewInvitationEmailTemplate({
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              Hostproof
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -48,8 +48,8 @@ export function CleaningReviewInvitationEmailTemplate({
             )}
 
             <Text className="text-gray-500 text-sm leading-relaxed m-0 mb-4">
-              Please click the button below to record or upload your cleaning review video.
-              It only takes a few minutes and helps ensure the property was properly cleaned.
+              Please click the button below to record or upload your cleaning review video. It only
+              takes a few minutes and helps ensure the property was properly cleaned.
             </Text>
 
             {notes && (
@@ -95,8 +95,8 @@ export function CleaningReviewInvitationEmailTemplate({
             <Hr className="border-gray-100 my-10" />
 
             <Text className="text-xs text-gray-400 m-0">
-              You received this email because you were assigned a cleaning review.
-              If you believe this was sent in error, please ignore this email.
+              You received this email because you were assigned a cleaning review. If you believe
+              this was sent in error, please ignore this email.
             </Text>
           </Container>
         </Body>

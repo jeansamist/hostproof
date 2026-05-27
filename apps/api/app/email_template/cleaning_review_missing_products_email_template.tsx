@@ -35,7 +35,7 @@ export function CleaningReviewMissingProductsEmailTemplate({
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              Hostproof
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -56,9 +56,7 @@ export function CleaningReviewMissingProductsEmailTemplate({
                 marginBottom: '24px',
               }}
             >
-              <Text className="text-gray-700 text-sm m-0 font-medium mb-2">
-                Missing products:
-              </Text>
+              <Text className="text-gray-700 text-sm m-0 font-medium mb-2">Missing products:</Text>
               {missingProducts.map((product, i) => (
                 <Text key={i} className="text-gray-600 text-sm m-0 mb-1">
                   · {product}
@@ -89,7 +87,8 @@ export function CleaningReviewMissingProductsEmailTemplate({
             <Hr className="border-gray-100 my-10" />
 
             <Text className="text-xs text-gray-400 m-0">
-              You received this email because missing products were reported during a cleaning review.
+              You received this email because missing products were reported during a cleaning
+              review.
             </Text>
           </Container>
         </Body>

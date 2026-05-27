@@ -33,7 +33,7 @@ export function CleaningReviewVoiceMessageEmailTemplate({
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              Hostproof
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -42,8 +42,10 @@ export function CleaningReviewVoiceMessageEmailTemplate({
 
             <Text className="text-gray-500 text-sm leading-relaxed m-0 mb-6">
               <strong>{employeeName}</strong> has left a voice message
-              {housingName ? ` regarding the cleaning review at ${housingName}` : ' regarding a cleaning review'}.
-              {' '}Open the review to listen to the recording.
+              {housingName
+                ? ` regarding the cleaning review at ${housingName}`
+                : ' regarding a cleaning review'}
+              . Open the review to listen to the recording.
             </Text>
 
             <div
@@ -59,7 +61,8 @@ export function CleaningReviewVoiceMessageEmailTemplate({
               }}
             >
               <Text className="text-blue-700 text-sm m-0">
-                🎙️ A voice message is waiting for you on this review. Click the button below to listen.
+                🎙️ A voice message is waiting for you on this review. Click the button below to
+                listen.
               </Text>
             </div>
 
@@ -82,7 +85,8 @@ export function CleaningReviewVoiceMessageEmailTemplate({
             <Hr className="border-gray-100 my-10" />
 
             <Text className="text-xs text-gray-400 m-0">
-              You received this email because an employee left a voice message on one of your cleaning reviews.
+              You received this email because an employee left a voice message on one of your
+              cleaning reviews.
             </Text>
           </Container>
         </Body>

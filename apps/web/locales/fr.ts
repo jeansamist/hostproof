@@ -576,4 +576,114 @@ export default {
     "Vider toutes les poubelles et remplacer les sacs",
   "onboarding.checklist.default.alarms":
     "Vérifier les détecteurs de fumée et alarmes CO₂",
+
+  // Landing page
+  "landing.nav.howItWorks": "Comment ça marche ?",
+  "landing.nav.signUp": "Créer son compte",
+  "landing.nav.signIn": "Se connecter",
+
+  "landing.hero.badge": "✨ Essai gratuit 7 jours · sans carte bancaire",
+  "landing.hero.title": "Un seul oubli de ménage, et votre",
+  "landing.hero.titleAccent": "note s'effondre",
+  "landing.hero.description":
+    "Vérifiez vos logements par vidéo pour éliminer les avis négatifs avant l'arrivée de vos voyageurs.",
+  "landing.hero.cta": "Essayer gratuitement pendant 7 jours →",
+  "landing.hero.trust": "Sans engagement · Annulation en 1 clic · Paiement sécurisé",
+  "landing.hero.phone.room": "Vidéo de la chambre",
+  "landing.hero.phone.checkOk": "✔ Serviettes  ✔ Savon  ✔ Eau",
+  "landing.hero.phone.checkFail": "⚠️ Il manque 2 rouleaux de PQ !",
+
+  "landing.problem.label": "Le problème",
+  "landing.problem.title": "Le cauchemar du samedi (vous le connaissez)",
+  "landing.problem.quote":
+    "Vos clients arrivent dans 1 heure. La femme de ménage est partie. Et vous réalisez qu'elle a oublié le PQ, les serviettes, ou l'eau. Résultat : un avis 4 étoiles, −20 % de réservations.",
+  "landing.problem.stat1.num": "−20%",
+  "landing.problem.stat1.label": "de réservations avec une note < 4,8",
+  "landing.problem.stat2.num": "3 min",
+  "landing.problem.stat2.label": "pour vérifier avec CleanPilot",
+
+  "landing.how.label": "La solution",
+  "landing.how.title": "Vos logements vérifiés en 1 minute, sans vous déplacer",
+  "landing.how.description":
+    "CleanPilot fait le contrôle qualité à votre place. Vos femmes de ménage n'ont plus le droit à l'erreur.",
+  "landing.how.step1.title": "Vidéo complète",
+  "landing.how.step1.desc":
+    "La femme de ménage filme chaque pièce pendant 30 secondes. Aucune app à installer — lien simple.",
+  "landing.how.step2.title": "Analyse IA dynamique",
+  "landing.how.step2.desc":
+    "Notre IA analyse la vidéo frame par frame, détecte chaque détail (consommables, équipements, anomalies).",
+  "landing.how.step3.title": "To-do list & alerte vocale",
+  "landing.how.step3.desc":
+    "Le résultat s'affiche sous forme de liste de tâches. Si un produit manque ou une panne, la femme de ménage laisse un message vocal à la responsable.",
+  "landing.how.step4.title": "Dashboard manager",
+  "landing.how.step4.desc":
+    "La responsable accède à toutes les analyses, photos, vidéos et to-do lists depuis son tableau de bord central.",
+
+  "landing.benefits.label": "Ce que vous gagnez",
+  "landing.benefits.title": "Reprenez le contrôle de votre temps (et de vos notes)",
+  "landing.benefits.item1": "Finis les avis négatifs sur le ménage — une expérience irréprochable",
+  "landing.benefits.item2": "Vos notes remontent à 4,9/5 — vous devenez le choix numéro 1",
+  "landing.benefits.item3": "Plus de temps perdu à courir le samedi soir pour un oubli",
+  "landing.benefits.item4": "Des pourboires plutôt que des plaintes — vos clients remarquent le soin",
+  "landing.benefits.item5": "Gérez 30 logements avec le même calme qu'avec 5",
+  "landing.benefits.bonus":
+    "Bonus inattendu : Notre outil détecte aussi les ampoules grillées, les fissures ou les taches. Vous êtes prévenu des petites réparations avant que le voyageur ne s'en plaigne.",
+
+  "landing.pricing.label": "Tarifs transparents",
+  "landing.pricing.title": "Un seul outil, deux façons de payer",
+  "landing.pricing.monthly.price": "39 €",
+  "landing.pricing.monthly.period": "/mois",
+  "landing.pricing.monthly.sub": "Résiliable à tout moment",
+  "landing.pricing.monthly.cta": "Choisir mensuel",
+  "landing.pricing.annual.price": "390 €",
+  "landing.pricing.annual.period": "/an",
+  "landing.pricing.annual.sub": "Économisez 78 € (2 mois offerts)",
+  "landing.pricing.annual.cta": "Choisir annuel",
+  "landing.pricing.annual.badge": "★ Recommandé",
+  "landing.pricing.feature.unlimitedProperties": "Biens illimités",
+  "landing.pricing.feature.unlimitedScans": "Scans vidéo illimités",
+  "landing.pricing.feature.todoList": "To-do list intelligente",
+  "landing.pricing.feature.voice": "Commandes vocales",
+  "landing.pricing.feature.emailSupport": "Support email standard",
+  "landing.pricing.feature.prioritySupport": "Support prioritaire 7j/7",
+  "landing.pricing.feature.advancedDashboard": "Dashboard avancé",
+  "landing.pricing.feature.export": "Export données",
+  "landing.pricing.limitedOffer":
+    "🎯 Lancement : les 50 premiers clients gardent le tarif à vie (23 places restantes)",
+
+  "landing.testimonials.label": "Ils nous font confiance",
+  "landing.testimonials.title": "Des concierges qui ne bossent plus jamais sans CleanPilot",
+  "landing.testimonials.1.text":
+    "\"Depuis CleanPilot, mes 12 logements sont notés 5 étoiles sur la propreté. J'ai récupéré l'équivalent de 3 nuits de location par mois. Un soulagement.\"",
+  "landing.testimonials.1.name": "Sophie L.",
+  "landing.testimonials.1.role": "Concierge indépendante, Lyon · 12 biens",
+  "landing.testimonials.2.text":
+    "\"Mes femmes de ménage adorent, elles ne stressent plus de rater un détail. Je pilote mes 30 propriétés depuis mon canapé sans mauvaise surprise.\"",
+  "landing.testimonials.2.name": "Marc D.",
+  "landing.testimonials.2.role": "Agence de conciergerie, Bordeaux · 30 biens",
+
+  "landing.faq.label": "Questions fréquentes",
+  "landing.faq.1.q": "Faut-il télécharger une application ?",
+  "landing.faq.1.a": "Non. Vos femmes de ménage n'ont rien à installer. Elles cliquent sur un lien reçu par SMS/WhatsApp.",
+  "landing.faq.2.q": "Ça marche avec toutes les pièces ?",
+  "landing.faq.2.a": "Oui, que ce soit un studio ou une villa, vous configurez vos modèles en 3 clics.",
+  "landing.faq.3.q": "Et si la vidéo est floue ou sombre ?",
+  "landing.faq.3.a": "L'outil le détecte et demande de refaire la vidéo. Zéro faux positif.",
+  "landing.faq.4.q": "Puis-je annuler à tout moment ?",
+  "landing.faq.4.a": "Oui, résiliation en 1 clic, sans frais cachés.",
+
+  "landing.finalCta.title": "Prêt à ne plus jamais perdre une étoile à cause d'un oubli ?",
+  "landing.finalCta.description":
+    "7 jours offerts, sans carte bancaire. Si ce n'est pas fait pour vous, on se sépare bons amis.",
+  "landing.finalCta.cta": "Je commence mon essai gratuit de 7 jours →",
+  "landing.finalCta.trust": "Puis 39€/mois · Résiliation en 1 clic · Stripe sécurisé",
+
+  "landing.guarantee":
+    "Satisfait ou remboursé sous 30 jours. Si CleanPilot ne vous a évité aucun oubli en 30 jours, on vous rembourse intégralement.",
+
+  "landing.footer.legal": "Mentions légales",
+  "landing.footer.terms": "CGU",
+  "landing.footer.contact": "Contact",
+  "landing.footer.copy": "© 2025 CleanPilot · Tous droits réservés",
+  "landing.footer.tagline": "Fait pour les concierges qui veulent des 5 étoiles.",
 } as const

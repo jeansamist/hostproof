@@ -35,7 +35,7 @@ export function CleaningReviewRequestNewReviewEmailTemplate({
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              Hostproof
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -57,9 +57,7 @@ export function CleaningReviewRequestNewReviewEmailTemplate({
                   marginBottom: '24px',
                 }}
               >
-                <Text className="text-gray-700 text-sm m-0 font-medium mb-2">
-                  Completed tasks:
-                </Text>
+                <Text className="text-gray-700 text-sm m-0 font-medium mb-2">Completed tasks:</Text>
                 {toDoItems.map((item, i) => (
                   <Text key={i} className="text-gray-600 text-sm m-0 mb-1">
                     ✓ {item}
