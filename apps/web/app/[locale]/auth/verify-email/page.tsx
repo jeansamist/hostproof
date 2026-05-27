@@ -7,9 +7,17 @@ import {
   CardTitle,
 } from "@packages/ui/card"
 import type { Metadata } from "next"
+import { setStaticParamsLocale } from "next-international/server"
 import React from "react"
 
-export async function generateMetadata(): Promise<Metadata> {
+type PageProps = {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ email?: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params
+  setStaticParamsLocale(locale)
   const t = await getI18n()
   return {
     title: t("auth.verifyEmail.meta.title"),
@@ -17,11 +25,9 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{ email?: string }>
-}) {
+export default async function Page({ params, searchParams }: PageProps) {
+  const { locale } = await params
+  setStaticParamsLocale(locale)
   const { email } = await searchParams
   const t = await getI18n()
   return (

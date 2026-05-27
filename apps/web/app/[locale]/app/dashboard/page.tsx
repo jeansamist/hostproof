@@ -1,5 +1,6 @@
 import { RefreshButton } from "@/components/customs/refresh-button"
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { getCleaningReviews } from "@/services/cleaning-review.services"
 import { getDashboardStats } from "@/services/dashboard.services"
 import { Badge } from "@packages/ui/badge"
@@ -31,6 +32,7 @@ function formatDate(iso: string) {
 
 export default async function DashboardPage({ params }: PageProps) {
   const { locale } = await params
+  setStaticParamsLocale(locale)
 
   const [t, stats, reviewsResult] = await Promise.all([
     getI18n(),

@@ -1,4 +1,5 @@
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { ReservationForm } from "@/components/forms/reservation.form"
 import { getHousings } from "@/services/housing.services"
 import { getReservationById } from "@/services/reservation.services"
@@ -12,6 +13,7 @@ type PageProps = {
 
 export default async function EditReservationPage({ params }: PageProps) {
   const { locale, reservationId } = await params
+  setStaticParamsLocale(locale)
   const returnUrl = `/${locale}/app/reservation`
 
   const [t, reservation, housings] = await Promise.all([

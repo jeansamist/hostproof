@@ -7,10 +7,18 @@ import {
   CardTitle,
 } from "@packages/ui/card"
 import type { Metadata } from "next"
+import { setStaticParamsLocale } from "next-international/server"
 import { redirect } from "next/navigation"
 import React from "react"
 
-export async function generateMetadata(): Promise<Metadata> {
+type PageProps = {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ email?: string; resetPasswordToken?: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params
+  setStaticParamsLocale(locale)
   const t = await getI18n()
   return {
     title: t("auth.resetPassword.meta.title"),
@@ -18,11 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{ email?: string; resetPasswordToken?: string }>
-}) {
+export default async function Page({ params, searchParams }: PageProps) {
+  const { locale } = await params
+  setStaticParamsLocale(locale)
   const { email, resetPasswordToken } = await searchParams
 
   if (!email || !resetPasswordToken) {

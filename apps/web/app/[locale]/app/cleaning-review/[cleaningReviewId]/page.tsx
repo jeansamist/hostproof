@@ -1,6 +1,7 @@
 import { AdminVideoUploader } from "@/components/customs/admin-video-uploader"
 import { AiOutputDisplay } from "@/components/customs/ai-output-display"
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { getCleaningReviewById } from "@/services/cleaning-review.services"
 import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
@@ -15,6 +16,7 @@ type PageProps = {
 
 export default async function CleaningReviewDetailPage({ params }: PageProps) {
   const { locale, cleaningReviewId } = await params
+  setStaticParamsLocale(locale)
   const returnUrl = `/${locale}/app/cleaning-review`
   const editUrl = `/${locale}/app/cleaning-review/${cleaningReviewId}/edit`
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"

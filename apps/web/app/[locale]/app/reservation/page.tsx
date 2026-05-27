@@ -1,4 +1,5 @@
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { ReservationsTable } from "@/components/customs/reservations-table"
 import { getReservations } from "@/services/reservation.services"
 import { Button } from "@packages/ui/button"
@@ -22,6 +23,7 @@ type PageProps = {
 
 export default async function ReservationPage({ params, searchParams }: PageProps) {
   const { locale } = await params
+  setStaticParamsLocale(locale)
   const { page: pageParam, search } = await searchParams
   const page = Math.max(1, Number(pageParam ?? 1))
 

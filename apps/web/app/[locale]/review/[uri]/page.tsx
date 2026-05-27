@@ -1,6 +1,7 @@
 import { PublicVideoUploader } from "./uploader"
 import { getCleaningReviewByUri } from "@/services/cleaning-review.services"
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 
 type PageProps = {
   params: Promise<{ locale: string; uri: string }>
@@ -8,6 +9,7 @@ type PageProps = {
 
 export default async function PublicReviewPage({ params }: PageProps) {
   const { locale, uri } = await params
+  setStaticParamsLocale(locale)
   const [t, review] = await Promise.all([getI18n(), getCleaningReviewByUri(uri)])
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"

@@ -1,4 +1,5 @@
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { ReservationForm } from "@/components/forms/reservation.form"
 import { getHousings } from "@/services/housing.services"
 import { ChevronLeft } from "lucide-react"
@@ -10,6 +11,7 @@ type PageProps = {
 
 export default async function CreateReservationPage({ params }: PageProps) {
   const { locale } = await params
+  setStaticParamsLocale(locale)
   const returnUrl = `/${locale}/app/reservation`
 
   const [t, housings] = await Promise.all([getI18n(), getHousings()])

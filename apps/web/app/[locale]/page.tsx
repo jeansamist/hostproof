@@ -1,7 +1,12 @@
 import { getI18n } from "@/lib/i18n/server"
 import { Button } from "@packages/ui/button"
+import { setStaticParamsLocale } from "next-international/server"
 
-export default async function Page() {
+type PageProps = { params: Promise<{ locale: string }> }
+
+export default async function Page({ params }: PageProps) {
+  const { locale } = await params
+  setStaticParamsLocale(locale)
   const t = await getI18n()
 
   return (

@@ -1,4 +1,5 @@
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { CleaningReviewStepper } from "@/components/customs/cleaning-review-stepper"
 import { getEmployees } from "@/services/employee.services"
 import { getHousings } from "@/services/housing.services"
@@ -11,6 +12,7 @@ type PageProps = {
 
 export default async function CreateCleaningReviewPage({ params }: PageProps) {
   const { locale } = await params
+  setStaticParamsLocale(locale)
   const returnUrl = `/${locale}/app/cleaning-review`
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333"

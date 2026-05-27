@@ -1,4 +1,5 @@
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { CleaningReviewsTable } from "@/components/customs/cleaning-reviews-table"
 import { RefreshButton } from "@/components/customs/refresh-button"
 import { getCleaningReviews } from "@/services/cleaning-review.services"
@@ -22,6 +23,7 @@ type PageProps = {
 
 export default async function CleaningReviewPage({ params, searchParams }: PageProps) {
   const { locale } = await params
+  setStaticParamsLocale(locale)
   const { page: pageParam } = await searchParams
   const page = Math.max(1, Number(pageParam ?? 1))
 

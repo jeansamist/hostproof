@@ -4,6 +4,7 @@ import { SettingsEmployees } from "@/components/customs/settings-employees"
 import { SettingsHousings } from "@/components/customs/settings-housings"
 import { SettingsProfile } from "@/components/customs/settings-profile"
 import { getI18n } from "@/lib/i18n/server"
+import { setStaticParamsLocale } from "next-international/server"
 import { getProfile } from "@/services/auth.services"
 import { getChecklistItems } from "@/services/checklist-item.services"
 import { getEmployees } from "@/services/employee.services"
@@ -16,6 +17,7 @@ type PageProps = {
 
 export default async function SettingsPage({ params }: PageProps) {
   const { locale } = await params
+  setStaticParamsLocale(locale)
 
   const [t, user, housings, employees, checklistItems] = await Promise.all([
     getI18n(),

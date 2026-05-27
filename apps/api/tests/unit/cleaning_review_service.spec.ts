@@ -155,7 +155,11 @@ function createCleaningReviewService({
       cleaningReviews as never,
       employees as never,
       reservations as never,
-      ctx
+      {} as never, // checklistItemRepository
+      ctx,
+      {} as never, // cronManager
+      {} as never, // logger
+      {} as never  // aiService
     ),
   }
 }
