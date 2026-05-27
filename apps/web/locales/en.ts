@@ -540,6 +540,25 @@ export default {
   "onboarding.error.createHousings": "Unable to create housings",
   "onboarding.error.createEmployees": "Unable to create employees",
   "onboarding.error.unknown": "Unknown error",
+  "onboarding.employees.error.uploadAvatar": "Unable to upload avatar",
+
+  // Settings — Profile (additions)
+  "settings.profile.saved": "Saved!",
+
+  // Navigation (additions)
+  "nav.signOut": "Sign out",
+
+  // Onboarding — Checklist default items
+  "onboarding.checklist.default.lightBulbs": "Check all light bulbs are working",
+  "onboarding.checklist.default.refrigerator": "Verify the refrigerator is clean and empty",
+  "onboarding.checklist.default.internet": "Check internet connection and router",
+  "onboarding.checklist.default.bathroom": "Inspect all bathroom fixtures (shower, toilet, sink)",
+  "onboarding.checklist.default.windows": "Confirm windows and shutters open and close properly",
+  "onboarding.checklist.default.kitchen": "Wipe down all kitchen surfaces and appliances",
+  "onboarding.checklist.default.linens": "Check that all towels and bed linen are clean and in place",
+  "onboarding.checklist.default.floors": "Vacuum and mop all floors",
+  "onboarding.checklist.default.trash": "Empty all trash bins and replace bin bags",
+  "onboarding.checklist.default.alarms": "Check the smoke detectors and CO₂ alarms are functional",
 } as const
 export type Locale = typeof import("./en").default
 export type LocaleKey = keyof Locale

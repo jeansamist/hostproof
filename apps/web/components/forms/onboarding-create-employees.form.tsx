@@ -109,7 +109,7 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
           })
 
           if (!uploadResult.success || !uploadResult.data) {
-            throw new Error(uploadResult.message ?? "Unable to upload avatar")
+            throw new Error(uploadResult.message ?? t("onboarding.employees.error.uploadAvatar"))
           }
 
           avatar =
@@ -129,7 +129,7 @@ export const OnboardingCreateEmployeesForm: FunctionComponent<
 
       await handleNext({ employees })
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unknown error")
+      setErrorMessage(error instanceof Error ? error.message : t("onboarding.error.unknown"))
     }
   }
 

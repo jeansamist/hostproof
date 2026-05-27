@@ -109,7 +109,7 @@ export const SettingsProfile: FunctionComponent<SettingsProfileProps> = ({ user,
         <div className="flex justify-end">
           <Button onClick={handleSave} disabled={saving} size="sm">
             {saving && <Loader2 className="size-4 animate-spin" />}
-            {saving ? t("settings.profile.saving") : savedMsg ? "Saved!" : t("settings.profile.save")}
+            {saving ? t("settings.profile.saving") : savedMsg ? t("settings.profile.saved") : t("settings.profile.save")}
           </Button>
         </div>
       </div>

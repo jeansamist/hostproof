@@ -121,7 +121,7 @@ export const TopBar: FunctionComponent = () => {
                   className="flex cursor-pointer items-center gap-2 text-destructive focus:text-destructive"
                 >
                   <LogOut className="size-4" />
-                  Sign out
+                  {t("nav.signOut")}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

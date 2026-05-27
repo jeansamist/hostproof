@@ -21,19 +21,6 @@ type OnboardingCreateChecklistFormProps = {
   handleSkip: () => void
 }
 
-const DEFAULT_LABELS = [
-  "Check all light bulbs are working",
-  "Verify the refrigerator is clean and empty",
-  "Check internet connection and router",
-  "Inspect all bathroom fixtures (shower, toilet, sink)",
-  "Confirm windows and shutters open and close properly",
-  "Wipe down all kitchen surfaces and appliances",
-  "Check that all towels and bed linen are clean and in place",
-  "Vacuum and mop all floors",
-  "Empty all trash bins and replace bin bags",
-  "Check the smoke detectors and CO₂ alarms are functional",
-]
-
 const makeItem = (label = ""): Item => ({ id: crypto.randomUUID(), label })
 
 // ─── Draggable row ────────────────────────────────────────────────────────────
@@ -104,7 +91,18 @@ export const OnboardingCreateChecklistForm: FunctionComponent<
 > = ({ handleNext, handleSkip }) => {
   const t = useI18n()
   const [items, setItems] = useState<Item[]>(() =>
-    DEFAULT_LABELS.map((label) => makeItem(label))
+    [
+      t("onboarding.checklist.default.lightBulbs"),
+      t("onboarding.checklist.default.refrigerator"),
+      t("onboarding.checklist.default.internet"),
+      t("onboarding.checklist.default.bathroom"),
+      t("onboarding.checklist.default.windows"),
+      t("onboarding.checklist.default.kitchen"),
+      t("onboarding.checklist.default.linens"),
+      t("onboarding.checklist.default.floors"),
+      t("onboarding.checklist.default.trash"),
+      t("onboarding.checklist.default.alarms"),
+    ].map((label) => makeItem(label))
   )
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()

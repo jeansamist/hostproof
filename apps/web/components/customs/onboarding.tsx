@@ -78,35 +78,14 @@ const StepItem: FunctionComponent<StepItemProps> = ({
   )
 }
 
-const onboardingSteps: Step[] = [
-  {
-    name: "Create your Housings",
-    description: "Add all your actual Housings in the app",
-    icon: House,
-  },
-  {
-    name: "Add your employee",
-    description: "If you have some employee for cleaning add them there",
-    icon: Users,
-  },
-  {
-    name: "Define your checklist",
-    description: "Set the default tasks the AI will verify in every video",
-    icon: CheckSquare,
-  },
-  {
-    name: "Completed",
-    description: "Start reviewing your housing",
-    icon: Check,
-  },
-]
+const STEP_COUNT = 4
 
 export const Onboarding: FunctionComponent<OnboardingProps> = () => {
   const t = useI18n()
   const router = useRouter()
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<boolean[]>(() =>
-    onboardingSteps.map(() => false)
+    Array<boolean>(STEP_COUNT).fill(false)
   )
 
   const localizedSteps: Step[] = [
@@ -145,7 +124,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
   }
 
   const canNavigateToStep = (stepIndex: number) => {
-    if (stepIndex < 0 || stepIndex >= onboardingSteps.length) return false
+    if (stepIndex < 0 || stepIndex >= STEP_COUNT) return false
     if (stepIndex < activeStepIndex) return false
     for (let i = 0; i < stepIndex; i++) {
       if (!completedSteps[i]) return false
@@ -160,7 +139,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
 
   const goToNextStep = () => {
     setActiveStepIndex((current) =>
-      Math.min(current + 1, onboardingSteps.length - 1)
+      Math.min(current + 1, STEP_COUNT - 1)
     )
   }
 
