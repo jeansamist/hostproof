@@ -44,8 +44,8 @@ error()   { echo -e "${RED}${BOLD}[✗]${RESET} $*" >&2; }
 die()     { error "$*"; exit 1; }
 
 # ─── Defaults ────────────────────────────────────────────────────────────────
-API_PORT="${HOSTPROOF_API_PORT:-3333}"
-WEB_PORT="${HOSTPROOF_WEB_PORT:-3000}"
+API_PORT="${HOSTPROOF_API_PORT:-1234}"
+WEB_PORT="${HOSTPROOF_WEB_PORT:-5050}"
 SKIP_BUILD=false
 SKIP_MIGRATE=false
 
