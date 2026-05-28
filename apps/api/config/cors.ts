@@ -1,6 +1,4 @@
-import app from '@adonisjs/core/services/app'
 import { defineConfig } from '@adonisjs/cors'
-import env from '#start/env'
 
 const corsConfig = defineConfig({
   enabled: true,
@@ -10,12 +8,7 @@ const corsConfig = defineConfig({
    * In production read CORS_ORIGIN (comma-separated list of allowed origins).
    * Example: CORS_ORIGIN=https://clean-pilot.online,https://www.clean-pilot.online
    */
-  origin: app.inDev
-    ? true
-    : (env.get('CORS_ORIGIN', '') as string)
-        .split(',')
-        .map((o) => o.trim())
-        .filter(Boolean),
+  origin: true,
 
   /**
    * HTTP methods accepted for cross-origin requests.
