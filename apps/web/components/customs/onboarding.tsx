@@ -22,6 +22,7 @@ import { FunctionComponent, useMemo, useState } from "react"
 import { OnboardingCreateChecklistForm } from "../forms/onboarding-create-checklist.form"
 import { OnboardingCreateEmployeesForm } from "../forms/onboarding-create-employees.form"
 import { OnboardingCreateHousingsForm } from "../forms/onboarding-create-housings.form"
+
 export type OnboardingProps = {
   [key: string]: unknown
 }
@@ -56,9 +57,7 @@ const StepItem: FunctionComponent<StepItemProps> = ({
         active && "bg-accent"
       )}
       initial={false}
-      animate={{
-        scale: active ? 1.01 : 1,
-      }}
+      animate={{ scale: active ? 1.01 : 1 }}
     >
       <Button
         size={"icon-lg"}
@@ -111,9 +110,10 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
     },
   ]
 
-  const currentStep = useMemo(() => {
-    return localizedSteps[activeStepIndex] || localizedSteps[0]
-  }, [activeStepIndex, localizedSteps])
+  const currentStep = useMemo(
+    () => localizedSteps[activeStepIndex] || localizedSteps[0],
+    [activeStepIndex, localizedSteps]
+  )
 
   const completeStep = (stepIndex: number) => {
     setCompletedSteps((prev) => {
@@ -138,9 +138,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
   }
 
   const goToNextStep = () => {
-    setActiveStepIndex((current) =>
-      Math.min(current + 1, STEP_COUNT - 1)
-    )
+    setActiveStepIndex((current) => Math.min(current + 1, STEP_COUNT - 1))
   }
 
   const handleCreateHousingsNext = async (data: CreateManyHousingSchema) => {
@@ -175,21 +173,20 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
     router.push("/")
   }
 
+  const progressPercent = Math.round((activeStepIndex / STEP_COUNT) * 100)
+
   return (
-    <div className="relative z-10 mx-auto flex h-screen w-full items-center gap-2 p-2">
-      <div className="h-full w-full max-w-lg space-y-6 rounded-xl border bg-sidebar">
+    <div className="relative z-10 mx-auto flex h-screen w-full flex-col lg:flex-row lg:items-center lg:gap-2 lg:p-2">
+
+      {/* ── Desktop sidebar ──────────────────────────── */}
+      <div className="hidden lg:flex h-full w-full max-w-lg shrink-0 flex-col space-y-6 rounded-xl border bg-sidebar">
         <div className="space-y-4 p-6 pb-0">
           <h1 className="text-2xl font-bold">{t("onboarding.sidebar.title")}</h1>
           <p className="text-muted-foreground">{t("onboarding.sidebar.description")}</p>
         </div>
-
         <div className="space-y-2">
           {localizedSteps.map((step, index) => (
-            <div
-              key={step.name}
-              onClick={() => switchStep(index)}
-              className="select-none"
-            >
+            <div key={step.name} onClick={() => switchStep(index)} className="select-none">
               <StepItem
                 {...step}
                 active={index === activeStepIndex}
@@ -200,9 +197,34 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
           ))}
         </div>
       </div>
-      <div className="h-full flex-1 overflow-y-auto">
-        <div className="mx-auto mt-36 w-full max-w-2xl space-y-6 px-4">
-          <div>
+
+      {/* ── Mobile progress header ───────────────────── */}
+      <div className="lg:hidden shrink-0 border-b bg-sidebar px-5 pb-4 pt-5">
+        <div className="mb-3 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">
+            {t("onboarding.sidebar.title")}
+          </span>
+          <span className="tabular-nums text-sm font-medium">
+            {activeStepIndex + 1} / {STEP_COUNT}
+          </span>
+        </div>
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+          <motion.div
+            className="h-full rounded-full bg-primary"
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+        <div className="mt-3">
+          <p className="font-semibold">{currentStep.name}</p>
+          <p className="text-sm text-muted-foreground">{currentStep.description}</p>
+        </div>
+      </div>
+
+      {/* ── Content area ─────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto mt-8 w-full max-w-2xl space-y-6 px-4 pb-8 lg:mt-36">
+          <div className="hidden lg:block">
             <h1 className="text-2xl font-bold">{currentStep.name}</h1>
             <p className="text-muted-foreground">{currentStep.description}</p>
           </div>
@@ -215,9 +237,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
               transition={{ duration: 0.18 }}
             >
               {activeStepIndex === 0 ? (
-                <OnboardingCreateHousingsForm
-                  handleNext={handleCreateHousingsNext}
-                />
+                <OnboardingCreateHousingsForm handleNext={handleCreateHousingsNext} />
               ) : activeStepIndex === 1 ? (
                 <OnboardingCreateEmployeesForm
                   handleNext={handleCreateEmployeesNext}
@@ -286,11 +306,7 @@ export const Onboarding: FunctionComponent<OnboardingProps> = () => {
                     </div>
 
                     <div className="flex justify-end">
-                      <Button
-                        type="button"
-                        size="lg"
-                        onClick={finishOnboarding}
-                      >
+                      <Button type="button" size="lg" onClick={finishOnboarding}>
                         {t("onboarding.completed.action.enter")}
                         <ChevronRight className="size-4" />
                       </Button>

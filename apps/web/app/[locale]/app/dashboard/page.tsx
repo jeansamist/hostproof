@@ -1,21 +1,27 @@
-import { RefreshButton } from "@/components/customs/refresh-button"
 import { getI18n } from "@/lib/i18n/server"
-import { setStaticParamsLocale } from "next-international/server"
 import { getCleaningReviews } from "@/services/cleaning-review.services"
 import { getDashboardStats } from "@/services/dashboard.services"
+import { cn } from "@packages/functions"
 import { Badge } from "@packages/ui/badge"
 import { Button } from "@packages/ui/button"
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@packages/ui/card"
-import { cn } from "@packages/functions"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@packages/ui/card"
 import {
   CalendarClock,
   CheckCircle2,
   ExternalLink,
   House,
+  Plus,
   Sparkles,
   Users,
   XCircle,
 } from "lucide-react"
+import { setStaticParamsLocale } from "next-international/server"
 import Link from "next/link"
 
 type PageProps = {
@@ -44,13 +50,37 @@ export default async function DashboardPage({ params }: PageProps) {
 
   const STATUS_CONFIG: Record<
     string,
-    { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: typeof CheckCircle2 | null }
+    {
+      label: string
+      variant: "default" | "secondary" | "destructive" | "outline"
+      icon: typeof CheckCircle2 | null
+    }
   > = {
-    Created: { label: t("cleaningReview.status.created"), variant: "outline", icon: null },
-    "AI Analizing": { label: t("cleaningReview.status.aiAnalysing"), variant: "secondary", icon: Sparkles },
-    Analized: { label: t("cleaningReview.status.analysed"), variant: "secondary", icon: Sparkles },
-    Done: { label: t("cleaningReview.status.done"), variant: "default", icon: CheckCircle2 },
-    Failed: { label: t("cleaningReview.status.failed"), variant: "destructive", icon: XCircle },
+    Created: {
+      label: t("cleaningReview.status.created"),
+      variant: "outline",
+      icon: null,
+    },
+    "AI Analizing": {
+      label: t("cleaningReview.status.aiAnalysing"),
+      variant: "secondary",
+      icon: Sparkles,
+    },
+    Analized: {
+      label: t("cleaningReview.status.analysed"),
+      variant: "secondary",
+      icon: Sparkles,
+    },
+    Done: {
+      label: t("cleaningReview.status.done"),
+      variant: "default",
+      icon: CheckCircle2,
+    },
+    Failed: {
+      label: t("cleaningReview.status.failed"),
+      variant: "destructive",
+      icon: XCircle,
+    },
   }
 
   const metrics = [
@@ -84,10 +114,20 @@ export default async function DashboardPage({ params }: PageProps) {
     <div className="mx-auto max-w-5xl space-y-8 px-4 py-8">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("dashboard.title")}</h1>
-          <p className="text-sm text-muted-foreground">{t("dashboard.description")}</p>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {t("dashboard.title")}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {t("dashboard.description")}
+          </p>
         </div>
-        <RefreshButton label={t("dashboard.refresh")} />
+        <Button asChild>
+          <Link href={`/${locale}/app/cleaning-review/create`}>
+            <Plus className="size-4" />
+            {t("cleaningReview.action.new")}
+          </Link>
+        </Button>
+        {/* <RefreshButton label={t("dashboard.refresh")} /> */}
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -105,7 +145,9 @@ export default async function DashboardPage({ params }: PageProps) {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold tracking-tight">{value}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {description}
+              </p>
             </CardContent>
           </Card>
         ))}
@@ -114,7 +156,9 @@ export default async function DashboardPage({ params }: PageProps) {
       {/* Recent cleaning reviews */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold">{t("dashboard.recentReviews.title")}</h2>
+          <h2 className="text-base font-semibold">
+            {t("dashboard.recentReviews.title")}
+          </h2>
           <Button asChild variant="ghost" size="sm">
             <Link href={`/${locale}/app/cleaning-review`}>
               <ExternalLink className="size-3.5" />
@@ -123,7 +167,7 @@ export default async function DashboardPage({ params }: PageProps) {
           </Button>
         </div>
 
-        <div className="rounded-2xl border overflow-hidden">
+        <div className="overflow-hidden rounded-2xl border">
           {recentReviews.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">
               {t("dashboard.recentReviews.empty")}
@@ -141,17 +185,22 @@ export default async function DashboardPage({ params }: PageProps) {
                   <Link
                     key={r.id}
                     href={`/${locale}/app/cleaning-review/${r.id}`}
-                    className="flex items-center justify-between gap-4 px-5 py-3.5 hover:bg-muted/40 transition-colors"
+                    className="flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/40"
                   >
                     <div className="min-w-0">
-                      <p className="text-sm font-medium truncate">
+                      <p className="truncate text-sm font-medium">
                         {r.housing?.name ?? `Reservation #${r.reservationId}`}
                       </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {r.employee?.fullName ?? t("dashboard.review.noEmployee")} · {formatDate(r.createdAt)}
+                      <p className="truncate text-xs text-muted-foreground">
+                        {r.employee?.fullName ??
+                          t("dashboard.review.noEmployee")}{" "}
+                        · {formatDate(r.createdAt)}
                       </p>
                     </div>
-                    <Badge variant={cfg.variant} className="flex shrink-0 items-center gap-1">
+                    <Badge
+                      variant={cfg.variant}
+                      className="flex shrink-0 items-center gap-1"
+                    >
                       {Icon && (
                         <Icon
                           className={cn(

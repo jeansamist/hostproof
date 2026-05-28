@@ -103,7 +103,7 @@ export default {
   "onboarding.housings.field.address": "Adresse",
   "onboarding.housings.type.placeholder": "Sélectionnez un type",
   "onboarding.housings.type.apartment": "Appartement",
-  "onboarding.housings.type.house": "Maison",
+  "onboarding.housings.type.house": "Studio",
   "onboarding.housings.type.villa": "Villa",
   "onboarding.housings.action.delete": "Supprimer",
   "onboarding.housings.action.add": "Ajouter un logement",
@@ -337,7 +337,7 @@ export default {
   "settings.housings.form.create": "Créer le logement",
   "settings.housings.form.cancel": "Annuler",
   "settings.housings.type.apartment": "Appartement",
-  "settings.housings.type.house": "Maison",
+  "settings.housings.type.house": "Studio",
   "settings.housings.type.villa": "Villa",
 
   "settings.employees.title": "Employés",

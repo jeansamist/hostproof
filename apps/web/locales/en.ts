@@ -99,7 +99,7 @@ export default {
   "onboarding.housings.field.address": "Address",
   "onboarding.housings.type.placeholder": "Select a type",
   "onboarding.housings.type.apartment": "Apartment",
-  "onboarding.housings.type.house": "House",
+  "onboarding.housings.type.house": "Studio",
   "onboarding.housings.type.villa": "Villa",
   "onboarding.housings.action.delete": "Delete",
   "onboarding.housings.action.add": "Add a housing",
@@ -330,7 +330,7 @@ export default {
   "settings.housings.form.create": "Create housing",
   "settings.housings.form.cancel": "Cancel",
   "settings.housings.type.apartment": "Apartment",
-  "settings.housings.type.house": "House",
+  "settings.housings.type.house": "Studio",
   "settings.housings.type.villa": "Villa",
 
   "settings.employees.title": "Employees",

@@ -7,7 +7,7 @@ import {
 import { getI18n } from "@/lib/i18n/server"
 import Link from "next/link"
 import { AnimateIn } from "./animate-in"
-import { LangSwitch } from "./lang-switch"
+import { NavbarClient } from "./navbar-client"
 import { PhoneProto } from "./phone-proto"
 
 /* ─── Design tokens ────────────────────────────────────── */
@@ -148,24 +148,14 @@ export async function LandingPage({ locale }: Props) {
           <span className="text-[1.1rem] font-bold tracking-tight" style={{ color: TEXT }}>
             CleanPilot
           </span>
-          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-            <a href="#how-it-works"
-              className="hidden sm:inline text-[13px] font-medium opacity-55 hover:opacity-100 transition-opacity"
-              style={{ color: TEXT }}>
-              {t("landing.nav.howItWorks")}
-            </a>
-            <Link href={`/${locale}/auth/sign-in`}
-              className="text-[13px] font-medium px-4 py-1.5 rounded-full opacity-70 hover:opacity-100 transition-opacity"
-              style={{ color: TEXT, border: `1px solid ${BORD2}` }}>
-              {t("landing.nav.signIn")}
-            </Link>
-            <Link href={`/${locale}/auth/sign-up`}
-              className="text-[13px] font-semibold px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity text-white"
-              style={{ background: BTN }}>
-              {t("landing.nav.signUp")}
-            </Link>
-            <LangSwitch currentLocale={locale} />
-          </div>
+          <NavbarClient
+            locale={locale}
+            labels={{
+              howItWorks: t("landing.nav.howItWorks"),
+              signIn: t("landing.nav.signIn"),
+              signUp: t("landing.nav.signUp"),
+            }}
+          />
         </div>
       </header>
 
