@@ -53,7 +53,7 @@ module.exports = {
     // ─── Next.js Web App ──────────────────────────────────────────────────────
     {
       name: 'hostproof-web',
-      script: 'node_modules/.bin/next',
+      script: 'node_modules/next/dist/bin/next',
       args: 'start',
       cwd: './apps/web',
 
