@@ -87,6 +87,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>()
+  const [uploadProgress, setUploadProgress] = useState(0)
   const [hasMic, setHasMic] = useState(true)
   const [facingMode, setFacingMode] = useState<"user" | "environment">("environment")
   const [elapsed, setElapsed] = useState(0)
@@ -174,14 +175,21 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
       let stream = streamRef.current
       if (!stream || stream.getTracks().some((t) => t.readyState === "ended")) {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode },
+          video: {
+            facingMode,
+            width: { ideal: 854, max: 854 },
+            height: { ideal: 480, max: 480 },
+          },
           audio: hasMic,
         })
         streamRef.current = stream
       }
 
       const mimeType = getSupportedMimeType()
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : {})
+      const recorder = new MediaRecorder(stream, {
+        ...(mimeType ? { mimeType } : {}),
+        videoBitsPerSecond: 1_200_000,
+      })
       chunksRef.current = []
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data)
@@ -220,34 +228,38 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     streamRef.current = null
   }, [facingMode])
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!videoBlob) return
     setMode("uploading")
+    setUploadProgress(0)
     setErrorMsg(undefined)
-    try {
-      const formData = new FormData()
-      const type = videoBlob.type || ""
-      const ext = type.includes("mp4") ? "mp4" : "webm"
-      formData.append("video", videoBlob, `recording.${ext}`)
 
-      const res = await fetch(`${apiUrl}/api/public/reviews/${uri}/submit`, {
-        method: "POST",
-        body: formData,
-      })
+    const formData = new FormData()
+    const ext = (videoBlob.type || "").includes("mp4") ? "mp4" : "webm"
+    formData.append("video", videoBlob, `recording.${ext}`)
 
-      if (!res.ok) {
-        const json = await res.json().catch(() => ({}))
-        throw new Error(json?.message ?? t("publicReview.error.uploadFailed"))
+    const xhr = new XMLHttpRequest()
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) setUploadProgress(Math.round((e.loaded / e.total) * 100))
+    }
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        streamRef.current?.getTracks().forEach((t) => t.stop())
+        streamRef.current = null
+        setMode("done")
+      } else {
+        let msg = t("publicReview.error.uploadFailed")
+        try { msg = JSON.parse(xhr.responseText)?.message ?? msg } catch {}
+        setErrorMsg(msg)
+        setMode("preview")
       }
-
-      // Release the camera after a successful submit
-      streamRef.current?.getTracks().forEach((t) => t.stop())
-      streamRef.current = null
-      setMode("done")
-    } catch (err: any) {
-      setErrorMsg(err?.message ?? t("publicReview.error.uploadFailed"))
+    }
+    xhr.onerror = () => {
+      setErrorMsg(t("publicReview.error.uploadFailed"))
       setMode("preview")
     }
+    xhr.open("POST", `${apiUrl}/api/public/reviews/${uri}/submit`)
+    xhr.send(formData)
   }
 
   const handleRetry = async () => {
@@ -444,9 +456,17 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
 
       {/* Uploading */}
       {mode === "uploading" && (
-        <div className="space-y-3 rounded-2xl border bg-card p-8 text-center">
-          <Loader2 className="mx-auto size-8 animate-spin text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">{t("publicReview.uploading")}</p>
+        <div className="space-y-3 rounded-2xl border bg-card p-6">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">{t("publicReview.uploading")}</span>
+            <span className="tabular-nums font-medium">{uploadProgress}%</span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-primary transition-all duration-200"
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
         </div>
       )}
 

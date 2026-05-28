@@ -468,41 +468,47 @@ export class CleaningReviewService {
       throw httpError(400, 'Invalid video file')
     }
 
-    const uploadResult = await this.uploadVideo(data.file)
-    if (!uploadResult) {
-      throw httpError(500, 'Failed to process the video. Please try again.')
-    }
-    transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
+    // Move the file immediately — fast disk operation, unblocks the HTTP response
+    const targetDirectory = app.makePath('public', 'uploads', 'videos', 'cleaning-reviews')
+    await mkdir(targetDirectory, { recursive: true })
+    const id = randomUUID()
+    const tempName = `${id}_tmp.${data.file.extname ?? 'webm'}`
+    await data.file.move(targetDirectory, { name: tempName })
+    const tempPath = `${targetDirectory}/${tempName}`
 
-    const { relativePath: videoPath } = uploadResult
-    return this.repository
-      .update(cleaningReview, {
-        localVideoPath: videoPath,
-        mimeType: 'video/mp4',
-        status: 'AI Analizing',
-      })
-      .then((updatedReview) => {
-        this.cronManager.addQueueJob(
-          'ai-analysis',
-          async () => {
-            try {
-              await this.analyzeVideo(updatedReview.id, data.uri)
-            } catch (error) {
-              this.logger.error('Failed to analyze video for cleaning review')
-              console.log({
-                error,
-                cleaningReviewId: updatedReview.id,
-              })
+    // Persist status and return — client gets its response here, not after ffmpeg
+    const updatedReview = await this.repository.update(cleaningReview, {
+      localVideoPath: tempPath,
+      mimeType: 'video/mp4',
+      status: 'AI Analizing',
+    })
 
-              transmit.broadcast(`cleaning-reviews/${data.uri}`, {
-                message: 'AI_ANALYSIS_FAILED',
-              })
-              await this.repository.update(updatedReview, { status: 'Failed' })
-            }
-          },
-          { retries: 2, retryDelayMs: 1000 }
-        )
-        return updatedReview
-      })
+    // Conversion + analysis run entirely in the background queue
+    this.cronManager.addQueueJob(
+      'ai-analysis',
+      async () => {
+        const mp4Name = `${id}.mp4`
+        const mp4Path = `${targetDirectory}/${mp4Name}`
+        try {
+          await this.convertToMp4(tempPath, mp4Path)
+          unlink(tempPath).catch(() => {})
+
+          const relativePath = `/uploads/videos/cleaning-reviews/${mp4Name}`
+          await this.repository.update(updatedReview, { localVideoPath: relativePath })
+
+          transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
+          await this.analyzeVideo(updatedReview.id, data.uri)
+        } catch (error) {
+          this.logger.error('Failed to convert or analyze video for cleaning review')
+          unlink(tempPath).catch(() => {})
+          unlink(mp4Path).catch(() => {})
+          transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'AI_ANALYSIS_FAILED' })
+          await this.repository.update(updatedReview, { status: 'Failed' })
+        }
+      },
+      { retries: 0 }
+    )
+
+    return updatedReview
   }
 }
