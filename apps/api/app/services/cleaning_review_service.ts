@@ -491,17 +491,24 @@ export class CleaningReviewService {
         const mp4Path = `${targetDirectory}/${mp4Name}`
         try {
           await this.convertToMp4(tempPath, mp4Path)
-          unlink(tempPath).catch(() => {})
-
-          const relativePath = `/uploads/videos/cleaning-reviews/${mp4Name}`
-          await this.repository.update(updatedReview, { localVideoPath: relativePath })
-
-          transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
-          await this.analyzeVideo(updatedReview.id, data.uri)
         } catch (error) {
-          this.logger.error('Failed to convert or analyze video for cleaning review')
+          this.logger.error('Failed to convert video for cleaning review')
           unlink(tempPath).catch(() => {})
           unlink(mp4Path).catch(() => {})
+          transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'AI_ANALYSIS_FAILED' })
+          await this.repository.update(updatedReview, { status: 'Failed' })
+          return
+        }
+
+        unlink(tempPath).catch(() => {})
+        const relativePath = `/uploads/videos/cleaning-reviews/${mp4Name}`
+        await this.repository.update(updatedReview, { localVideoPath: relativePath })
+        transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
+
+        try {
+          await this.analyzeVideo(updatedReview.id, data.uri)
+        } catch (error) {
+          this.logger.error('Failed to analyze video for cleaning review')
           transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'AI_ANALYSIS_FAILED' })
           await this.repository.update(updatedReview, { status: 'Failed' })
         }

@@ -7,7 +7,6 @@ import { HumanMessage } from '@langchain/core/messages'
 import { ChatGoogle } from '@langchain/google'
 import path from 'node:path'
 import z from 'zod'
-
 @inject()
 export class AiService {
   constructor(protected readonly logger: Logger) {}
@@ -128,7 +127,7 @@ export class AiService {
     ])
   }
   async uploadAndAnalyzeVideo(localVideoPath: string, uri?: string, CUSTOM_PROMPT?: string) {
-    const uploadedFile = await this.uploadFileToGoogleAi(localVideoPath)
+    const uploadedFile = await this.uploadFileToGoogleAi(localVideoPath, uri)
 
     return this.analyzeVideo(uploadedFile, CUSTOM_PROMPT).then((response) => {
       this.logger.info(`[AiService]: Video analysis completed.`)
