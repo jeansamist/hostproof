@@ -1,15 +1,15 @@
 import {
-    Body,
-    Button,
-    Container,
-    Head,
-    Heading,
-    Hr,
-    Html,
-    Link,
-    Preview,
-    Tailwind,
-    Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Link,
+  Preview,
+  Tailwind,
+  Text,
 } from '@react-email/components'
 import React from 'react'
 
@@ -25,12 +25,12 @@ export function ResetPasswordEmailTemplate({
   return (
     <Html>
       <Head />
-      <Preview>Reset your AppName password.</Preview>
+      <Preview>Reset your Clean Pilot password.</Preview>
       <Tailwind>
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              AppName
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -61,7 +61,11 @@ export function ResetPasswordEmailTemplate({
             <Text className="text-xs text-gray-400 m-0 mt-8 mb-1">
               Or copy and paste this URL into your browser:
             </Text>
-            <Link href={resetPasswordLink} className="text-xs break-all" style={{ color: '#ea580c' }}>
+            <Link
+              href={resetPasswordLink}
+              className="text-xs break-all"
+              style={{ color: '#ea580c' }}
+            >
               {resetPasswordLink}
             </Link>
 

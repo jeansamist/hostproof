@@ -1,5 +1,5 @@
 export default {
-  "common.app-name": "AppName",
+  "common.app-name": "Clean Pilot",
 
   "home.ready.title": "Projet prêt !",
   "home.ready.description":
@@ -11,15 +11,15 @@ export default {
 
   "auth.signUp.page.title": "Commencer",
   "auth.signUp.page.description":
-    "Créez un compte pour commencer à utiliser AppName",
+    "Créez un compte pour commencer à utiliser Clean Pilot",
   "auth.signUp.meta.title": "Créer un compte",
   "auth.signUp.meta.description":
-    "Inscrivez-vous sur AppName et prenez le contrôle de vos activités.",
+    "Inscrivez-vous sur Clean Pilot et prenez le contrôle de vos activités.",
   "auth.signIn.page.title": "Bon retour",
-  "auth.signIn.page.description": "Connectez-vous à votre compte AppName",
+  "auth.signIn.page.description": "Connectez-vous à votre compte Clean Pilot",
   "auth.signIn.meta.title": "Se connecter",
   "auth.signIn.meta.description":
-    "Connectez-vous à votre compte AppName pour gérer vos logements.",
+    "Connectez-vous à votre compte Clean Pilot pour gérer vos logements.",
   "auth.verifyEmail.page.title": "Vérifiez votre email",
   "auth.verifyEmail.meta.title": "Vérifiez votre email",
   "auth.verifyEmail.meta.description":
@@ -29,13 +29,13 @@ export default {
     "Entrez votre email et nous vous enverrons un lien de réinitialisation",
   "auth.forgotPassword.meta.title": "Mot de passe oublié ?",
   "auth.forgotPassword.meta.description":
-    "Réinitialisez votre mot de passe AppName en entrant votre adresse email.",
+    "Réinitialisez votre mot de passe Clean Pilot en entrant votre adresse email.",
   "auth.resetPassword.page.title": "Réinitialiser votre mot de passe",
   "auth.resetPassword.page.description":
     "Entrez le jeton de votre email et choisissez un nouveau mot de passe",
   "auth.resetPassword.meta.title": "Réinitialiser votre mot de passe",
   "auth.resetPassword.meta.description":
-    "Choisissez un nouveau mot de passe pour votre compte AppName.",
+    "Choisissez un nouveau mot de passe pour votre compte Clean Pilot.",
 
   "auth.signUp.firstName.label": "Prénom",
   "auth.signUp.firstName.placeholder": "Entrez votre prénom",
@@ -57,7 +57,8 @@ export default {
   "auth.signIn.forgotPassword.link": "Mot de passe oublié ?",
 
   "auth.verifyEmail.sent": "Nous avons envoyé un email à",
-  "auth.verifyEmail.checkInbox": " : vérifiez votre boîte de réception ou spams",
+  "auth.verifyEmail.checkInbox":
+    " : vérifiez votre boîte de réception ou spams",
   "auth.verifyEmail.code.label": "Code de vérification",
   "auth.verifyEmail.code.description":
     "Entrez le code à 6 chiffres envoyé à votre adresse email",
@@ -94,8 +95,7 @@ export default {
   "onboarding.step.checklist.description":
     "Définissez les tâches que l'IA vérifiera dans chaque vidéo",
   "onboarding.step.completed.name": "Terminé",
-  "onboarding.step.completed.description":
-    "Commencez à évaluer vos logements",
+  "onboarding.step.completed.description": "Commencez à évaluer vos logements",
 
   "onboarding.housings.field.name": "Nom",
   "onboarding.housings.field.capacity": "Capacité",
@@ -316,8 +316,7 @@ export default {
   "settings.profile.delete.confirm.action": "Supprimer mon compte",
 
   "settings.appearance.title": "Apparence",
-  "settings.appearance.description":
-    "Choisissez l'apparence de l'application",
+  "settings.appearance.description": "Choisissez l'apparence de l'application",
   "settings.appearance.theme": "Thème",
   "settings.appearance.theme.light": "Clair",
   "settings.appearance.theme.dark": "Sombre",
@@ -408,7 +407,8 @@ export default {
   "settings.checklist.aria.dragToReorder": "Glisser pour réordonner",
 
   // Settings — Employees (additions)
-  "settings.employees.error.required": "Le nom complet et le genre sont requis.",
+  "settings.employees.error.required":
+    "Le nom complet et le genre sont requis.",
   "settings.employees.noContact": "Aucune info de contact",
   "settings.employees.placeholder.fullName": "ex. Maria Santos",
   "settings.employees.placeholder.email": "employe@exemple.com",
@@ -436,8 +436,7 @@ export default {
   // Shared AI progress messages
   "ai.progress.converting": "Conversion de la vidéo en mp4…",
   "ai.progress.uploadedAndConverted": "Vidéo convertie, envoi vers Google AI…",
-  "ai.progress.uploadedToGoogleAI":
-    "Envoyée à Google AI, traitement en cours…",
+  "ai.progress.uploadedToGoogleAI": "Envoyée à Google AI, traitement en cours…",
   "ai.progress.processedByGoogle": "Vidéo traitée, analyse du nettoyage…",
   "ai.progress.analyzedByGoogle": "Analyse terminée, génération du rapport…",
   "ai.progress.completed": "Rapport prêt !",
@@ -589,7 +588,8 @@ export default {
   "landing.hero.description":
     "Vérifiez vos logements par vidéo pour éliminer les avis négatifs avant l'arrivée de vos voyageurs.",
   "landing.hero.cta": "Essayer gratuitement pendant 7 jours →",
-  "landing.hero.trust": "Sans engagement · Annulation en 1 clic · Paiement sécurisé",
+  "landing.hero.trust":
+    "Sans engagement · Annulation en 1 clic · Paiement sécurisé",
   "landing.hero.phone.room": "Vidéo de la chambre",
   "landing.hero.phone.checkOk": "✔ Serviettes  ✔ Savon  ✔ Eau",
   "landing.hero.phone.checkFail": "⚠️ Il manque 2 rouleaux de PQ !",
@@ -621,11 +621,16 @@ export default {
     "La responsable accède à toutes les analyses, photos, vidéos et to-do lists depuis son tableau de bord central.",
 
   "landing.benefits.label": "Ce que vous gagnez",
-  "landing.benefits.title": "Reprenez le contrôle de votre temps (et de vos notes)",
-  "landing.benefits.item1": "Finis les avis négatifs sur le ménage — une expérience irréprochable",
-  "landing.benefits.item2": "Vos notes remontent à 4,9/5 — vous devenez le choix numéro 1",
-  "landing.benefits.item3": "Plus de temps perdu à courir le samedi soir pour un oubli",
-  "landing.benefits.item4": "Des pourboires plutôt que des plaintes — vos clients remarquent le soin",
+  "landing.benefits.title":
+    "Reprenez le contrôle de votre temps (et de vos notes)",
+  "landing.benefits.item1":
+    "Finis les avis négatifs sur le ménage — une expérience irréprochable",
+  "landing.benefits.item2":
+    "Vos notes remontent à 4,9/5 — vous devenez le choix numéro 1",
+  "landing.benefits.item3":
+    "Plus de temps perdu à courir le samedi soir pour un oubli",
+  "landing.benefits.item4":
+    "Des pourboires plutôt que des plaintes — vos clients remarquent le soin",
   "landing.benefits.item5": "Gérez 30 logements avec le même calme qu'avec 5",
   "landing.benefits.bonus":
     "Bonus inattendu : Notre outil détecte aussi les ampoules grillées, les fissures ou les taches. Vous êtes prévenu des petites réparations avant que le voyageur ne s'en plaigne.",
@@ -653,31 +658,37 @@ export default {
     "🎯 Lancement : les 50 premiers clients gardent le tarif à vie (23 places restantes)",
 
   "landing.testimonials.label": "Ils nous font confiance",
-  "landing.testimonials.title": "Des concierges qui ne bossent plus jamais sans CleanPilot",
+  "landing.testimonials.title":
+    "Des concierges qui ne bossent plus jamais sans CleanPilot",
   "landing.testimonials.1.text":
     "\"Depuis CleanPilot, mes 12 logements sont notés 5 étoiles sur la propreté. J'ai récupéré l'équivalent de 3 nuits de location par mois. Un soulagement.\"",
   "landing.testimonials.1.name": "Sophie L.",
   "landing.testimonials.1.role": "Concierge indépendante, Lyon · 12 biens",
   "landing.testimonials.2.text":
-    "\"Mes femmes de ménage adorent, elles ne stressent plus de rater un détail. Je pilote mes 30 propriétés depuis mon canapé sans mauvaise surprise.\"",
+    '"Mes femmes de ménage adorent, elles ne stressent plus de rater un détail. Je pilote mes 30 propriétés depuis mon canapé sans mauvaise surprise."',
   "landing.testimonials.2.name": "Marc D.",
   "landing.testimonials.2.role": "Agence de conciergerie, Bordeaux · 30 biens",
 
   "landing.faq.label": "Questions fréquentes",
   "landing.faq.1.q": "Faut-il télécharger une application ?",
-  "landing.faq.1.a": "Non. Vos femmes de ménage n'ont rien à installer. Elles cliquent sur un lien reçu par SMS/WhatsApp.",
+  "landing.faq.1.a":
+    "Non. Vos femmes de ménage n'ont rien à installer. Elles cliquent sur un lien reçu par SMS/WhatsApp.",
   "landing.faq.2.q": "Ça marche avec toutes les pièces ?",
-  "landing.faq.2.a": "Oui, que ce soit un studio ou une villa, vous configurez vos modèles en 3 clics.",
+  "landing.faq.2.a":
+    "Oui, que ce soit un studio ou une villa, vous configurez vos modèles en 3 clics.",
   "landing.faq.3.q": "Et si la vidéo est floue ou sombre ?",
-  "landing.faq.3.a": "L'outil le détecte et demande de refaire la vidéo. Zéro faux positif.",
+  "landing.faq.3.a":
+    "L'outil le détecte et demande de refaire la vidéo. Zéro faux positif.",
   "landing.faq.4.q": "Puis-je annuler à tout moment ?",
   "landing.faq.4.a": "Oui, résiliation en 1 clic, sans frais cachés.",
 
-  "landing.finalCta.title": "Prêt à ne plus jamais perdre une étoile à cause d'un oubli ?",
+  "landing.finalCta.title":
+    "Prêt à ne plus jamais perdre une étoile à cause d'un oubli ?",
   "landing.finalCta.description":
     "7 jours offerts, sans carte bancaire. Si ce n'est pas fait pour vous, on se sépare bons amis.",
   "landing.finalCta.cta": "Je commence mon essai gratuit de 7 jours →",
-  "landing.finalCta.trust": "Puis 39€/mois · Résiliation en 1 clic · Stripe sécurisé",
+  "landing.finalCta.trust":
+    "Puis 39€/mois · Résiliation en 1 clic · Stripe sécurisé",
 
   "landing.guarantee":
     "Satisfait ou remboursé sous 30 jours. Si CleanPilot ne vous a évité aucun oubli en 30 jours, on vous rembourse intégralement.",
@@ -686,5 +697,6 @@ export default {
   "landing.footer.terms": "CGU",
   "landing.footer.contact": "Contact",
   "landing.footer.copy": "© 2025 CleanPilot · Tous droits réservés",
-  "landing.footer.tagline": "Fait pour les concierges qui veulent des 5 étoiles.",
+  "landing.footer.tagline":
+    "Fait pour les concierges qui veulent des 5 étoiles.",
 } as const

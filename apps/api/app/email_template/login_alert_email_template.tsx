@@ -1,14 +1,14 @@
 import {
-    Body,
-    Button,
-    Container,
-    Head,
-    Heading,
-    Hr,
-    Html,
-    Preview,
-    Tailwind,
-    Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Preview,
+  Tailwind,
+  Text,
 } from '@react-email/components'
 import React from 'react'
 
@@ -21,12 +21,12 @@ export function LoginAlertEmailTemplate({ firstName, loggedInAt }: LoginAlertEma
   return (
     <Html>
       <Head />
-      <Preview>New sign-in to your AppName account.</Preview>
+      <Preview>New sign-in to your Clean Pilot account.</Preview>
       <Tailwind>
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              AppName
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -34,7 +34,7 @@ export function LoginAlertEmailTemplate({ firstName, loggedInAt }: LoginAlertEma
             </Heading>
 
             <Text className="text-gray-500 text-sm leading-relaxed m-0 mb-6">
-              A sign-in to your AppName account was recorded on{' '}
+              A sign-in to your Clean Pilot account was recorded on{' '}
               <span className="text-gray-700 font-medium">{loggedInAt}</span>. If this was you, no
               action is needed.
             </Text>
@@ -44,7 +44,7 @@ export function LoginAlertEmailTemplate({ firstName, loggedInAt }: LoginAlertEma
             </Text>
 
             <Button
-              href="https://AppName.app/auth/reset-password"
+              href="https://clean-pilot.online/auth/reset-password"
               style={{
                 backgroundColor: '#111827',
                 color: '#ffffff',

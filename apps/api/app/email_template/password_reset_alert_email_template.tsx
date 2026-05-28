@@ -1,14 +1,14 @@
 import {
-    Body,
-    Button,
-    Container,
-    Head,
-    Heading,
-    Hr,
-    Html,
-    Preview,
-    Tailwind,
-    Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Preview,
+  Tailwind,
+  Text,
 } from '@react-email/components'
 import React from 'react'
 
@@ -24,12 +24,12 @@ export function PasswordResetAlertEmailTemplate({
   return (
     <Html>
       <Head />
-      <Preview>Your AppName password was changed.</Preview>
+      <Preview>Your Clean Pilot password was changed.</Preview>
       <Tailwind>
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              AppName
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -37,7 +37,7 @@ export function PasswordResetAlertEmailTemplate({
             </Heading>
 
             <Text className="text-gray-500 text-sm leading-relaxed m-0 mb-6">
-              The password for your AppName account was successfully updated on{' '}
+              The password for your Clean Pilot account was successfully updated on{' '}
               <span className="text-gray-700 font-medium">{resetAt}</span>.
             </Text>
 
@@ -47,7 +47,7 @@ export function PasswordResetAlertEmailTemplate({
             </Text>
 
             <Button
-              href="https://AppName.app/auth/reset-password"
+              href="https://clean-pilot.online/auth/reset-password"
               style={{
                 backgroundColor: '#111827',
                 color: '#ffffff',
@@ -65,7 +65,7 @@ export function PasswordResetAlertEmailTemplate({
             <Hr className="border-gray-100 my-10" />
 
             <Text className="text-xs text-gray-400 m-0">
-              You're receiving this because a password change was made on your AppName account.
+              You're receiving this because a password change was made on your Clean Pilot account.
             </Text>
           </Container>
         </Body>

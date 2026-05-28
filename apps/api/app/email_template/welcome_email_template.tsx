@@ -1,14 +1,14 @@
 import {
-    Body,
-    Button,
-    Container,
-    Head,
-    Heading,
-    Hr,
-    Html,
-    Preview,
-    Tailwind,
-    Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Preview,
+  Tailwind,
+  Text,
 } from '@react-email/components'
 import React from 'react'
 
@@ -20,12 +20,12 @@ export function WelcomeEmailTemplate({ firstName }: WelcomeEmailProps) {
   return (
     <Html>
       <Head />
-      <Preview>Welcome to AppName, {firstName}.</Preview>
+      <Preview>Welcome to Clean Pilot, {firstName}.</Preview>
       <Tailwind>
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              AppName
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -42,7 +42,7 @@ export function WelcomeEmailTemplate({ firstName }: WelcomeEmailProps) {
             </Text>
 
             <Button
-              href="https://AppName.app/app/dashboard"
+              href="https://clean-pilot.online/app/dashboard"
               style={{
                 backgroundColor: '#ea580c',
                 color: '#ffffff',
@@ -54,13 +54,13 @@ export function WelcomeEmailTemplate({ firstName }: WelcomeEmailProps) {
                 display: 'inline-block',
               }}
             >
-              Open AppName
+              Open Clean Pilot
             </Button>
 
             <Hr className="border-gray-100 my-10" />
 
             <Text className="text-xs text-gray-400 m-0 mb-1">
-              You're receiving this because you created a AppName account.
+              You're receiving this because you created a Clean Pilot account.
             </Text>
             <Text className="text-xs text-gray-400 m-0">
               If this wasn't you, you can safely ignore this email.

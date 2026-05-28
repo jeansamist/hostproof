@@ -23,12 +23,12 @@ export function EmailVerificationCodeEmailTemplate({
   return (
     <Html>
       <Head />
-      <Preview>Your AppName verification code: {emailVerificationCode}</Preview>
+      <Preview>Your Clean Pilot verification code: {emailVerificationCode}</Preview>
       <Tailwind>
         <Body className="bg-white font-sans m-0 py-12">
           <Container className="max-w-[540px] mx-auto px-6">
             <Text className="text-base font-semibold m-0 mb-8" style={{ color: '#ea580c' }}>
-              AppName
+              Clean Pilot
             </Text>
 
             <Heading className="text-2xl font-semibold text-gray-900 m-0 mb-4 leading-snug">
@@ -55,7 +55,7 @@ export function EmailVerificationCodeEmailTemplate({
             <Hr className="border-gray-100 my-10" />
 
             <Text className="text-xs text-gray-400 m-0">
-              Never share this code with anyone. AppName will never ask for it.
+              Never share this code with anyone. Clean Pilot will never ask for it.
             </Text>
           </Container>
         </Body>

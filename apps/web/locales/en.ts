@@ -1,5 +1,5 @@
 export default {
-  "common.app-name": "AppName",
+  "common.app-name": "Clean Pilot",
 
   "home.ready.title": "Project ready!",
   "home.ready.description": "You may now add components and start building.",
@@ -8,15 +8,16 @@ export default {
   "home.dark-mode-hint": "(Press d to toggle dark mode)",
 
   "auth.signUp.page.title": "Start now",
-  "auth.signUp.page.description": "Create an account to start using AppName",
+  "auth.signUp.page.description":
+    "Create an account to start using Clean Pilot",
   "auth.signUp.meta.title": "Create an account",
   "auth.signUp.meta.description":
-    "Sign up for AppName and take control of your finances.",
+    "Sign up for Clean Pilot and take control of your finances.",
   "auth.signIn.page.title": "Welcome back",
-  "auth.signIn.page.description": "Sign in to your AppName account",
+  "auth.signIn.page.description": "Sign in to your Clean Pilot account",
   "auth.signIn.meta.title": "Sign in",
   "auth.signIn.meta.description":
-    "Sign in to your AppName account to manage your budget.",
+    "Sign in to your Clean Pilot account to manage your budget.",
   "auth.verifyEmail.page.title": "Verify your email",
   "auth.verifyEmail.meta.title": "Verify your email",
   "auth.verifyEmail.meta.description":
@@ -26,13 +27,13 @@ export default {
     "Enter your email and we'll send you a reset link",
   "auth.forgotPassword.meta.title": "Forgot your password?",
   "auth.forgotPassword.meta.description":
-    "Reset your AppName password by entering your email address.",
+    "Reset your Clean Pilot password by entering your email address.",
   "auth.resetPassword.page.title": "Reset your password",
   "auth.resetPassword.page.description":
     "Enter the token from your email and choose a new password",
   "auth.resetPassword.meta.title": "Reset your password",
   "auth.resetPassword.meta.description":
-    "Choose a new password for your AppName account.",
+    "Choose a new password for your Clean Pilot account.",
 
   "auth.signUp.firstName.label": "First name",
   "auth.signUp.firstName.placeholder": "Enter your first name",
@@ -87,7 +88,8 @@ export default {
   "onboarding.step.employees.description":
     "If you have employees for cleaning, add them here",
   "onboarding.step.checklist.name": "Define your checklist",
-  "onboarding.step.checklist.description": "Set tasks the AI will verify in every cleaning video",
+  "onboarding.step.checklist.description":
+    "Set tasks the AI will verify in every cleaning video",
   "onboarding.step.completed.name": "Completed",
   "onboarding.step.completed.description": "Start reviewing your housing",
 
@@ -376,21 +378,21 @@ export default {
   "aiOutput.action.requestNewReview": "Request a new review",
   "aiOutput.status.reviewRequested":
     "New review requested — the manager has been notified.",
-  "aiOutput.hint.checkAllTasks":
-    "Check all tasks above to unlock this button.",
+  "aiOutput.hint.checkAllTasks": "Check all tasks above to unlock this button.",
 
   // Settings — Checklist
   "settings.checklist.title": "Default cleaning checklist",
   "settings.checklist.description":
     "These points are sent to the AI for every video analysis — it will flag any that are missing. Drag the handle to reorder.",
-  "settings.checklist.empty": "No checklist items yet. Add your first one below.",
+  "settings.checklist.empty":
+    "No checklist items yet. Add your first one below.",
   "settings.checklist.savingOrder": "Saving order…",
   "settings.checklist.item.placeholder":
     "e.g. Check all light bulbs are working…",
   "settings.checklist.action.add": "Add",
   "settings.checklist.delete.title": "Delete checklist item?",
   "settings.checklist.delete.description":
-    "\"{label}\" will be removed from your default checklist. This won't affect past analyses.",
+    '"{label}" will be removed from your default checklist. This won\'t affect past analyses.',
   "settings.checklist.delete.cancel": "Cancel",
   "settings.checklist.delete.confirm": "Delete",
   "settings.checklist.aria.dragToReorder": "Drag to reorder",
@@ -442,8 +444,7 @@ export default {
 
   // Public Review Page / Uploader
   "publicReview.page.title": "Cleaning Review",
-  "publicReview.page.noReview":
-    "This review link is invalid or has expired.",
+  "publicReview.page.noReview": "This review link is invalid or has expired.",
   "publicReview.page.uploadHint":
     "Please upload your cleaning review video below.",
   "publicReview.submitted.title": "Video submitted!",
@@ -551,16 +552,25 @@ export default {
   "nav.signOut": "Sign out",
 
   // Onboarding — Checklist default items
-  "onboarding.checklist.default.lightBulbs": "Check all light bulbs are working",
-  "onboarding.checklist.default.refrigerator": "Verify the refrigerator is clean and empty",
-  "onboarding.checklist.default.internet": "Check internet connection and router",
-  "onboarding.checklist.default.bathroom": "Inspect all bathroom fixtures (shower, toilet, sink)",
-  "onboarding.checklist.default.windows": "Confirm windows and shutters open and close properly",
-  "onboarding.checklist.default.kitchen": "Wipe down all kitchen surfaces and appliances",
-  "onboarding.checklist.default.linens": "Check that all towels and bed linen are clean and in place",
+  "onboarding.checklist.default.lightBulbs":
+    "Check all light bulbs are working",
+  "onboarding.checklist.default.refrigerator":
+    "Verify the refrigerator is clean and empty",
+  "onboarding.checklist.default.internet":
+    "Check internet connection and router",
+  "onboarding.checklist.default.bathroom":
+    "Inspect all bathroom fixtures (shower, toilet, sink)",
+  "onboarding.checklist.default.windows":
+    "Confirm windows and shutters open and close properly",
+  "onboarding.checklist.default.kitchen":
+    "Wipe down all kitchen surfaces and appliances",
+  "onboarding.checklist.default.linens":
+    "Check that all towels and bed linen are clean and in place",
   "onboarding.checklist.default.floors": "Vacuum and mop all floors",
-  "onboarding.checklist.default.trash": "Empty all trash bins and replace bin bags",
-  "onboarding.checklist.default.alarms": "Check the smoke detectors and CO₂ alarms are functional",
+  "onboarding.checklist.default.trash":
+    "Empty all trash bins and replace bin bags",
+  "onboarding.checklist.default.alarms":
+    "Check the smoke detectors and CO₂ alarms are functional",
 
   // Landing page
   "landing.nav.howItWorks": "How it works",
@@ -589,7 +599,8 @@ export default {
 
   "landing.how.label": "The fix",
   "landing.how.title": "Your properties checked in 1 minute — from anywhere",
-  "landing.how.description": "CleanPilot does quality control for you. No more excuses.",
+  "landing.how.description":
+    "CleanPilot does quality control for you. No more excuses.",
   "landing.how.step1.title": "Full video scan",
   "landing.how.step1.desc":
     "Cleaner records each room for 30 seconds. No app needed — simple link.",
@@ -605,10 +616,13 @@ export default {
 
   "landing.benefits.label": "What you gain",
   "landing.benefits.title": "Take back your time (and your ratings)",
-  "landing.benefits.item1": "No more cleaning-related bad reviews — consistent excellence",
+  "landing.benefits.item1":
+    "No more cleaning-related bad reviews — consistent excellence",
   "landing.benefits.item2": "Ratings climb to 4.9/5 — become the top choice",
-  "landing.benefits.item3": "No more Saturday evening emergency runs for a missing towel",
-  "landing.benefits.item4": "Tips instead of complaints — guests notice the care",
+  "landing.benefits.item3":
+    "No more Saturday evening emergency runs for a missing towel",
+  "landing.benefits.item4":
+    "Tips instead of complaints — guests notice the care",
   "landing.benefits.item5": "Manage 30 properties as calmly as 5",
   "landing.benefits.bonus":
     "Unexpected bonus: Our AI also spots burnt-out bulbs, cracks, or stains. You get repairs done before guests complain.",
@@ -638,21 +652,24 @@ export default {
   "landing.testimonials.label": "Trusted by pros",
   "landing.testimonials.title": "Concierges who never work without CleanPilot",
   "landing.testimonials.1.text":
-    "\"Since CleanPilot, my 12 properties are rated 5 stars for cleanliness. I gained back 3 extra rental nights per month. Huge relief.\"",
+    '"Since CleanPilot, my 12 properties are rated 5 stars for cleanliness. I gained back 3 extra rental nights per month. Huge relief."',
   "landing.testimonials.1.name": "Sophie L.",
   "landing.testimonials.1.role": "Independent concierge, Lyon · 12 units",
   "landing.testimonials.2.text":
-    "\"My cleaners love it — they don't stress about missing details. I manage 30 properties from my couch with zero bad surprises.\"",
+    '"My cleaners love it — they don\'t stress about missing details. I manage 30 properties from my couch with zero bad surprises."',
   "landing.testimonials.2.name": "Marc D.",
   "landing.testimonials.2.role": "Concierge agency, Bordeaux · 30 units",
 
   "landing.faq.label": "FAQ",
   "landing.faq.1.q": "Do I need to install an app?",
-  "landing.faq.1.a": "No. Your cleaners get a link via SMS/WhatsApp — that's it.",
+  "landing.faq.1.a":
+    "No. Your cleaners get a link via SMS/WhatsApp — that's it.",
   "landing.faq.2.q": "Does it work for any room?",
-  "landing.faq.2.a": "Yes, from a studio to a 6-bedroom villa. Configure your templates in 3 clicks.",
+  "landing.faq.2.a":
+    "Yes, from a studio to a 6-bedroom villa. Configure your templates in 3 clicks.",
   "landing.faq.3.q": "What if the video is blurry or dark?",
-  "landing.faq.3.a": "The tool detects it and asks for a new video. Zero false positives.",
+  "landing.faq.3.a":
+    "The tool detects it and asks for a new video. Zero false positives.",
   "landing.faq.4.q": "Can I cancel anytime?",
   "landing.faq.4.a": "Yes, one-click cancellation, no hidden fees.",
 
