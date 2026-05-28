@@ -597,7 +597,7 @@ export async function LandingPage({ locale }: Props) {
                 links: [
                   { label: t("landing.footer.legal"), href: "#" },
                   { label: t("landing.footer.terms"), href: "#" },
-                  { label: t("landing.footer.contact"), href: "mailto:contact@cleanpilot.fr" },
+                  { label: t("landing.footer.contact"), href: "mailto:contact@clean-pilot.online" },
                 ],
               },
               {
