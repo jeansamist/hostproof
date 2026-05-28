@@ -458,6 +458,7 @@ export default {
   "publicReview.action.micOn": "Microphone on",
   "publicReview.action.micOff": "Microphone off",
   "publicReview.action.micToggle": "— click to toggle",
+  "publicReview.action.switchCamera": "Switch camera",
   "publicReview.uploading": "Uploading your video…",
   "publicReview.error.cameraAccess": "Could not access camera/microphone.",
   "publicReview.error.uploadFailed": "Upload failed. Please try again.",

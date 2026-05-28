@@ -18,6 +18,7 @@ import {
   MicOff,
   RefreshCw,
   Square,
+  SwitchCamera,
   Upload,
   Video,
 } from "lucide-react"
@@ -37,6 +38,18 @@ type UploaderProps = {
 }
 
 type Mode = "idle" | "recording" | "preview" | "uploading" | "done" | "error"
+
+const getSupportedMimeType = () => {
+  const candidates = [
+    "video/webm;codecs=vp9,opus",
+    "video/webm;codecs=vp8,opus",
+    "video/webm;codecs=vp9",
+    "video/webm;codecs=vp8",
+    "video/webm",
+    "video/mp4",
+  ]
+  return candidates.find((t) => MediaRecorder.isTypeSupported(t)) ?? ""
+}
 
 export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   uri,
@@ -75,6 +88,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>()
   const [hasMic, setHasMic] = useState(true)
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("environment")
   const [elapsed, setElapsed] = useState(0)
 
   const streamRef = useRef<MediaStream | null>(null)
@@ -131,12 +145,17 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uri])
 
+  // Release the camera stream only on unmount
   useEffect(() => {
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((t) => t.stop())
-      }
+      streamRef.current?.getTracks().forEach((t) => t.stop())
       if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
+
+  // Revoke the previous object URL when a new one is created
+  useEffect(() => {
+    return () => {
       if (videoUrl) URL.revokeObjectURL(videoUrl)
     }
   }, [videoUrl])
@@ -151,17 +170,18 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const startRecording = useCallback(async () => {
     setErrorMsg(undefined)
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: hasMic,
-      })
-      streamRef.current = stream
+      // Reuse the existing stream when possible to avoid re-requesting permission
+      let stream = streamRef.current
+      if (!stream || stream.getTracks().some((t) => t.readyState === "ended")) {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode },
+          audio: hasMic,
+        })
+        streamRef.current = stream
+      }
 
-      const recorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
-          ? "video/webm;codecs=vp9"
-          : "video/webm",
-      })
+      const mimeType = getSupportedMimeType()
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : {})
       chunksRef.current = []
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data)
@@ -172,8 +192,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
         setVideoBlob(blob)
         setVideoUrl(url)
         setMode("preview")
-        stream.getTracks().forEach((t) => t.stop())
-        streamRef.current = null
+        // Keep the stream alive — no track.stop() here — so re-recording skips the permission prompt
       }
       recorder.start(250)
       recorderRef.current = recorder
@@ -183,7 +202,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     } catch (err: any) {
       setErrorMsg(err?.message ?? t("publicReview.error.cameraAccess"))
     }
-  }, [hasMic, t])
+  }, [facingMode, hasMic, t])
 
   const stopRecording = useCallback(() => {
     if (timerRef.current) {
@@ -193,17 +212,22 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     recorderRef.current?.stop()
   }, [])
 
+  const handleSwitchCamera = useCallback(() => {
+    const next = facingMode === "environment" ? "user" : "environment"
+    setFacingMode(next)
+    // Stop the current stream so the next startRecording acquires a fresh one with the new facingMode
+    streamRef.current?.getTracks().forEach((t) => t.stop())
+    streamRef.current = null
+  }, [facingMode])
+
   const handleSubmit = async () => {
     if (!videoBlob) return
     setMode("uploading")
     setErrorMsg(undefined)
     try {
       const formData = new FormData()
-      const ext = videoBlob.type.includes("webm")
-        ? "webm"
-        : videoBlob.type.includes("mp4")
-          ? "mp4"
-          : "video"
+      const type = videoBlob.type || ""
+      const ext = type.includes("mp4") ? "mp4" : "webm"
       formData.append("video", videoBlob, `recording.${ext}`)
 
       const res = await fetch(`${apiUrl}/api/public/reviews/${uri}/submit`, {
@@ -216,6 +240,9 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
         throw new Error(json?.message ?? t("publicReview.error.uploadFailed"))
       }
 
+      // Release the camera after a successful submit
+      streamRef.current?.getTracks().forEach((t) => t.stop())
+      streamRef.current = null
       setMode("done")
     } catch (err: any) {
       setErrorMsg(err?.message ?? t("publicReview.error.uploadFailed"))
@@ -246,6 +273,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     setMode("idle")
     setErrorMsg(undefined)
     if (fileInputRef.current) fileInputRef.current.value = ""
+    // Stream stays alive for re-recording
   }
 
   const fmt = (s: number) =>
@@ -430,19 +458,30 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
               <Video className="size-4" />
               {t("publicReview.action.recordWithCamera")}
             </Button>
-            <button
-              type="button"
-              className="mx-auto flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
-              onClick={() => setHasMic((v) => !v)}
-            >
-              {hasMic ? (
-                <Mic className="size-3.5" />
-              ) : (
-                <MicOff className="size-3.5" />
-              )}
-              {hasMic ? t("publicReview.action.micOn") : t("publicReview.action.micOff")}{" "}
-              {t("publicReview.action.micToggle")}
-            </button>
+            <div className="flex items-center justify-center gap-4">
+              <button
+                type="button"
+                className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                onClick={() => setHasMic((v) => !v)}
+              >
+                {hasMic ? (
+                  <Mic className="size-3.5" />
+                ) : (
+                  <MicOff className="size-3.5" />
+                )}
+                {hasMic ? t("publicReview.action.micOn") : t("publicReview.action.micOff")}{" "}
+                {t("publicReview.action.micToggle")}
+              </button>
+              <span className="text-xs text-muted-foreground">·</span>
+              <button
+                type="button"
+                className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                onClick={handleSwitchCamera}
+              >
+                <SwitchCamera className="size-3.5" />
+                {t("publicReview.action.switchCamera")}
+              </button>
+            </div>
           </div>
         </div>
       )}

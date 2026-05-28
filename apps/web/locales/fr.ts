@@ -468,6 +468,7 @@ export default {
   "publicReview.action.micOn": "Microphone activé",
   "publicReview.action.micOff": "Microphone désactivé",
   "publicReview.action.micToggle": "— cliquer pour basculer",
+  "publicReview.action.switchCamera": "Changer de caméra",
   "publicReview.uploading": "Envoi de la vidéo…",
   "publicReview.error.cameraAccess":
     "Impossible d'accéder à la caméra/microphone.",
