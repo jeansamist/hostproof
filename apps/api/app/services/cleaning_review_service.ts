@@ -16,7 +16,6 @@ import { Logger } from '@adonisjs/core/logger'
 import app from '@adonisjs/core/services/app'
 import mail from '@adonisjs/mail/services/main'
 import transmit from '@adonisjs/transmit/services/main'
-import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdir, unlink } from 'node:fs/promises'
 import CronManager from '../managers/crons_manager.ts'
@@ -334,49 +333,16 @@ export class CleaningReviewService {
       { retries: 2, retryDelayMs: 1000 }
     )
   }
-  async convertToMp4(inputPath: string, outputPath: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const ffmpeg = spawn('ffmpeg', [
-        '-i',
-        inputPath,
-        '-c:v',
-        'libx264',
-        '-c:a',
-        'aac',
-        '-movflags',
-        '+faststart',
-        '-y',
-        outputPath,
-      ])
-      ffmpeg.on('close', (code) => {
-        if (code === 0) resolve()
-        else reject(new Error(`ffmpeg exited with code ${code}`))
-      })
-      ffmpeg.on('error', reject)
-    })
-  }
   async uploadVideo(file: MultipartFile) {
     this.logger.info(`[CleaningReviewService]: Uploading video file...`)
     const targetDirectory = app.makePath('public', 'uploads', 'videos', 'cleaning-reviews')
     await mkdir(targetDirectory, { recursive: true })
 
-    const id = randomUUID()
-    const tempName = `${id}_tmp.${file.extname}`
-    const mp4Name = `${id}.mp4`
+    const ext = file.extname ?? 'webm'
+    const fileName = `${randomUUID()}.${ext}`
+    await file.move(targetDirectory, { name: fileName })
 
-    await file.move(targetDirectory, { name: tempName })
-
-    const tempPath = `${targetDirectory}/${tempName}`
-    const mp4Path = `${targetDirectory}/${mp4Name}`
-
-    try {
-      await this.convertToMp4(tempPath, mp4Path)
-    } catch {
-      return null
-    } finally {
-      unlink(tempPath).catch(() => {})
-    }
-    const relativePath = `/uploads/videos/cleaning-reviews/${mp4Name}`
+    const relativePath = `/uploads/videos/cleaning-reviews/${fileName}`
     const normalizedAppUrl = appUrl.endsWith('/') ? appUrl : `${appUrl}/`
     const fileUri = new URL(relativePath.slice(1), normalizedAppUrl).toString()
     return { relativePath, fileUri }
@@ -468,43 +434,25 @@ export class CleaningReviewService {
       throw httpError(400, 'Invalid video file')
     }
 
-    // Move the file immediately — fast disk operation, unblocks the HTTP response
     const targetDirectory = app.makePath('public', 'uploads', 'videos', 'cleaning-reviews')
     await mkdir(targetDirectory, { recursive: true })
-    const id = randomUUID()
-    const tempName = `${id}_tmp.${data.file.extname ?? 'webm'}`
-    await data.file.move(targetDirectory, { name: tempName })
-    const tempPath = `${targetDirectory}/${tempName}`
+    const ext = data.file.extname ?? 'webm'
+    const fileName = `${randomUUID()}.${ext}`
+    await data.file.move(targetDirectory, { name: fileName })
+    const relativePath = `/uploads/videos/cleaning-reviews/${fileName}`
+    const mimeType = data.file.type ? `${data.file.type}/${data.file.subtype ?? ext}` : `video/${ext}`
 
-    // Persist status and return — client gets its response here, not after ffmpeg
     const updatedReview = await this.repository.update(cleaningReview, {
-      localVideoPath: tempPath,
-      mimeType: 'video/mp4',
+      localVideoPath: relativePath,
+      mimeType,
       status: 'AI Analizing',
     })
 
-    // Conversion + analysis run entirely in the background queue
+    transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
+
     this.cronManager.addQueueJob(
       'ai-analysis',
       async () => {
-        const mp4Name = `${id}.mp4`
-        const mp4Path = `${targetDirectory}/${mp4Name}`
-        try {
-          await this.convertToMp4(tempPath, mp4Path)
-        } catch (error) {
-          this.logger.error('Failed to convert video for cleaning review')
-          unlink(tempPath).catch(() => {})
-          unlink(mp4Path).catch(() => {})
-          transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'AI_ANALYSIS_FAILED' })
-          await this.repository.update(updatedReview, { status: 'Failed' })
-          return
-        }
-
-        unlink(tempPath).catch(() => {})
-        const relativePath = `/uploads/videos/cleaning-reviews/${mp4Name}`
-        await this.repository.update(updatedReview, { localVideoPath: relativePath })
-        transmit.broadcast(`cleaning-reviews/${data.uri}`, { message: 'VIDEO_UPLOADED_AND_CONVERTED' })
-
         try {
           await this.analyzeVideo(updatedReview.id, data.uri)
         } catch (error) {

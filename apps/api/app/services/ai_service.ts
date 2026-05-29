@@ -1,11 +1,11 @@
 import env from '#start/env'
 import { inject } from '@adonisjs/core'
 import { Logger } from '@adonisjs/core/logger'
+import app from '@adonisjs/core/services/app'
 import transmit from '@adonisjs/transmit/services/main'
 import { GoogleGenAI } from '@google/genai'
 import { HumanMessage } from '@langchain/core/messages'
 import { ChatGoogle } from '@langchain/google'
-import path from 'node:path'
 import z from 'zod'
 @inject()
 export class AiService {
@@ -70,12 +70,22 @@ export class AiService {
     'gemini-2.5-pro',
   ]
 
+  private static readonly MIME_TYPES: Record<string, string> = {
+    mp4: 'video/mp4',
+    webm: 'video/webm',
+    mov: 'video/quicktime',
+    avi: 'video/x-msvideo',
+    mkv: 'video/x-matroska',
+  }
+
   async uploadFileToGoogleAi(localVideoPath: string, uri?: string) {
-    const VIDEO_PATH = path.join(process.cwd(), 'public', localVideoPath)
+    const VIDEO_PATH = app.makePath('public', localVideoPath)
+    const ext = localVideoPath.split('.').pop()?.toLowerCase() ?? ''
+    const mimeType = AiService.MIME_TYPES[ext] ?? 'video/mp4'
     this.logger.info(`[AiService]: Uploading video file to Google AI for analysis...`)
     const uploadedFile = await this.ai.files.upload({
       file: VIDEO_PATH,
-      config: { mimeType: 'video/mp4' },
+      config: { mimeType },
     })
 
     if (!uploadedFile.name) {
