@@ -17,7 +17,7 @@ import app from '@adonisjs/core/services/app'
 import mail from '@adonisjs/mail/services/main'
 import transmit from '@adonisjs/transmit/services/main'
 import { randomUUID } from 'node:crypto'
-import { mkdir, unlink } from 'node:fs/promises'
+import { mkdir } from 'node:fs/promises'
 import CronManager from '../managers/crons_manager.ts'
 import User from '../models/user.ts'
 import { AiService } from './ai_service.ts'
@@ -440,7 +440,9 @@ export class CleaningReviewService {
     const fileName = `${randomUUID()}.${ext}`
     await data.file.move(targetDirectory, { name: fileName })
     const relativePath = `/uploads/videos/cleaning-reviews/${fileName}`
-    const mimeType = data.file.type ? `${data.file.type}/${data.file.subtype ?? ext}` : `video/${ext}`
+    const mimeType = data.file.type
+      ? `${data.file.type}/${data.file.subtype ?? ext}`
+      : `video/${ext}`
 
     const updatedReview = await this.repository.update(cleaningReview, {
       localVideoPath: relativePath,
