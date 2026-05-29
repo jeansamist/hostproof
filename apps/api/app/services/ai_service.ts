@@ -117,6 +117,7 @@ export class AiService {
         await new Promise<void>((r) => setTimeout(r, delay))
       }
     }
+    throw new Error('invokeWithRetry: exhausted retries')
   }
 
   async analyzeVideo(
