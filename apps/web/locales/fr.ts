@@ -442,6 +442,11 @@ export default {
   "ai.progress.completed": "Rapport prêt !",
   "ai.progress.failed": "Analyse échouée. Veuillez contacter le support.",
   "ai.progress.retrying": "Nouvelle tentative d'analyse…",
+  "ai.progress.watching": "L'IA regarde la vidéo…",
+  "ai.progress.checkingList": "Vérification de la checklist…",
+  "ai.progress.evaluating": "Évaluation de la propreté des pièces…",
+  "ai.progress.checkingItems": "Vérification des éléments manquants…",
+  "ai.progress.generatingReport": "Génération du rapport…",
 
   // Shared cleaning review status labels (admin view)
   "cleaningReview.status.created": "Créé",

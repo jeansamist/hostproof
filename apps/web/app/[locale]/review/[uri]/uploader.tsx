@@ -91,6 +91,14 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const [facingMode, setFacingMode] = useState<"user" | "environment">("environment")
   const [elapsed, setElapsed] = useState(0)
 
+  const AI_CYCLING_MESSAGES = [
+    t("ai.progress.watching"),
+    t("ai.progress.checkingList"),
+    t("ai.progress.evaluating"),
+    t("ai.progress.checkingItems"),
+    t("ai.progress.generatingReport"),
+  ]
+
   const streamRef = useRef<MediaStream | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -98,6 +106,8 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
   const liveRef = useRef<HTMLVideoElement>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const cyclingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const cyclingIndexRef = useRef(0)
 
   const terminalKey =
     review.status === "Analized" || review.status === "Done"
@@ -125,6 +135,25 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
 
     subscription.create().then(() => {
       subscription.onMessage((data: { message: string }) => {
+        if (data.message === "VIDEO_PROCESSED_BY_GOOGLE_AI") {
+          if (cyclingIntervalRef.current) clearInterval(cyclingIntervalRef.current)
+          cyclingIndexRef.current = 0
+          setMESSAGE(AI_CYCLING_MESSAGES[0])
+          setMessageKey(data.message)
+          cyclingIntervalRef.current = setInterval(() => {
+            cyclingIndexRef.current = (cyclingIndexRef.current + 1) % AI_CYCLING_MESSAGES.length
+            setMESSAGE(AI_CYCLING_MESSAGES[cyclingIndexRef.current])
+          }, 3_000)
+          return
+        }
+
+        if (data.message === "AI_ANALYSIS_COMPLETED" || data.message === "AI_ANALYSIS_FAILED") {
+          if (cyclingIntervalRef.current) {
+            clearInterval(cyclingIntervalRef.current)
+            cyclingIntervalRef.current = null
+          }
+        }
+
         const label = TRANSMIT_MESSAGES[data.message]
         if (label) {
           setMESSAGE(label)
@@ -150,6 +179,7 @@ export const PublicVideoUploader: FunctionComponent<UploaderProps> = ({
     return () => {
       streamRef.current?.getTracks().forEach((t) => t.stop())
       if (timerRef.current) clearInterval(timerRef.current)
+      if (cyclingIntervalRef.current) clearInterval(cyclingIntervalRef.current)
     }
   }, [])
 

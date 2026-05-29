@@ -102,6 +102,23 @@ export class AiService {
     )
   }
 
+  private async invokeWithRetry(messages: HumanMessage[], maxRetries = 4, baseDelayMs = 5_000) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await this.structuredModel.invoke(messages)
+      } catch (error: any) {
+        const isOverloaded =
+          error?.statusCode === 503 || error?.data?.error?.status === 'UNAVAILABLE'
+        if (!isOverloaded || attempt === maxRetries) throw error
+        const delay = baseDelayMs * Math.pow(2, attempt)
+        this.logger.warn(
+          `[AiService]: Google AI overloaded (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms…`
+        )
+        await new Promise<void>((r) => setTimeout(r, delay))
+      }
+    }
+  }
+
   async analyzeVideo(
     file: Awaited<ReturnType<AiService['uploadFileToGoogleAi']>>,
     CUSTOM_PROMPT?: string
@@ -110,7 +127,7 @@ export class AiService {
     const PROMPT = this.PROMPT + (CUSTOM_PROMPT ? `\n\n${CUSTOM_PROMPT}` : '')
     console.log(PROMPT)
 
-    return await this.structuredModel.invoke([
+    return await this.invokeWithRetry([
       new HumanMessage({
         content: [
           {
