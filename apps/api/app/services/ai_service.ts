@@ -60,6 +60,16 @@ export class AiService {
 
   structuredModel = this.model.withStructuredOutput(this.schema)
 
+  private readonly RETRY_MODELS = [
+    'gemini-2.5-flash',
+    'gemini-3.5-flash',
+    'gemini-3-flash-preview',
+    'gemini-3.1-flash-lite',
+    'gemini-3.1-pro-preview',
+    'gemini-2.5-flash-lite',
+    'gemini-2.5-pro',
+  ]
+
   async uploadFileToGoogleAi(localVideoPath: string, uri?: string) {
     const VIDEO_PATH = path.join(process.cwd(), 'public', localVideoPath)
     this.logger.info(`[AiService]: Uploading video file to Google AI for analysis...`)
@@ -102,22 +112,31 @@ export class AiService {
     )
   }
 
-  private async invokeWithRetry(messages: HumanMessage[], maxRetries = 4, baseDelayMs = 5_000) {
+  private async invokeWithRetry(messages: HumanMessage[], baseDelayMs = 5_000) {
+    const maxRetries = this.RETRY_MODELS.length - 1
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const modelName = this.RETRY_MODELS[attempt]
+      const model = new ChatGoogle({
+        model: modelName,
+        apiKey: env.get('GOOGLE_API_KEY'),
+      }).withStructuredOutput(this.schema)
       try {
-        return await this.structuredModel.invoke(messages)
+        this.logger.info(
+          `[AiService]: Invoking ${modelName} (attempt ${attempt + 1}/${maxRetries + 1})`
+        )
+        return await model.invoke(messages)
       } catch (error: any) {
         const isOverloaded =
           error?.statusCode === 503 || error?.data?.error?.status === 'UNAVAILABLE'
         if (!isOverloaded || attempt === maxRetries) throw error
         const delay = baseDelayMs * Math.pow(2, attempt)
         this.logger.warn(
-          `[AiService]: Google AI overloaded (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms…`
+          `[AiService]: ${modelName} overloaded, switching to next model in ${delay}ms…`
         )
         await new Promise<void>((r) => setTimeout(r, delay))
       }
     }
-    throw new Error('invokeWithRetry: exhausted retries')
+    throw new Error('invokeWithRetry: all models exhausted')
   }
 
   async analyzeVideo(
